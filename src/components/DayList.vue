@@ -4,7 +4,7 @@
       <div class="day-title">
         <span class="day-name" :class="{ red: isToday }">{{ dayName }}</span>
         <span class="day-date" :class="{ red: isToday }">
-          {{ dateLabel }}<template v-if="isToday"> · dnes</template>
+          {{ dateLabel }}<template v-if="isToday"> · {{ t('day.today') }}</template>
         </span>
       </div>
       <span class="day-count" :class="{ done: allDone }">{{ doneCount }} / {{ tasks.length }}</span>
@@ -18,7 +18,7 @@
             ref="editEl"
             v-model="editTitle"
             class="add-input"
-            placeholder="Názov položky"
+            :placeholder="t('day.itemName')"
             @keyup.enter="saveEdit(task)"
             @keyup.esc="cancelEdit"
           >
@@ -27,7 +27,7 @@
         </div>
         <CategoryPicker v-model="editCat" />
         <button class="delete-btn" @click="removeTask(task)">
-          <i class="ti ti-trash"></i> Vymazať položku
+          <i class="ti ti-trash"></i> {{ t('day.deleteItem') }}
         </button>
       </div>
 
@@ -38,7 +38,7 @@
           class="check"
           :class="{ checked: task.status === 'done' }"
           @click="tasksStore.toggleTask(task)"
-          :aria-label="task.status === 'done' ? 'Označiť ako nesplnené' : 'Označiť ako splnené'"
+          :aria-label="task.status === 'done' ? t('day.markUndone') : t('day.markDone')"
         >
           <i v-if="task.status === 'done'" class="ti ti-check"></i>
         </button>
@@ -60,7 +60,7 @@
             ref="inputEl"
             v-model="newTitle"
             class="add-input"
-            placeholder="Názov položky"
+            :placeholder="t('day.itemName')"
             @keyup.enter="submit"
             @keyup.esc="cancel"
           >
@@ -71,7 +71,7 @@
       </div>
       <button v-else type="button" class="trow trow-add" @click="openAdd">
         <span class="check dashed"><i class="ti ti-plus"></i></span>
-        <span class="row-text muted">Pridať položku</span>
+        <span class="row-text muted">{{ t('day.addItem') }}</span>
       </button>
     </template>
   </div>
@@ -79,11 +79,16 @@
 
 <script setup lang="ts">
 import { computed, nextTick, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useTasksStore } from '@/stores/tasks'
 import { useCategoriesStore } from '@/stores/categories'
 import CategoryPicker from '@/components/CategoryPicker.vue'
-import { DAY_NAMES, dayMonthLabel, today, weekdayIndex } from '@/lib/dates'
+import { useFmt } from '@/i18n/dates'
+import { today } from '@/lib/dates'
 import type { Task } from '@/types'
+
+const { t } = useI18n()
+const fmt = useFmt()
 
 const props = withDefaults(defineProps<{
   date: string
@@ -134,8 +139,8 @@ async function removeTask(task: Task) {
 const isToday = computed(() => props.date === today())
 // Add is allowed on today + future days only (past days have no add affordance).
 const canAdd = computed(() => props.date >= today())
-const dayName = computed(() => DAY_NAMES[weekdayIndex(props.date)])
-const dateLabel = computed(() => dayMonthLabel(props.date))
+const dayName = computed(() => fmt.dayName(props.date))
+const dateLabel = computed(() => fmt.dayMonthLabel(props.date))
 const doneCount = computed(() => props.tasks.filter(t => t.status === 'done').length)
 const allDone = computed(() => props.tasks.length > 0 && doneCount.value === props.tasks.length)
 

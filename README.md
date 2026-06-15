@@ -1,4 +1,4 @@
-# Tracker - Weekly Task Management PWA
+# Stride - Weekly Task Management PWA
 
 Vue 3 + Supabase aplikácia na spravovanie úloh s offline podporou (PWA).
 

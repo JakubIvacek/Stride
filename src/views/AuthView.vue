@@ -1,62 +1,63 @@
 <template>
   <div class="auth">
     <div class="auth-card">
+      <div class="auth-lang"><LanguageSwitch /></div>
+
       <div class="brand">
-        <span class="brand-mark"><i class="ti ti-square-rounded-check"></i></span>
-        <div class="brand-name">Tracker</div>
-        <div class="brand-sub">Týždenný prehľad úloh</div>
+        <img src="/stride_by_keno.svg" alt="Stride by Keno" class="brand-logo">
+        <div class="brand-sub">{{ t('auth.subtitle') }}</div>
       </div>
 
       <!-- RECOVERY: set a new password after clicking the reset link -->
       <template v-if="auth.recovery">
-        <div class="heading">Nastav nové heslo</div>
+        <div class="heading">{{ t('auth.setNewPassword') }}</div>
         <form @submit.prevent="submitNewPassword">
           <label class="field">
-            <span>Nové heslo</span>
+            <span>{{ t('auth.newPassword') }}</span>
             <div class="pw-wrap">
               <input v-model="password" :type="showPw ? 'text' : 'password'" autocomplete="new-password" required minlength="6" placeholder="••••••••">
-              <button type="button" class="pw-toggle" @click="showPw = !showPw"><i :class="showPw ? 'ti ti-eye-off' : 'ti ti-eye'"></i></button>
+              <button type="button" class="pw-toggle" @click="showPw = !showPw" :aria-label="showPw ? t('auth.hidePassword') : t('auth.showPassword')"><i :class="showPw ? 'ti ti-eye-off' : 'ti ti-eye'"></i></button>
             </div>
           </label>
           <label class="field">
-            <span>Potvrď heslo</span>
+            <span>{{ t('auth.confirmPassword') }}</span>
             <input v-model="password2" :type="showPw ? 'text' : 'password'" autocomplete="new-password" required minlength="6" placeholder="••••••••">
           </label>
           <p v-if="error" class="callout error"><i class="ti ti-alert-circle"></i><span>{{ error }}</span></p>
-          <button class="submit" type="submit" :disabled="loading">{{ loading ? 'Moment…' : 'Uložiť heslo' }}</button>
+          <button class="submit" type="submit" :disabled="loading">{{ loading ? t('auth.wait') : t('auth.savePassword') }}</button>
         </form>
       </template>
 
       <!-- RESET: request a reset link -->
       <template v-else-if="mode === 'reset'">
-        <div class="heading">Obnova hesla</div>
+        <div class="heading">{{ t('auth.resetTitle') }}</div>
         <form @submit.prevent="submitReset">
           <label class="field">
-            <span>Email</span>
-            <input v-model="email" type="email" autocomplete="email" required placeholder="ty@email.sk">
+            <span>{{ t('auth.email') }}</span>
+            <input v-model="email" type="email" autocomplete="email" required placeholder="you@email.com">
           </label>
           <p v-if="error" class="callout error"><i class="ti ti-alert-circle"></i><span>{{ error }}</span></p>
           <p v-if="info" class="callout info"><i class="ti ti-mail"></i><span>{{ info }}</span></p>
-          <button class="submit" type="submit" :disabled="loading">{{ loading ? 'Moment…' : 'Poslať odkaz' }}</button>
+          <button class="submit" type="submit" :disabled="loading">{{ loading ? t('auth.wait') : t('auth.sendLink') }}</button>
         </form>
-        <button class="link" @click="setMode('login')">← Späť na prihlásenie</button>
+        <button class="link" @click="setMode('login')">{{ t('auth.backToLogin') }}</button>
       </template>
 
       <!-- LOGIN / REGISTER -->
       <template v-else>
         <div class="seg">
-          <button :class="{ on: mode === 'login' }" @click="setMode('login')">Prihlásenie</button>
-          <button :class="{ on: mode === 'register' }" @click="setMode('register')">Registrácia</button>
+          <button :class="{ on: mode === 'login' }" @click="setMode('login')">{{ t('auth.login') }}</button>
+          <button :class="{ on: mode === 'register' }" @click="setMode('register')">{{ t('auth.register') }}</button>
         </div>
 
         <form @submit.prevent="submit">
           <label class="field">
-            <span>Email</span>
-            <input v-model="email" type="email" autocomplete="email" required placeholder="ty@email.sk">
+            <span>{{ t('auth.email') }}</span>
+            <input v-model="email" type="email" autocomplete="email" required placeholder="you@email.com">
           </label>
 
           <label class="field">
-            <span>Heslo</span>
+            <span>{{ t('auth.password') }}</span>
             <div class="pw-wrap">
               <input
                 v-model="password"
@@ -66,32 +67,32 @@
                 minlength="6"
                 placeholder="••••••••"
               >
-              <button type="button" class="pw-toggle" @click="showPw = !showPw" :aria-label="showPw ? 'Skryť heslo' : 'Zobraziť heslo'">
+              <button type="button" class="pw-toggle" @click="showPw = !showPw" :aria-label="showPw ? t('auth.hidePassword') : t('auth.showPassword')">
                 <i :class="showPw ? 'ti ti-eye-off' : 'ti ti-eye'"></i>
               </button>
             </div>
           </label>
 
           <label v-if="mode === 'register'" class="field">
-            <span>Potvrď heslo</span>
+            <span>{{ t('auth.confirmPassword') }}</span>
             <input v-model="password2" :type="showPw ? 'text' : 'password'" autocomplete="new-password" required minlength="6" placeholder="••••••••">
           </label>
 
-          <button v-if="mode === 'login'" type="button" class="link forgot" @click="setMode('reset')">Zabudol si heslo?</button>
+          <button v-if="mode === 'login'" type="button" class="link forgot" @click="setMode('reset')">{{ t('auth.forgot') }}</button>
 
           <p v-if="error" class="callout error"><i class="ti ti-alert-circle"></i><span>{{ error }}</span></p>
           <p v-if="info" class="callout info"><i class="ti ti-mail"></i><span>{{ info }}</span></p>
 
           <button class="submit" type="submit" :disabled="loading">
-            {{ loading ? 'Moment…' : (mode === 'login' ? 'Prihlásiť sa' : 'Zaregistrovať sa') }}
+            {{ loading ? t('auth.wait') : (mode === 'login' ? t('auth.signIn') : t('auth.signUp')) }}
           </button>
         </form>
 
-        <div class="divider"><span>alebo</span></div>
+        <div class="divider"><span>{{ t('auth.or') }}</span></div>
 
         <button class="google" type="button" @click="auth.signInWithGoogle()">
           <i class="ti ti-brand-google"></i>
-          Pokračovať cez Google
+          {{ t('auth.google') }}
         </button>
       </template>
     </div>
@@ -100,8 +101,11 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth'
+import LanguageSwitch from '@/components/LanguageSwitch.vue'
 
+const { t } = useI18n()
 const auth = useAuthStore()
 
 const mode = ref<'login' | 'register' | 'reset'>('login')
@@ -123,7 +127,7 @@ async function submit() {
   error.value = ''
   info.value = ''
   if (mode.value === 'register' && password.value !== password2.value) {
-    error.value = 'Heslá sa nezhodujú.'
+    error.value = t('auth.passwordsDiffer')
     return
   }
   loading.value = true
@@ -133,7 +137,7 @@ async function submit() {
     } else {
       const loggedIn = await auth.signUp(email.value.trim(), password.value)
       if (!loggedIn) {
-        info.value = 'Poslali sme ti potvrdzovací email. Klikni na odkaz v ňom — prihlási ťa automaticky. Ak nie, vráť sa sem a prihlás sa.'
+        info.value = t('auth.confirmSent')
         mode.value = 'login'
         password2.value = ''
       }
@@ -151,7 +155,7 @@ async function submitReset() {
   loading.value = true
   try {
     await auth.resetPassword(email.value.trim())
-    info.value = 'Poslali sme ti email s odkazom na obnovu hesla.'
+    info.value = t('auth.resetSent')
   } catch (e) {
     error.value = translate((e as Error).message)
   } finally {
@@ -162,13 +166,12 @@ async function submitReset() {
 async function submitNewPassword() {
   error.value = ''
   if (password.value !== password2.value) {
-    error.value = 'Heslá sa nezhodujú.'
+    error.value = t('auth.passwordsDiffer')
     return
   }
   loading.value = true
   try {
     await auth.updatePassword(password.value)
-    // recovery flips off → app renders automatically
   } catch (e) {
     error.value = translate((e as Error).message)
   } finally {
@@ -178,11 +181,11 @@ async function submitNewPassword() {
 
 function translate(msg: string): string {
   const m = msg.toLowerCase()
-  if (m.includes('invalid login')) return 'Nesprávny email alebo heslo.'
-  if (m.includes('already registered') || m.includes('already exists')) return 'Tento email je už zaregistrovaný.'
-  if (m.includes('password')) return 'Heslo musí mať aspoň 6 znakov.'
-  if (m.includes('provider is not enabled')) return 'Google prihlásenie nie je v Supabase zapnuté.'
-  if (m.includes('email')) return 'Zadaj platný email.'
+  if (m.includes('invalid login')) return t('auth.errInvalid')
+  if (m.includes('already registered') || m.includes('already exists')) return t('auth.errExists')
+  if (m.includes('password')) return t('auth.errPassword')
+  if (m.includes('provider is not enabled')) return t('auth.errGoogle')
+  if (m.includes('email')) return t('auth.errEmail')
   return msg
 }
 </script>
@@ -202,19 +205,16 @@ function translate(msg: string): string {
   background: var(--color-background-primary);
   border: 0.5px solid var(--color-border-tertiary);
   border-radius: 18px;
-  padding: 28px 22px 24px;
+  padding: 16px 22px 24px;
 }
+.auth-lang { display: flex; justify-content: flex-end; margin-bottom: 4px; }
 
 .brand { text-align: center; margin-bottom: 22px; }
-.brand-mark {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 52px; height: 52px; border-radius: 14px;
-  background: var(--color-background-info); color: var(--color-text-info);
-  margin-bottom: 12px;
-}
-.brand-mark i { font-size: 28px; }
-.brand-name { font-size: 22px; font-weight: 500; }
+.brand-logo { width: 230px; height: auto; margin: 0 auto 8px; display: block; }
 .brand-sub { font-size: 13px; color: var(--color-text-secondary); margin-top: 2px; }
+@media (prefers-color-scheme: dark) {
+  .brand-logo { filter: invert(1) hue-rotate(180deg); }
+}
 
 .heading { font-size: 17px; font-weight: 500; margin-bottom: 16px; text-align: center; }
 

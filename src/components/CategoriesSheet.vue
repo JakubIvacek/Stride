@@ -4,8 +4,8 @@
       <div class="sheet">
         <div class="sheet-grip"></div>
         <div class="sheet-head">
-          <div class="sheet-title">Kategórie</div>
-          <button class="icon-btn" @click="close" aria-label="Zavrieť"><i class="ti ti-x"></i></button>
+          <div class="sheet-title">{{ t('cat.title') }}</div>
+          <button class="icon-btn" @click="close" :aria-label="t('cat.closeAria')"><i class="ti ti-x"></i></button>
         </div>
 
         <div class="list">
@@ -15,14 +15,14 @@
                 class="swatch"
                 :style="{ background: c.color }"
                 @click="editing = editing === c.id ? null : c.id"
-                aria-label="Zmeniť farbu"
+                :aria-label="t('cat.colorAria')"
               ></button>
               <input
                 class="cat-name"
                 :value="c.name"
                 @change="rename(c, ($event.target as HTMLInputElement).value)"
               >
-              <button class="trash" @click="store.deleteCategory(c.id)" aria-label="Vymazať">
+              <button class="trash" @click="store.deleteCategory(c.id)" :aria-label="t('cat.deleteAria')">
                 <i class="ti ti-trash"></i>
               </button>
             </div>
@@ -38,7 +38,7 @@
             </div>
           </div>
 
-          <p v-if="!store.categories.length" class="empty">Zatiaľ žiadne kategórie.</p>
+          <p v-if="!store.categories.length" class="empty">{{ t('cat.empty') }}</p>
         </div>
 
         <!-- new category -->
@@ -48,10 +48,10 @@
             <input
               v-model="newName"
               class="cat-name"
-              placeholder="Nová kategória"
+              :placeholder="t('cat.newCategory')"
               @keyup.enter="add"
             >
-            <button class="add-btn" :disabled="!newName.trim()" @click="add">Pridať</button>
+            <button class="add-btn" :disabled="!newName.trim()" @click="add">{{ t('cat.add') }}</button>
           </div>
           <div class="palette">
             <button
@@ -71,9 +71,12 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useCategoriesStore } from '@/stores/categories'
 import { PALETTE } from '@/lib/colors'
 import type { Category } from '@/types'
+
+const { t } = useI18n()
 
 defineProps<{ modelValue: boolean }>()
 const emit = defineEmits<{ 'update:modelValue': [boolean] }>()

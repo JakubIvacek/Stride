@@ -1,6 +1,6 @@
 <template>
   <div class="picker" ref="pickerEl" @wheel="onWheel">
-    <button type="button" class="chip" :class="{ on: modelValue === null }" @click="select(null)">Žiadna</button>
+    <button type="button" class="chip" :class="{ on: modelValue === null }" @click="select(null)">{{ t('cat.none') }}</button>
 
     <button
       v-for="c in store.categories"
@@ -18,22 +18,25 @@
         ref="inputEl"
         v-model="name"
         class="new-input"
-        placeholder="Názov kategórie"
+        :placeholder="t('cat.name')"
         @keyup.enter="create"
         @keyup.esc="creating = false"
       >
       <button type="button" class="new-ok" @click="create"><i class="ti ti-check"></i></button>
     </template>
     <button v-else type="button" class="chip new" @click="startAdd">
-      <i class="ti ti-plus"></i>Nová
+      <i class="ti ti-plus"></i>{{ t('cat.new') }}
     </button>
   </div>
 </template>
 
 <script setup lang="ts">
 import { nextTick, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useCategoriesStore } from '@/stores/categories'
 import { PALETTE } from '@/lib/colors'
+
+const { t } = useI18n()
 
 defineProps<{ modelValue: string | null }>()
 const emit = defineEmits<{ 'update:modelValue': [string | null] }>()

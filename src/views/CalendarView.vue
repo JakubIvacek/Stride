@@ -4,23 +4,23 @@
     <header class="head">
       <div class="title">
         <template v-if="mode === 'month'">
-          {{ MONTH_NAMES[anchor.month] }} <span class="year">{{ anchor.year }}</span>
+          {{ fmt.monthName(anchor.month) }} <span class="year">{{ anchor.year }}</span>
         </template>
         <template v-else>{{ yearAnchor }}</template>
       </div>
       <div class="actions">
         <div class="seg">
-          <button :class="{ on: mode === 'month' }" @click="setMode('month')">Mesiac</button>
-          <button :class="{ on: mode === 'year' }" @click="setMode('year')">Rok</button>
+          <button :class="{ on: mode === 'month' }" @click="setMode('month')">{{ t('cal.month') }}</button>
+          <button :class="{ on: mode === 'year' }" @click="setMode('year')">{{ t('cal.year') }}</button>
         </div>
-        <button class="today-btn" @click="goToday">Dnes</button>
+        <button class="today-btn" @click="goToday">{{ t('cal.today') }}</button>
       </div>
     </header>
 
     <!-- MONTH MODE -->
     <template v-if="mode === 'month'">
       <div class="calm-wd">
-        <span v-for="w in WEEKDAY_SHORT" :key="w">{{ w }}</span>
+        <span v-for="(w, i) in fmt.weekdayShort()" :key="i">{{ w }}</span>
       </div>
       <div ref="scroller" class="scroll">
         <section
@@ -29,7 +29,7 @@
           :ref="el => registerMonth(m.key, el)"
           class="month"
         >
-          <div class="month-label" :class="{ cur: m.isCurrent }">{{ MONTH_NAMES[m.month] }} {{ m.year }}</div>
+          <div class="month-label" :class="{ cur: m.isCurrent }">{{ fmt.monthName(m.month) }} {{ m.year }}</div>
           <div class="calm-grid">
             <div v-for="(cell, i) in m.cells" :key="i" class="calm-cell-wrap">
               <button v-if="cell" class="calm-cell" @click="openDay(cell.date)">
@@ -53,7 +53,7 @@
         <div class="yr2">
           <div v-for="(mo, mi) in 12" :key="mi">
             <button class="yr2-lab" :class="{ cur: y === todayY && mi === todayM }" @click="openMonth(y, mi)">
-              {{ MONTH_NAMES[mi] }}
+              {{ fmt.monthName(mi) }}
             </button>
             <div class="yr2-g">
               <div v-for="(cell, i) in yearCells(y, mi)" :key="i" class="yr2-c">
@@ -86,11 +86,15 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import DayList from '@/components/DayList.vue'
 import { useTasksStore } from '@/stores/tasks'
-import { MONTH_NAMES, WEEKDAY_SHORT, parseYmd, today, ymd } from '@/lib/dates'
+import { useFmt } from '@/i18n/dates'
+import { parseYmd, today, ymd } from '@/lib/dates'
 import { STATUS_COLOR, dayStatus, type DayStatus } from '@/lib/status'
 
+const { t } = useI18n()
+const fmt = useFmt()
 const tasksStore = useTasksStore()
 
 const mode = ref<'month' | 'year'>('month')
@@ -153,10 +157,7 @@ function registerMonth(key: string, el: unknown) {
 
 const sheetTasks = computed(() =>
   sheetDate.value ? tasksStore.tasks.filter(t => t.task_date === sheetDate.value) : [])
-const sheetTitle = computed(() => {
-  if (!sheetDate.value) return ''
-  return parseYmd(sheetDate.value).toLocaleDateString('sk-SK', { weekday: 'long', day: 'numeric', month: 'long' })
-})
+const sheetTitle = computed(() => (sheetDate.value ? fmt.fullDate(sheetDate.value) : ''))
 
 function openDay(date: string) { sheetDate.value = date }
 function setMode(m: 'month' | 'year') { mode.value = m }

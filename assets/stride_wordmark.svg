@@ -1,0 +1,9 @@
+<svg width="1200" height="560" viewBox="0 0 1200 560" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g>
+    <rect x="362" y="103" width="476" height="58" rx="29" fill="#111820"/>
+    <rect x="362" y="202" width="414" height="58" rx="29" fill="#6F757B"/>
+    <rect x="362" y="301" width="328" height="58" rx="29" fill="#C7CACD"/>
+    <circle cx="808" cy="330" r="25" fill="#FF2D20"/>
+  </g>
+  <text x="600" y="500" text-anchor="middle" font-family="Inter, SF Pro Display, Helvetica Neue, Arial, sans-serif" font-size="108" font-weight="650" letter-spacing="-4" fill="#0F141A">Stride</text>
+</svg>

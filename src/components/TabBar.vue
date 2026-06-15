@@ -2,20 +2,23 @@
   <nav class="tab-bar">
     <RouterLink to="/" class="tab" :class="{ active: $route.path === '/' }">
       <i class="ti ti-home"></i>
-      <span>Domov</span>
+      <span>{{ t('tab.home') }}</span>
     </RouterLink>
     <RouterLink to="/calendar" class="tab" :class="{ active: $route.path === '/calendar' }">
       <i class="ti ti-calendar"></i>
-      <span>Kalendár</span>
+      <span>{{ t('tab.calendar') }}</span>
     </RouterLink>
     <RouterLink to="/stats" class="tab" :class="{ active: $route.path === '/stats' }">
       <i class="ti ti-chart-bar"></i>
-      <span>Štatistiky</span>
+      <span>{{ t('tab.stats') }}</span>
     </RouterLink>
   </nav>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+</script>
 
 <style scoped>
 .tab-bar {

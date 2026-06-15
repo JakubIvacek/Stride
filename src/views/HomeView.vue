@@ -4,19 +4,21 @@
     <div class="strip" :class="{ show: collapsed }">
       <span class="strip-title">{{ weekTitle }} · <span class="green">{{ doneCount }}</span>/{{ totalCount }}</span>
       <div class="strip-nav">
-        <button class="icon-btn" @click="shiftWeek(-1)" aria-label="Predošlý týždeň"><i class="ti ti-chevron-left"></i></button>
-        <button class="icon-btn" @click="shiftWeek(1)" aria-label="Ďalší týždeň"><i class="ti ti-chevron-right"></i></button>
+        <button class="icon-btn" @click="shiftWeek(-1)" :aria-label="t('home.prevWeekAria')"><i class="ti ti-chevron-left"></i></button>
+        <button class="icon-btn" @click="shiftWeek(1)" :aria-label="t('home.nextWeekAria')"><i class="ti ti-chevron-right"></i></button>
       </div>
       <div class="strip-progress"><div :style="{ width: progressPercent + '%' }"></div></div>
     </div>
 
-    <!-- logo / app name slot -->
+    <!-- logo -->
     <div class="brand">
-      <span class="brand-mark"><i class="ti ti-square-rounded"></i></span>
-      <span class="brand-text">tvoj názov / logo</span>
-      <button v-if="auth.session" class="signout" @click="auth.signOut()" aria-label="Odhlásiť sa">
-        <i class="ti ti-logout"></i>
-      </button>
+      <img src="/stride_icon.svg" alt="Stride" class="brand-logo">
+      <div class="brand-actions">
+        <LanguageSwitch />
+        <button v-if="auth.session" class="signout" @click="auth.signOut()" :aria-label="t('home.signOutAria')">
+          <i class="ti ti-logout"></i>
+        </button>
+      </div>
     </div>
 
     <!-- title + week nav -->
@@ -26,16 +28,16 @@
         <div class="range">{{ rangeLabel }}</div>
       </div>
       <div class="wk-nav">
-        <button class="icon-btn" @click="shiftWeek(-1)" aria-label="Predošlý týždeň"><i class="ti ti-chevron-left"></i></button>
-        <button class="icon-btn" @click="shiftWeek(1)" aria-label="Ďalší týždeň"><i class="ti ti-chevron-right"></i></button>
-        <button class="icon-btn accent" @click="quickAdd" aria-label="Pridať položku"><i class="ti ti-plus"></i></button>
+        <button class="icon-btn" @click="shiftWeek(-1)" :aria-label="t('home.prevWeekAria')"><i class="ti ti-chevron-left"></i></button>
+        <button class="icon-btn" @click="shiftWeek(1)" :aria-label="t('home.nextWeekAria')"><i class="ti ti-chevron-right"></i></button>
+        <button class="icon-btn accent" @click="quickAdd" :aria-label="t('home.addItemAria')"><i class="ti ti-plus"></i></button>
       </div>
     </header>
 
     <!-- week progress -->
     <section class="wk-progress">
       <div class="progress-head">
-        <span class="progress-label">Hotové tento týždeň</span>
+        <span class="progress-label">{{ t('home.doneThisWeek') }}</span>
         <span class="progress-num"><span class="green">{{ doneCount }}</span> / {{ totalCount }}</span>
       </div>
       <div class="progress-track">
@@ -53,14 +55,14 @@
             <div class="bar-done" :style="{ height: barDonePx(day) + 'px' }"></div>
           </div>
         </div>
-        <span class="chart-label" :class="{ red: day.isToday }">{{ letters[day.idx] }}</span>
+        <span class="chart-label" :class="{ red: day.isToday }">{{ fmt.dayLetters()[day.idx] }}</span>
       </div>
     </section>
 
     <!-- category filter -->
     <section v-if="categoriesStore.categories.length" class="filters">
       <div class="chips" ref="chipsEl" @wheel="onChipsWheel">
-        <button class="chip" :class="{ on: selectedCat === null }" @click="selectedCat = null">Všetky</button>
+        <button class="chip" :class="{ on: selectedCat === null }" @click="selectedCat = null">{{ t('cat.all') }}</button>
         <button
           v-for="c in categoriesStore.categories"
           :key="c.id"
@@ -71,7 +73,7 @@
           <span class="cat-dot" :style="{ background: c.color }"></span>{{ c.name }}
         </button>
       </div>
-      <button class="manage" @click="catSheet = true" aria-label="Spravovať kategórie"><i class="ti ti-adjustments-horizontal"></i></button>
+      <button class="manage" @click="catSheet = true" :aria-label="t('cat.manage')"><i class="ti ti-adjustments-horizontal"></i></button>
     </section>
 
     <!-- agenda Po → Ne -->
@@ -91,14 +93,14 @@
             @click="expandDay(day.date)"
           >
             <div class="day-title">
-              <span class="day-name">{{ names[day.idx] }}</span>
+              <span class="day-name">{{ fmt.dayName(day.date) }}</span>
               <span class="day-date">{{ day.label }}</span>
             </div>
-            <span class="add-hint"><i class="ti ti-plus"></i>Pridať</span>
+            <span class="add-hint"><i class="ti ti-plus"></i>{{ t('home.add') }}</span>
           </button>
           <div v-else class="compact past">
             <div class="day-title">
-              <span class="day-name muted">{{ names[day.idx] }}</span>
+              <span class="day-name muted">{{ fmt.dayName(day.date) }}</span>
               <span class="day-date">{{ day.label }}</span>
             </div>
           </div>
@@ -112,20 +114,21 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import DayList from '@/components/DayList.vue'
 import CategoriesSheet from '@/components/CategoriesSheet.vue'
+import LanguageSwitch from '@/components/LanguageSwitch.vue'
 import { useTasksStore } from '@/stores/tasks'
 import { useCategoriesStore } from '@/stores/categories'
 import { useAuthStore } from '@/stores/auth'
-import {
-  DAY_LETTERS, DAY_NAMES, addDays, dayMonthLabel, getMonday, today, weekRangeLabel,
-} from '@/lib/dates'
+import { useFmt } from '@/i18n/dates'
+import { addDays, getMonday, today } from '@/lib/dates'
 
+const { t } = useI18n()
+const fmt = useFmt()
 const tasksStore = useTasksStore()
 const categoriesStore = useCategoriesStore()
 const auth = useAuthStore()
-const names = DAY_NAMES
-const letters = DAY_LETTERS
 
 const monday = ref(getMonday(new Date()))
 const expanded = ref<Set<string>>(new Set())
@@ -133,11 +136,11 @@ const selectedCat = ref<string | null>(null)
 const catSheet = ref(false)
 const dayRefs = new Map<string, InstanceType<typeof DayList>>()
 
-const rangeLabel = computed(() => weekRangeLabel(monday.value))
+const rangeLabel = computed(() => fmt.weekRange(monday.value))
 const weekTitle = computed(() => {
   const cur = getMonday(new Date())
-  if (monday.value === cur) return 'Tento týždeň'
-  return monday.value < cur ? 'Minulý týždeň' : 'Budúci týždeň'
+  if (monday.value === cur) return t('home.thisWeek')
+  return monday.value < cur ? t('home.lastWeek') : t('home.nextWeek')
 })
 
 // tasks for the current category filter
@@ -156,7 +159,7 @@ const weekDays = computed(() => {
     const full = tasks.length > 0 || isToday || expanded.value.has(date)
     return {
       idx: i, date, tasks, isToday, isFuture,
-      label: dayMonthLabel(date),
+      label: fmt.dayMonthLabel(date),
       total: tasks.length,
       done: tasks.filter(task => task.status === 'done').length,
       full,
@@ -263,19 +266,16 @@ onBeforeUnmount(() => scroller?.removeEventListener('scroll', onScroll))
 .strip-progress > div { height: 100%; background: var(--color-text-success); }
 
 .brand { padding: 14px 18px 2px; display: flex; align-items: center; gap: 8px; }
+.brand-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
 .signout {
-  margin-left: auto; border: none; background: none; cursor: pointer;
+  border: none; background: none; cursor: pointer;
   color: var(--color-text-tertiary); font-size: 18px; padding: 2px 4px;
   display: flex; align-items: center;
 }
-.brand-mark {
-  width: 24px; height: 24px; border-radius: 7px;
-  border: 1px dashed var(--color-border-secondary);
-  display: flex; align-items: center; justify-content: center;
-  color: var(--color-text-tertiary);
+.brand-logo { height: 26px; width: auto; }
+@media (prefers-color-scheme: dark) {
+  .brand-logo { filter: invert(1) hue-rotate(180deg); }
 }
-.brand-mark i { font-size: 13px; }
-.brand-text { font-size: 12px; color: var(--color-text-tertiary); letter-spacing: 0.3px; }
 
 .head { padding: 6px 18px 10px; display: flex; align-items: flex-start; justify-content: space-between; }
 .title { font-size: 22px; font-weight: 500; line-height: 1.1; }

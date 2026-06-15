@@ -1,10 +1,13 @@
 <template>
   <div class="stats">
     <div class="top">
-      <div class="title">Štatistiky</div>
+      <div class="title-row">
+        <div class="title">{{ t('stats.title') }}</div>
+        <LanguageSwitch />
+      </div>
       <div class="seg">
-        <button v-for="p in periods" :key="p.id" :class="{ on: period === p.id }" @click="period = p.id">
-          {{ p.label }}
+        <button v-for="p in periods" :key="p" :class="{ on: period === p }" @click="period = p">
+          {{ t('stats.' + p) }}
         </button>
       </div>
     </div>
@@ -12,20 +15,20 @@
     <!-- metric cards -->
     <div class="metrics">
       <div class="metric">
-        <div class="metric-label">Hotové · {{ periodLabel }}</div>
+        <div class="metric-label">{{ t('stats.doneIn', { label: periodLabel }) }}</div>
         <div class="metric-value">{{ periodDone }}</div>
       </div>
       <div class="metric">
-        <div class="metric-label">Completion</div>
+        <div class="metric-label">{{ t('stats.completion') }}</div>
         <div class="metric-value green">{{ completion }} %</div>
       </div>
       <div class="metric">
-        <div class="metric-label">Aktuálny streak</div>
-        <div class="metric-value flame"><i class="ti ti-flame"></i>{{ currentStreak }} dní</div>
+        <div class="metric-label">{{ t('stats.currentStreak') }}</div>
+        <div class="metric-value flame"><i class="ti ti-flame"></i>{{ t('stats.days', { n: currentStreak }) }}</div>
       </div>
       <div class="metric">
-        <div class="metric-label">Najdlhší streak</div>
-        <div class="metric-value">{{ longestStreak }} dní</div>
+        <div class="metric-label">{{ t('stats.longestStreak') }}</div>
+        <div class="metric-value">{{ t('stats.days', { n: longestStreak }) }}</div>
       </div>
     </div>
 
@@ -35,14 +38,14 @@
       <div class="chart-wrap">
         <Bar :data="chartData" :options="chartOptions" />
       </div>
-      <div class="insight">Najsilnejší deň v týždni: <span>{{ strongestDay }}</span></div>
+      <div class="insight">{{ t('stats.strongestDay', { day: strongestDay }) }}</div>
     </section>
 
     <!-- category breakdown -->
     <section class="block bordered">
       <div class="block-head">
-        <span class="block-title">Podľa kategórie</span>
-        <button class="manage-link" @click="catSheet = true">Spravovať</button>
+        <span class="block-title">{{ t('stats.byCategory') }}</span>
+        <button class="manage-link" @click="catSheet = true">{{ t('stats.manage') }}</button>
       </div>
       <template v-if="catBreakdown.length">
         <div v-for="c in catBreakdown" :key="c.name" class="cat-row">
@@ -51,7 +54,7 @@
           <span class="cat-val">{{ c.val }}</span>
         </div>
       </template>
-      <p v-else class="block-note">Žiadne hotové úlohy s kategóriou v tomto období.</p>
+      <p v-else class="block-note">{{ t('stats.noneDone') }}</p>
     </section>
 
     <CategoriesSheet v-model="catSheet" />
@@ -64,27 +67,24 @@ import { Bar } from 'vue-chartjs'
 import {
   Chart, BarElement, CategoryScale, LinearScale, Tooltip,
 } from 'chart.js'
+import { useI18n } from 'vue-i18n'
 import { useTasksStore } from '@/stores/tasks'
 import { useCategoriesStore } from '@/stores/categories'
 import CategoriesSheet from '@/components/CategoriesSheet.vue'
-import {
-  DAY_LETTERS, DAY_NAMES, addDays, getMonday, parseYmd, today, weekdayIndex, ymd,
-} from '@/lib/dates'
-
-const MONTHS_SHORT = ['jan', 'feb', 'mar', 'apr', 'máj', 'jún', 'júl', 'aug', 'sep', 'okt', 'nov', 'dec']
+import LanguageSwitch from '@/components/LanguageSwitch.vue'
+import { useFmt } from '@/i18n/dates'
+import { addDays, getMonday, parseYmd, today, weekdayIndex, ymd } from '@/lib/dates'
 
 Chart.register(BarElement, CategoryScale, LinearScale, Tooltip)
 
+const { t } = useI18n()
+const fmt = useFmt()
 const tasksStore = useTasksStore()
 const categoriesStore = useCategoriesStore()
 const todayStr = today()
 const catSheet = ref(false)
 
-const periods = [
-  { id: 'week', label: 'Týždeň' },
-  { id: 'month', label: 'Mesiac' },
-  { id: 'year', label: 'Rok' },
-] as const
+const periods = ['week', 'month', 'year'] as const
 const period = ref<'week' | 'month' | 'year'>('month')
 
 function cssVar(name: string) {
@@ -105,10 +105,9 @@ const periodRange = computed(() => {
 })
 
 const periodLabel = computed(() => {
-  const months = ['január', 'február', 'marec', 'apríl', 'máj', 'jún', 'júl', 'august', 'september', 'október', 'november', 'december']
   const d = parseYmd(todayStr)
-  if (period.value === 'week') return 'tento týždeň'
-  if (period.value === 'month') return months[d.getMonth()]
+  if (period.value === 'week') return t('stats.thisWeek')
+  if (period.value === 'month') return fmt.monthName(d.getMonth())
   return String(d.getFullYear())
 })
 
@@ -159,9 +158,9 @@ const longestStreak = computed(() => {
 
 // --- chart adapts to the selected period ---
 const chartTitle = computed(() =>
-  period.value === 'week' ? 'Hotové po dňoch'
-    : period.value === 'month' ? 'Hotové po týždňoch'
-      : 'Hotové po mesiacoch')
+  period.value === 'week' ? t('stats.byDay')
+    : period.value === 'month' ? t('stats.byWeek')
+      : t('stats.byMonth'))
 
 function doneBetween(from: string, to: string) {
   return tasksStore.tasks.filter(t => t.status === 'done' && t.task_date >= from && t.task_date <= to).length
@@ -172,9 +171,10 @@ const buckets = computed(() => {
   if (period.value === 'week') {
     // current week, day by day (Po–Ne)
     const mon = getMonday(todayStr)
+    const letters = fmt.dayLetters()
     for (let i = 0; i < 7; i++) {
       const d = addDays(mon, i)
-      list.push({ label: DAY_LETTERS[i], done: doneBetween(d, d), isCurrent: d === todayStr })
+      list.push({ label: letters[i], done: doneBetween(d, d), isCurrent: d === todayStr })
     }
   } else if (period.value === 'month') {
     // last 6 weeks
@@ -191,7 +191,7 @@ const buckets = computed(() => {
     for (let m = 0; m < 12; m++) {
       const from = ymd(new Date(y, m, 1))
       const to = ymd(new Date(y, m + 1, 0))
-      list.push({ label: MONTHS_SHORT[m], done: doneBetween(from, to), isCurrent: m === curM })
+      list.push({ label: fmt.monthShort(m), done: doneBetween(from, to), isCurrent: m === curM })
     }
   }
   return list
@@ -234,12 +234,12 @@ const chartOptions = computed(() => {
 
 const strongestDay = computed(() => {
   const counts = new Array(7).fill(0)
-  for (const t of tasksStore.tasks) {
-    if (t.status === 'done') counts[weekdayIndex(t.task_date)]++
+  for (const task of tasksStore.tasks) {
+    if (task.status === 'done') counts[weekdayIndex(task.task_date)]++
   }
   const max = Math.max(...counts)
   if (max === 0) return '—'
-  return DAY_NAMES[counts.indexOf(max)]
+  return fmt.dayName(addDays(getMonday(todayStr), counts.indexOf(max)))
 })
 
 // done tasks per category within the selected period (incl. "Bez kategórie"), sorted desc
@@ -253,10 +253,10 @@ const catBreakdown = computed(() => {
   }
   const rows = [...counts.entries()].map(([id, val]) => {
     if (id === NO_CAT) {
-      return { name: 'Bez kategórie', color: 'var(--color-text-tertiary)', val }
+      return { name: t('stats.noCategory'), color: 'var(--color-text-tertiary)', val }
     }
     return {
-      name: categoriesStore.byId.get(id)?.name ?? 'Zmazaná',
+      name: categoriesStore.byId.get(id)?.name ?? t('stats.deletedCategory'),
       color: categoriesStore.byId.get(id)?.color ?? 'var(--color-text-info)',
       val,
     }
@@ -275,7 +275,8 @@ onMounted(async () => {
 <style scoped>
 .stats { padding-bottom: 16px; }
 .top { padding: 16px 18px 12px; }
-.title { font-size: 24px; font-weight: 500; margin-bottom: 12px; }
+.title-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.title { font-size: 24px; font-weight: 500; }
 .seg { display: flex; background: var(--color-background-tertiary); border-radius: 10px; padding: 3px; }
 .seg button {
   flex: 1; border: none; background: none; cursor: pointer;

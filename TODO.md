@@ -3,9 +3,6 @@
 Zoznam ďalších vecí na dorobenie. Zhruba zoradené podľa priority.
 
 ## Funkcie
-- [ ] **Viacjazyčnosť (i18n)** — prepínanie jazyka, **predvolene Angličtina** (potom SK a ďalšie).
-  - Pridať `vue-i18n`, vytiahnuť všetky texty (dni, mesiace, labely, hlášky) do prekladových súborov `en` / `sk`.
-  - Prepínač jazyka v nastaveniach + uloženie voľby (localStorage).
 - [ ] **Prehadzovanie poradia taskov** (drag & drop v rámci dňa).
   - Vyžaduje nový stĺpec `position int` v tabuľke `tasks` (Supabase) + radenie podľa neho.
 - [ ] **Poznámka k úlohe** — pole `note` v DB už existuje, len doplniť do UI (úprava úlohy).
@@ -26,6 +23,7 @@ Zoznam ďalších vecí na dorobenie. Zhruba zoradené podľa priority.
 - [ ] Zvážiť vypnutie „Confirm email" alebo nastaviť vlastné SMTP.
 
 ## Hotovo
+- [x] Viacjazyčnosť (i18n) — `vue-i18n`, prepínač EN/SK, predvolene Angličtina, lokalizované dátumy, voľba uložená v localStorage.
 - [x] Apple-clean redesign (Domov, Kalendár, Štatistiky, TabBar).
 - [x] Kalendár — mesiac + rok + day-detail sheet.
 - [x] Štatistiky — metriky, streaky, graf podľa obdobia (deň/týždeň/mesiac), rozpad podľa kategórie vrátane „Bez kategórie".
