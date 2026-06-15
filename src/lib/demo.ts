@@ -1,10 +1,17 @@
-import type { Task } from '@/types'
+import type { Category, Task } from '@/types'
 import { parseYmd, today, weekdayIndex } from '@/lib/dates'
 
 // Demo mode lets the app render realistic data during `npm run dev` without a
 // Google login. Production builds (`npm run build`) use real Supabase data.
 // Set VITE_DEMO=false to use live data in dev.
 export const isDemo = import.meta.env.DEV && import.meta.env.VITE_DEMO !== 'false'
+
+export const DEMO_CATEGORIES: Category[] = [
+  { id: 'demo-cat-1', name: 'Thesis', color: '#007aff' },
+  { id: 'demo-cat-2', name: 'Práca', color: '#ff9500' },
+  { id: 'demo-cat-3', name: 'Gym', color: '#34c759' },
+  { id: 'demo-cat-4', name: 'Iné', color: '#af52de' },
+]
 
 const TITLES = [
   'Tréning nohy', 'Prečítať 20 strán', 'Zaliať kvety', 'Nákup', 'Meeting Homoliak',
@@ -42,12 +49,15 @@ function tasksForDate(dateStr: string, todayStr: string): Task[] {
     } else if (dateStr === todayStr) {
       status = hi % 3 === 0 ? 'done' : 'todo' // partial today
     }
+    // ~4 of every 6 tasks get a category, the rest stay uncategorised
+    const catPick = hash(dateStr + ':cat:' + i) % 6
+    const category_id = catPick < DEMO_CATEGORIES.length ? DEMO_CATEGORIES[catPick].id : null
     out.push({
       id: `demo-${dateStr}-${i}`,
       title: TITLES[(hi >>> 2) % TITLES.length],
       task_date: dateStr,
       status,
-      category_id: null,
+      category_id,
       note: null,
       created_at: dateStr + 'T08:00:00.000Z',
       completed_at: status === 'done' ? dateStr + 'T18:00:00.000Z' : null,

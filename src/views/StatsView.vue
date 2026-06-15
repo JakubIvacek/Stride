@@ -38,18 +38,23 @@
       <div class="insight">Najsilnejší deň v týždni: <span>{{ strongestDay }}</span></div>
     </section>
 
-    <!-- category breakdown (placeholder until categories are enabled) -->
+    <!-- category breakdown -->
     <section class="block bordered">
       <div class="block-head">
         <span class="block-title">Podľa kategórie</span>
-        <span class="block-note">aktívne s kategóriami</span>
+        <button class="manage-link" @click="catSheet = true">Spravovať</button>
       </div>
-      <div v-for="c in categories" :key="c.name" class="cat-row">
-        <span class="cat-name">{{ c.name }}</span>
-        <div class="cat-track"><div class="cat-fill" :style="{ width: c.pct + '%' }"></div></div>
-        <span class="cat-val">{{ c.val }}</span>
-      </div>
+      <template v-if="catBreakdown.length">
+        <div v-for="c in catBreakdown" :key="c.name" class="cat-row">
+          <span class="cat-name">{{ c.name }}</span>
+          <div class="cat-track"><div class="cat-fill" :style="{ width: c.pct + '%', background: c.color }"></div></div>
+          <span class="cat-val">{{ c.val }}</span>
+        </div>
+      </template>
+      <p v-else class="block-note">Žiadne hotové úlohy s kategóriou v tomto období.</p>
     </section>
+
+    <CategoriesSheet v-model="catSheet" />
   </div>
 </template>
 
@@ -60,6 +65,8 @@ import {
   Chart, BarElement, CategoryScale, LinearScale, Tooltip,
 } from 'chart.js'
 import { useTasksStore } from '@/stores/tasks'
+import { useCategoriesStore } from '@/stores/categories'
+import CategoriesSheet from '@/components/CategoriesSheet.vue'
 import {
   DAY_NAMES, addDays, getMonday, isoWeekKey, parseYmd, today, weekdayIndex, ymd,
 } from '@/lib/dates'
@@ -67,7 +74,9 @@ import {
 Chart.register(BarElement, CategoryScale, LinearScale, Tooltip)
 
 const tasksStore = useTasksStore()
+const categoriesStore = useCategoriesStore()
 const todayStr = today()
+const catSheet = ref(false)
 
 const periods = [
   { id: 'week', label: 'Týždeň' },
@@ -207,13 +216,28 @@ const strongestDay = computed(() => {
   return DAY_NAMES[counts.indexOf(max)]
 })
 
-// placeholder category data (neutral blue) until categories are enabled
-const categories = [
-  { name: 'Thesis', val: 18, pct: 100 },
-  { name: 'Práca', val: 14, pct: 78 },
-  { name: 'Gym', val: 9, pct: 50 },
-  { name: 'Iné', val: 7, pct: 39 },
-]
+// done tasks per category within the selected period (incl. "Bez kategórie"), sorted desc
+const NO_CAT = '__none__'
+const catBreakdown = computed(() => {
+  const counts = new Map<string, number>()
+  for (const t of periodTasks.value) {
+    if (t.status !== 'done') continue
+    const key = t.category_id ?? NO_CAT
+    counts.set(key, (counts.get(key) ?? 0) + 1)
+  }
+  const rows = [...counts.entries()].map(([id, val]) => {
+    if (id === NO_CAT) {
+      return { name: 'Bez kategórie', color: 'var(--color-text-tertiary)', val }
+    }
+    return {
+      name: categoriesStore.byId.get(id)?.name ?? 'Zmazaná',
+      color: categoriesStore.byId.get(id)?.color ?? 'var(--color-text-info)',
+      val,
+    }
+  }).sort((a, b) => b.val - a.val)
+  const max = Math.max(1, ...rows.map(r => r.val))
+  return rows.map(r => ({ ...r, pct: Math.round(r.val / max * 100) }))
+})
 
 onMounted(async () => {
   const d = parseYmd(todayStr)
@@ -244,14 +268,19 @@ onMounted(async () => {
 .block.bordered { border-top: 0.5px solid var(--color-border-tertiary); margin-top: 8px; padding-bottom: 16px; }
 .block-title { font-size: 15px; font-weight: 500; }
 .block-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-.block-note { font-size: 11px; color: var(--color-text-tertiary); }
+.block-note { font-size: 12px; color: var(--color-text-tertiary); }
+.manage-link { border: none; background: none; color: var(--color-text-info); font-size: 13px; cursor: pointer; padding: 0; }
 .chart-wrap { height: 120px; margin: 14px 0 10px; }
 .insight { font-size: 12px; color: var(--color-text-tertiary); }
 .insight span { color: var(--color-text-secondary); }
 
 .cat-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 .cat-row:last-child { margin-bottom: 0; }
-.cat-name { font-size: 13px; color: var(--color-text-secondary); width: 64px; }
+.cat-name {
+  font-size: 13px; color: var(--color-text-secondary);
+  width: 96px; flex-shrink: 0;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
 .cat-track { flex: 1; height: 8px; border-radius: 5px; background: var(--color-background-tertiary); overflow: hidden; }
 .cat-fill { height: 100%; background: var(--color-text-info); }
 .cat-val { font-size: 12px; color: var(--color-text-secondary); width: 18px; text-align: right; }

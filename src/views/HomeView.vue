@@ -1,9 +1,22 @@
 <template>
-  <div class="home" @touchstart="onTouchStart" @touchend="onTouchEnd">
+  <div ref="rootEl" class="home" @touchstart="onTouchStart" @touchend="onTouchEnd">
+    <!-- collapsing sticky strip (shown once the full header scrolls away) -->
+    <div class="strip" :class="{ show: collapsed }">
+      <span class="strip-title">{{ weekTitle }} · <span class="green">{{ doneCount }}</span>/{{ totalCount }}</span>
+      <div class="strip-nav">
+        <button class="icon-btn" @click="shiftWeek(-1)" aria-label="Predošlý týždeň"><i class="ti ti-chevron-left"></i></button>
+        <button class="icon-btn" @click="shiftWeek(1)" aria-label="Ďalší týždeň"><i class="ti ti-chevron-right"></i></button>
+      </div>
+      <div class="strip-progress"><div :style="{ width: progressPercent + '%' }"></div></div>
+    </div>
+
     <!-- logo / app name slot -->
     <div class="brand">
       <span class="brand-mark"><i class="ti ti-square-rounded"></i></span>
       <span class="brand-text">tvoj názov / logo</span>
+      <button v-if="auth.session" class="signout" @click="auth.signOut()" aria-label="Odhlásiť sa">
+        <i class="ti ti-logout"></i>
+      </button>
     </div>
 
     <!-- title + week nav -->
@@ -44,6 +57,23 @@
       </div>
     </section>
 
+    <!-- category filter -->
+    <section v-if="categoriesStore.categories.length" class="filters">
+      <div class="chips" ref="chipsEl" @wheel="onChipsWheel">
+        <button class="chip" :class="{ on: selectedCat === null }" @click="selectedCat = null">Všetky</button>
+        <button
+          v-for="c in categoriesStore.categories"
+          :key="c.id"
+          class="chip"
+          :class="{ on: selectedCat === c.id }"
+          @click="selectedCat = selectedCat === c.id ? null : c.id"
+        >
+          <span class="cat-dot" :style="{ background: c.color }"></span>{{ c.name }}
+        </button>
+      </div>
+      <button class="manage" @click="catSheet = true" aria-label="Spravovať kategórie"><i class="ti ti-adjustments-horizontal"></i></button>
+    </section>
+
     <!-- agenda Po → Ne -->
     <section class="agenda">
       <template v-for="day in weekDays" :key="day.date">
@@ -75,23 +105,32 @@
         </div>
       </template>
     </section>
+
+    <CategoriesSheet v-model="catSheet" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import DayList from '@/components/DayList.vue'
+import CategoriesSheet from '@/components/CategoriesSheet.vue'
 import { useTasksStore } from '@/stores/tasks'
+import { useCategoriesStore } from '@/stores/categories'
+import { useAuthStore } from '@/stores/auth'
 import {
   DAY_LETTERS, DAY_NAMES, addDays, dayMonthLabel, getMonday, today, weekRangeLabel,
 } from '@/lib/dates'
 
 const tasksStore = useTasksStore()
+const categoriesStore = useCategoriesStore()
+const auth = useAuthStore()
 const names = DAY_NAMES
 const letters = DAY_LETTERS
 
 const monday = ref(getMonday(new Date()))
 const expanded = ref<Set<string>>(new Set())
+const selectedCat = ref<string | null>(null)
+const catSheet = ref(false)
 const dayRefs = new Map<string, InstanceType<typeof DayList>>()
 
 const rangeLabel = computed(() => weekRangeLabel(monday.value))
@@ -101,11 +140,17 @@ const weekTitle = computed(() => {
   return monday.value < cur ? 'Minulý týždeň' : 'Budúci týždeň'
 })
 
+// tasks for the current category filter
+const filteredTasks = computed(() =>
+  selectedCat.value === null
+    ? tasksStore.tasks
+    : tasksStore.tasks.filter(t => t.category_id === selectedCat.value))
+
 const weekDays = computed(() => {
   const t = today()
   return Array.from({ length: 7 }, (_, i) => {
     const date = addDays(monday.value, i)
-    const tasks = tasksStore.tasks.filter(task => task.task_date === date)
+    const tasks = filteredTasks.value.filter(task => task.task_date === date)
     const isToday = date === t
     const isFuture = date > t
     const full = tasks.length > 0 || isToday || expanded.value.has(date)
@@ -139,15 +184,12 @@ function registerDay(day: { date: string; isToday: boolean }, el: unknown) {
 
 function expandDay(date: string) {
   expanded.value.add(date)
-  // open the add form on next tick once the DayList mounts
   requestAnimationFrame(() => dayRefs.get(date)?.openAdd())
 }
 
 function quickAdd() {
-  const t = today()
-  // jump to current week if we navigated away
   if (monday.value !== getMonday(new Date())) monday.value = getMonday(new Date())
-  requestAnimationFrame(() => dayRefs.get(t)?.openAdd())
+  requestAnimationFrame(() => dayRefs.get(today())?.openAdd())
 }
 
 async function load() {
@@ -169,13 +211,63 @@ function onTouchEnd(e: TouchEvent) {
   if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) shiftWeek(dx < 0 ? 1 : -1)
 }
 
-onMounted(load)
+// desktop: vertical wheel scrolls the category filter row horizontally
+const chipsEl = ref<HTMLElement | null>(null)
+function onChipsWheel(e: WheelEvent) {
+  const el = chipsEl.value
+  if (!el || el.scrollWidth <= el.clientWidth || e.deltaY === 0) return
+  el.scrollLeft += e.deltaY
+  e.preventDefault()
+}
+
+// collapsing header: watch the scroll container
+const rootEl = ref<HTMLElement | null>(null)
+const collapsed = ref(false)
+let scroller: HTMLElement | null = null
+function onScroll() { if (scroller) collapsed.value = scroller.scrollTop > 150 }
+
+onMounted(() => {
+  load()
+  scroller = rootEl.value?.closest('.app-main') as HTMLElement | null
+  scroller?.addEventListener('scroll', onScroll, { passive: true })
+})
+onBeforeUnmount(() => scroller?.removeEventListener('scroll', onScroll))
 </script>
 
 <style scoped>
 .home { padding-bottom: 16px; }
 
+/* collapsing sticky strip */
+.strip {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: 46px;
+  margin-bottom: -46px; /* cancel flow height so it never pushes content */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px 0 18px;
+  background: color-mix(in srgb, var(--color-background-primary) 88%, transparent);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 0.5px solid var(--color-border-tertiary);
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform .2s ease, opacity .2s ease;
+}
+.strip.show { transform: translateY(0); opacity: 1; pointer-events: auto; }
+.strip-title { font-size: 14px; font-weight: 500; }
+.strip-nav { display: flex; gap: 6px; }
+.strip-progress { position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; }
+.strip-progress > div { height: 100%; background: var(--color-text-success); }
+
 .brand { padding: 14px 18px 2px; display: flex; align-items: center; gap: 8px; }
+.signout {
+  margin-left: auto; border: none; background: none; cursor: pointer;
+  color: var(--color-text-tertiary); font-size: 18px; padding: 2px 4px;
+  display: flex; align-items: center;
+}
 .brand-mark {
   width: 24px; height: 24px; border-radius: 7px;
   border: 1px dashed var(--color-border-secondary);
@@ -207,6 +299,26 @@ onMounted(load)
 .bar-empty { width: 4px; height: 4px; border-radius: 50%; background: var(--color-border-tertiary); }
 .chart-label { font-size: 12px; color: var(--color-text-tertiary); }
 .chart-label.red { color: var(--color-text-danger); font-weight: 500; }
+
+/* category filter */
+.filters { display: flex; align-items: center; gap: 8px; padding: 0 18px 12px; }
+.chips { display: flex; gap: 6px; overflow-x: auto; flex: 1; scrollbar-width: none; }
+.chips::-webkit-scrollbar { display: none; }
+.chip {
+  display: flex; align-items: center; gap: 5px; flex-shrink: 0;
+  border: 0.5px solid var(--color-border-secondary);
+  background: var(--color-background-primary);
+  color: var(--color-text-secondary);
+  border-radius: 14px; padding: 4px 11px; font-size: 12px; cursor: pointer;
+}
+.chip.on { background: var(--color-background-info); border-color: transparent; color: var(--color-text-info); }
+.cat-dot { width: 8px; height: 8px; border-radius: 50%; }
+.manage {
+  flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%;
+  border: 0.5px solid var(--color-border-tertiary); background: none;
+  color: var(--color-text-secondary); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
 
 .agenda-day { border-top: 0.5px solid var(--color-border-tertiary); }
 
