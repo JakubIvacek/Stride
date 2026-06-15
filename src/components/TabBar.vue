@@ -4,13 +4,13 @@
       <i class="ti ti-home"></i>
       <span>{{ t('tab.home') }}</span>
     </RouterLink>
-    <RouterLink to="/calendar" class="tab" :class="{ active: $route.path === '/calendar' }">
-      <i class="ti ti-calendar"></i>
-      <span>{{ t('tab.calendar') }}</span>
-    </RouterLink>
     <RouterLink to="/stats" class="tab" :class="{ active: $route.path === '/stats' }">
       <i class="ti ti-chart-bar"></i>
       <span>{{ t('tab.stats') }}</span>
+    </RouterLink>
+    <RouterLink to="/calendar" class="tab" :class="{ active: $route.path === '/calendar' }">
+      <i class="ti ti-calendar"></i>
+      <span>{{ t('tab.calendar') }}</span>
     </RouterLink>
   </nav>
 </template>

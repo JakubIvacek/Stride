@@ -87,7 +87,7 @@ const todayStr = today()
 const catSheet = ref(false)
 
 const periods = ['week', 'month', 'year'] as const
-const period = ref<'week' | 'month' | 'year'>('month')
+const period = ref<'week' | 'month' | 'year'>('week')
 
 function cssVar(name: string) {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim()
