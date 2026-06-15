@@ -1,6 +1,6 @@
 <template>
-  <div class="d-flex flex-column" style="height: 100vh;">
-    <main class="flex-grow-1 overflow-auto">
+  <div class="app-shell">
+    <main class="app-main">
       <RouterView />
     </main>
     <TabBar />
@@ -15,11 +15,3 @@ import TabBar from '@/components/TabBar.vue'
 const auth = useAuthStore()
 onMounted(() => auth.init())
 </script>
-
-<style>
-html, body, #app {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-}
-</style>

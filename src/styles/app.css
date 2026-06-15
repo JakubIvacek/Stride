@@ -1,0 +1,102 @@
+/* Tracker — global design system (Apple-clean). Light + dark mode. */
+:root{
+  --color-background-primary:#ffffff;
+  --color-background-secondary:#f2f2f7;
+  --color-background-tertiary:#e6e6eb;
+  --color-background-info:#e8f0fe;
+  --color-text-primary:#1c1c1e;
+  --color-text-secondary:#6e6e73;
+  --color-text-tertiary:#aeaeb2;
+  --color-text-success:#34c759;
+  --color-text-danger:#ff3b30;
+  --color-text-info:#007aff;
+  --color-border-tertiary:rgba(60,60,67,0.12);
+  --color-border-secondary:rgba(60,60,67,0.22);
+  --border-radius-md:8px;
+  --border-radius-lg:12px;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --color-background-primary:#1c1c1e;
+    --color-background-secondary:#2c2c2e;
+    --color-background-tertiary:#3a3a3c;
+    --color-background-info:#0a2a4d;
+    --color-text-primary:#f2f2f7;
+    --color-text-secondary:#98989d;
+    --color-text-tertiary:#6c6c70;
+    --color-text-success:#30d158;
+    --color-text-danger:#ff453a;
+    --color-text-info:#0a84ff;
+    --color-border-tertiary:rgba(235,235,245,0.14);
+    --color-border-secondary:rgba(235,235,245,0.24);
+  }
+}
+
+*{box-sizing:border-box;}
+html,body,#app{height:100%;}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter",system-ui,sans-serif;
+  background:var(--color-background-tertiary);
+  color:var(--color-text-primary);
+  -webkit-font-smoothing:antialiased;
+  /* Only 400 and 500 are used across the app. */
+  font-weight:400;
+}
+button{font-family:inherit;}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
+
+/* App shell: centered phone-width column, full height on mobile. */
+.app-shell{
+  max-width:430px;
+  margin:0 auto;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  background:var(--color-background-primary);
+  position:relative;
+  overflow:hidden;
+}
+.app-main{
+  flex:1 1 auto;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+}
+
+/* Circular icon button used in headers (chevrons, plus, today). */
+.icon-btn{
+  width:30px;height:30px;border-radius:50%;
+  border:0.5px solid var(--color-border-tertiary);
+  background:transparent;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--color-text-secondary);
+  cursor:pointer;padding:0;
+  transition:background .15s;
+}
+.icon-btn:active{background:var(--color-background-secondary);}
+.icon-btn.accent{
+  background:var(--color-background-info);
+  border-color:transparent;
+  color:var(--color-text-info);
+}
+
+/* month grid (calendar month + day sheet reuse) */
+.calm-wd{display:grid;grid-template-columns:repeat(7,1fr);padding:0 4px 6px;}
+.calm-wd span{text-align:center;font-size:12px;color:var(--color-text-tertiary);}
+.calm-grid{display:grid;grid-template-columns:repeat(7,1fr);}
+.calm-cell{height:52px;display:flex;flex-direction:column;align-items:center;padding-top:5px;gap:3px;background:none;border:none;cursor:pointer;}
+.calm-num{font-size:15px;color:var(--color-text-primary);width:27px;height:27px;display:flex;align-items:center;justify-content:center;border-radius:50%;}
+.calm-num.t{background:var(--color-text-danger);color:#fff;font-weight:500;}
+.calm-meta{display:flex;align-items:center;gap:4px;height:12px;}
+.calm-dot{width:6px;height:6px;border-radius:50%;}
+.calm-cnt{font-size:11px;color:var(--color-text-secondary);}
+
+/* year grid */
+.yr2{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 6px;}
+.yr2-lab{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:5px;padding-left:2px;background:none;border:none;cursor:pointer;text-align:left;width:100%;}
+.yr2-lab.cur{color:var(--color-text-danger);}
+.yr2-g{display:grid;grid-template-columns:repeat(7,1fr);}
+.yr2-c{height:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;}
+.yr2-n{font-size:11px;color:var(--color-text-secondary);line-height:1;width:14px;height:14px;display:flex;align-items:center;justify-content:center;border-radius:50%;}
+.yr2-n.t{background:var(--color-text-danger);color:#fff;}
+.yr2-d{width:3.5px;height:3.5px;border-radius:50%;}

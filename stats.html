@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tracker · Štatistiky</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="phone">
+<h1 class="sr-only">Štatistiky — obdobie, súhrnné metriky, hotové po týždňoch, rozpad podľa kategórií</h1>
+<div class="screen">
+
+  <div style="padding:16px 18px 12px;">
+    <div style="font-size:24px; font-weight:500; color:var(--color-text-primary); margin-bottom:12px;">Štatistiky</div>
+    <div style="display:flex; background:var(--color-background-tertiary); border-radius:10px; padding:3px;">
+      <div style="flex:1;text-align:center;font-size:13px;color:var(--color-text-secondary);padding:6px 0;">Týždeň</div>
+      <div style="flex:1;text-align:center;font-size:13px;font-weight:500;color:var(--color-text-primary);background:var(--color-background-primary);border-radius:8px;padding:6px 0;">Mesiac</div>
+      <div style="flex:1;text-align:center;font-size:13px;color:var(--color-text-secondary);padding:6px 0;">Rok</div>
+    </div>
+  </div>
+
+  <div style="padding:0 18px 6px; display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+    <div style="background:var(--color-background-secondary); border-radius:var(--border-radius-md); padding:14px;">
+      <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:6px;">Hotové · jún</div>
+      <div style="font-size:24px;font-weight:500;color:var(--color-text-primary);">48</div>
+    </div>
+    <div style="background:var(--color-background-secondary); border-radius:var(--border-radius-md); padding:14px;">
+      <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:6px;">Completion</div>
+      <div style="font-size:24px;font-weight:500;color:var(--color-text-success);">73 %</div>
+    </div>
+    <div style="background:var(--color-background-secondary); border-radius:var(--border-radius-md); padding:14px;">
+      <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:6px;">Aktuálny streak</div>
+      <div style="font-size:24px;font-weight:500;color:var(--color-text-primary);display:flex;align-items:center;gap:5px;"><i class="ti ti-flame" style="font-size:20px;color:var(--color-text-danger);"></i>5 dní</div>
+    </div>
+    <div style="background:var(--color-background-secondary); border-radius:var(--border-radius-md); padding:14px;">
+      <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:6px;">Najdlhší streak</div>
+      <div style="font-size:24px;font-weight:500;color:var(--color-text-primary);">12 dní</div>
+    </div>
+  </div>
+
+  <div style="padding:14px 18px 6px;">
+    <div style="font-size:15px;font-weight:500;color:var(--color-text-primary);margin-bottom:14px;">Hotové po týždňoch</div>
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:10px;">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;"><div style="height:90px;display:flex;align-items:flex-end;width:100%;"><div style="width:100%;height:62px;background:var(--color-text-success);border-radius:5px 5px 0 0;"></div></div><span style="font-size:11px;color:var(--color-text-tertiary);">5.5</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;"><div style="height:90px;display:flex;align-items:flex-end;width:100%;"><div style="width:100%;height:84px;background:var(--color-text-success);border-radius:5px 5px 0 0;"></div></div><span style="font-size:11px;color:var(--color-text-tertiary);">12.5</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;"><div style="height:90px;display:flex;align-items:flex-end;width:100%;"><div style="width:100%;height:56px;background:var(--color-text-success);border-radius:5px 5px 0 0;"></div></div><span style="font-size:11px;color:var(--color-text-tertiary);">19.5</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;"><div style="height:90px;display:flex;align-items:flex-end;width:100%;"><div style="width:100%;height:78px;background:var(--color-text-success);border-radius:5px 5px 0 0;"></div></div><span style="font-size:11px;color:var(--color-text-tertiary);">26.5</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;"><div style="height:90px;display:flex;align-items:flex-end;width:100%;"><div style="width:100%;height:90px;background:var(--color-text-success);border-radius:5px 5px 0 0;"></div></div><span style="font-size:11px;color:var(--color-text-tertiary);">2.6</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;"><div style="height:90px;display:flex;align-items:flex-end;width:100%;"><div style="width:100%;height:44px;background:var(--color-text-success);border-radius:5px 5px 0 0;"></div></div><span style="font-size:11px;color:var(--color-text-danger);font-weight:500;">9.6</span></div>
+    </div>
+    <div style="font-size:12px;color:var(--color-text-tertiary);margin-top:10px;">Najsilnejší deň v týždni: <span style="color:var(--color-text-secondary);">Streda</span></div>
+  </div>
+
+  <div style="padding:14px 18px 16px; border-top:0.5px solid var(--color-border-tertiary); margin-top:8px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <span style="font-size:15px;font-weight:500;color:var(--color-text-primary);">Podľa kategórie</span>
+      <span style="font-size:11px;color:var(--color-text-tertiary);">aktívne s kategóriami</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;"><span style="font-size:13px;color:var(--color-text-secondary);width:64px;">Thesis</span><div style="flex:1;height:8px;border-radius:5px;background:var(--color-background-tertiary);overflow:hidden;"><div style="width:100%;height:100%;background:var(--color-text-info);"></div></div><span style="font-size:12px;color:var(--color-text-secondary);width:18px;text-align:right;">18</span></div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;"><span style="font-size:13px;color:var(--color-text-secondary);width:64px;">Práca</span><div style="flex:1;height:8px;border-radius:5px;background:var(--color-background-tertiary);overflow:hidden;"><div style="width:78%;height:100%;background:var(--color-text-info);"></div></div><span style="font-size:12px;color:var(--color-text-secondary);width:18px;text-align:right;">14</span></div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;"><span style="font-size:13px;color:var(--color-text-secondary);width:64px;">Gym</span><div style="flex:1;height:8px;border-radius:5px;background:var(--color-background-tertiary);overflow:hidden;"><div style="width:50%;height:100%;background:var(--color-text-info);"></div></div><span style="font-size:12px;color:var(--color-text-secondary);width:18px;text-align:right;">9</span></div>
+    <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:13px;color:var(--color-text-secondary);width:64px;">Iné</span><div style="flex:1;height:8px;border-radius:5px;background:var(--color-background-tertiary);overflow:hidden;"><div style="width:39%;height:100%;background:var(--color-text-info);"></div></div><span style="font-size:12px;color:var(--color-text-secondary);width:18px;text-align:right;">7</span></div>
+  </div>
+
+  <div style="display:flex; border-top:0.5px solid var(--color-border-tertiary);">
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 0 11px;color:var(--color-text-tertiary);"><i class="ti ti-home" style="font-size:21px;"></i><span style="font-size:11px;">Domov</span></div>
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 0 11px;color:var(--color-text-tertiary);"><i class="ti ti-calendar" style="font-size:21px;"></i><span style="font-size:11px;">Kalendár</span></div>
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 0 11px;color:var(--color-text-info);"><i class="ti ti-chart-bar" style="font-size:21px;"></i><span style="font-size:11px;">Štatistiky</span></div>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

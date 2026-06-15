@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tracker · Kalendár — mesiac</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="phone">
+<h1 class="sr-only">Kalendár — mesačný prehľad jún 2026, bodka stavu a počet taskov pod číslom dňa</h1>
+<div class="screen">
+
+  <div style="padding:16px 18px 10px; display:flex; align-items:flex-end; justify-content:space-between;">
+    <div style="font-size:24px; font-weight:500; color:var(--color-text-primary);">Jún <span style="color:var(--color-text-secondary);font-weight:400;">2026</span></div>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <span style="font-size:13px;color:var(--color-text-info);padding:5px 12px;border:0.5px solid var(--color-border-tertiary);border-radius:14px;">Dnes</span>
+      <span style="width:30px;height:30px;border-radius:50%;background:var(--color-background-info);display:flex;align-items:center;justify-content:center;color:var(--color-text-info);"><i class="ti ti-plus" style="font-size:17px;"></i></span>
+    </div>
+  </div>
+
+  <div class="calm-wd"><span>po</span><span>ut</span><span>st</span><span>št</span><span>pi</span><span>so</span><span>ne</span></div>
+
+  <div id="jun-grid" class="calm-grid" style="padding:0 4px 8px;"></div>
+
+  <div style="padding:10px 18px 14px; border-top:0.5px solid var(--color-border-tertiary); font-size:15px; color:var(--color-text-tertiary);">Júl</div>
+
+  <div style="display:flex; border-top:0.5px solid var(--color-border-tertiary);">
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 0 11px;color:var(--color-text-tertiary);"><i class="ti ti-home" style="font-size:21px;"></i><span style="font-size:11px;">Domov</span></div>
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 0 11px;color:var(--color-text-info);"><i class="ti ti-calendar" style="font-size:21px;"></i><span style="font-size:11px;">Kalendár</span></div>
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 0 11px;color:var(--color-text-tertiary);"><i class="ti ti-chart-bar" style="font-size:21px;"></i><span style="font-size:11px;">Štatistiky</span></div>
+  </div>
+
+</div>
+</div>
+
+<script>
+(function(){
+  var off=0,len=30,today=11;
+  var data={2:['done',2],3:['done',3],4:['miss',3],5:['done',1],6:['done',2],7:['miss',1],9:['done',2],10:['miss',4],11:['plan',4],12:['plan',2],15:['plan',1],18:['plan',1],24:['plan',3]};
+  var col={done:'var(--color-text-success)',miss:'var(--color-text-danger)',plan:'var(--color-text-tertiary)'};
+  var h='';
+  for(var i=0;i<off;i++){h+='<div class="calm-cell"></div>';}
+  for(var d=1;d<=len;d++){
+    var e=data[d];var isT=(d===today);var meta='';
+    if(e){meta='<span class="calm-dot" style="background:'+col[e[0]]+'"></span><span class="calm-cnt">'+e[1]+'</span>';}
+    h+='<div class="calm-cell"><div class="calm-num'+(isT?' t':'')+'">'+d+'</div><div class="calm-meta">'+meta+'</div></div>';
+  }
+  document.getElementById('jun-grid').innerHTML=h;
+})();
+</script>
+</body>
+</html>

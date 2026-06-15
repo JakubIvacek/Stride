@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tracker · Kalendár — rok</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="phone">
+<h1 class="sr-only">Kalendár — ročný prehľad 2026, farebné bodky: zelená splnené, červená nedokončené, sivá naplánované</h1>
+<div class="screen">
+
+  <div style="padding:16px 18px 12px; font-size:26px; font-weight:500; color:var(--color-text-primary);">2026</div>
+
+  <div id="year-grid2" class="yr2" style="padding:0 16px 16px;"></div>
+
+  <div style="display:flex; border-top:0.5px solid var(--color-border-tertiary);">
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 0 11px;color:var(--color-text-tertiary);"><i class="ti ti-home" style="font-size:21px;"></i><span style="font-size:11px;">Domov</span></div>
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 0 11px;color:var(--color-text-info);"><i class="ti ti-calendar" style="font-size:21px;"></i><span style="font-size:11px;">Kalendár</span></div>
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 0 11px;color:var(--color-text-tertiary);"><i class="ti ti-chart-bar" style="font-size:21px;"></i><span style="font-size:11px;">Štatistiky</span></div>
+  </div>
+
+</div>
+</div>
+
+<script>
+(function(){
+  var names=['Január','Február','Marec','Apríl','Máj','Jún','Júl','August','September','Október','November','December'];
+  var off=[3,6,6,2,4,0,2,5,1,3,6,1];
+  var len=[31,28,31,30,31,30,31,31,30,31,30,31];
+  var curM=5, today=11;
+  var col={done:'var(--color-text-success)',miss:'var(--color-text-danger)',plan:'var(--color-text-tertiary)'};
+  function info(m,d){
+    if(m<curM){ if((d*31+m*17)%5===0) return ((d*13+m)%4===0)?'miss':'done'; return null; }
+    if(m===curM){ if(d<today){ if((d*31+m*17)%4===0) return (d%6===0)?'miss':'done'; return null; } if(d>today && (d*53+m*23)%11===0) return 'plan'; return null; }
+    return ((d*53+m*23)%11===0)?'plan':null;
+  }
+  var html='';
+  for(var m=0;m<12;m++){
+    var cells='';
+    for(var i=0;i<off[m];i++){cells+='<div class="yr2-c"></div>';}
+    for(var d=1;d<=len[m];d++){
+      var isT=(m===curM&&d===today);
+      var st=isT?null:info(m,d);
+      var dot=st?'<span class="yr2-d" style="background:'+col[st]+'"></span>':'';
+      cells+='<div class="yr2-c"><span class="yr2-n'+(isT?' t':'')+'">'+d+'</span>'+dot+'</div>';
+    }
+    html+='<div><div class="yr2-lab'+(m===curM?' cur':'')+'">'+names[m]+'</div><div class="yr2-g">'+cells+'</div></div>';
+  }
+  document.getElementById('year-grid2').innerHTML=html;
+})();
+</script>
+</body>
+</html>
