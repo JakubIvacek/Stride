@@ -19,9 +19,7 @@ const { t } = useI18n()
 
 <style scoped>
 .app-header {
-  position: sticky;
-  top: 0;
-  z-index: 20;
+  flex-shrink: 0;
   background: var(--color-background-primary);
   display: flex;
   align-items: center;

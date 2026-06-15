@@ -1,6 +1,5 @@
 <template>
   <div class="cal">
-    <AppHeader />
     <!-- header -->
     <header class="head">
       <div class="title">
@@ -89,7 +88,6 @@
 import { computed, nextTick, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import DayList from '@/components/DayList.vue'
-import AppHeader from '@/components/AppHeader.vue'
 import { useTasksStore } from '@/stores/tasks'
 import { useFmt } from '@/i18n/dates'
 import { parseYmd, today, ymd } from '@/lib/dates'

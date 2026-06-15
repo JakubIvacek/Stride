@@ -1,6 +1,5 @@
 <template>
   <div class="stats">
-    <AppHeader />
     <div class="top">
       <div class="title">{{ t('stats.title') }}</div>
       <div class="seg">
@@ -69,7 +68,6 @@ import { useI18n } from 'vue-i18n'
 import { useTasksStore } from '@/stores/tasks'
 import { useCategoriesStore } from '@/stores/categories'
 import CategoriesSheet from '@/components/CategoriesSheet.vue'
-import AppHeader from '@/components/AppHeader.vue'
 import { useFmt } from '@/i18n/dates'
 import { addDays, getMonday, parseYmd, today, weekdayIndex, ymd } from '@/lib/dates'
 

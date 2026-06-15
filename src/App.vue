@@ -2,6 +2,7 @@
   <div class="app-shell">
     <AuthView v-if="auth.ready && (!authed || auth.recovery)" />
     <template v-else-if="authed">
+      <AppHeader v-if="$route.path !== '/account'" />
       <main class="app-main">
         <RouterView />
       </main>
@@ -16,6 +17,7 @@ import { useAuthStore } from '@/stores/auth'
 import { useCategoriesStore } from '@/stores/categories'
 import { isDemo } from '@/lib/demo'
 import TabBar from '@/components/TabBar.vue'
+import AppHeader from '@/components/AppHeader.vue'
 import AuthView from '@/views/AuthView.vue'
 
 const auth = useAuthStore()

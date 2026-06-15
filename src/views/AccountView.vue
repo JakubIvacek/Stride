@@ -8,19 +8,19 @@
 
     <div class="ac-body">
       <!-- profile -->
-      <section class="card">
+      <section class="ac-card">
         <div class="ac-label">{{ t('account.signedInAs') }}</div>
         <div class="ac-email">{{ email }}</div>
       </section>
 
       <!-- appearance -->
-      <section class="card">
-        <div class="row">
+      <section class="ac-card">
+        <div class="ac-row">
           <span class="row-label">{{ t('account.language') }}</span>
           <LanguageSwitch />
         </div>
         <div class="divider"></div>
-        <div class="row">
+        <div class="ac-row">
           <span class="row-label">{{ t('account.theme') }}</span>
           <div class="seg">
             <button
@@ -40,7 +40,7 @@
       </button>
 
       <!-- change password -->
-      <section class="card">
+      <section class="ac-card">
         <div class="ac-label">{{ t('account.changePassword') }}</div>
         <div class="pw-wrap">
           <input
@@ -154,17 +154,17 @@ function goBack() {
 
 .ac-body { padding: 16px 18px; display: flex; flex-direction: column; gap: 14px; }
 
-.card {
+.ac-card {
   background: var(--color-background-secondary);
   border-radius: var(--border-radius-lg);
-  padding: 14px 16px;
+  padding: 16px;
 }
-.ac-label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 6px; }
+.ac-label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 8px; }
 .ac-email { font-size: 16px; color: var(--color-text-primary); }
 
-.row { display: flex; align-items: center; justify-content: space-between; }
+.ac-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 30px; }
 .row-label { font-size: 15px; color: var(--color-text-primary); }
-.card .divider { height: 0.5px; background: var(--color-border-tertiary); margin: 12px 0; }
+.ac-card .divider { height: 0.5px; background: var(--color-border-tertiary); margin: 14px 0; }
 
 .seg { display: flex; background: var(--color-background-tertiary); border-radius: 9px; padding: 2px; }
 .seg button {
@@ -182,10 +182,10 @@ function goBack() {
 }
 .list-btn i { color: var(--color-text-tertiary); font-size: 18px; }
 
-.pw-wrap { position: relative; }
-.pw-wrap .ac-input { padding-right: 42px; }
+.pw-wrap { position: relative; margin-top: 8px; }
+.pw-wrap .ac-input { margin-top: 0; padding-right: 42px; }
 .pw-toggle {
-  position: absolute; top: 0; right: 0; height: 44px; width: 40px;
+  position: absolute; top: 0; right: 0; height: 100%; width: 40px;
   border: none; background: none; cursor: pointer;
   color: var(--color-text-tertiary); font-size: 18px;
   display: flex; align-items: center; justify-content: center;

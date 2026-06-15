@@ -1,7 +1,5 @@
 <template>
   <div ref="rootEl" class="home" @touchstart="onTouchStart" @touchend="onTouchEnd">
-    <AppHeader />
-
     <!-- collapsing sticky strip (shown once the full week header scrolls away) -->
     <div class="strip" :class="{ show: collapsed }">
       <div class="strip-info">
@@ -111,7 +109,6 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import DayList from '@/components/DayList.vue'
 import CategoriesSheet from '@/components/CategoriesSheet.vue'
-import AppHeader from '@/components/AppHeader.vue'
 import { useTasksStore } from '@/stores/tasks'
 import { useCategoriesStore } from '@/stores/categories'
 import { useFmt } from '@/i18n/dates'
@@ -235,7 +232,7 @@ onBeforeUnmount(() => scroller?.removeEventListener('scroll', onScroll))
 /* collapsing sticky strip */
 .strip {
   position: sticky;
-  top: 52px; /* sits right below the sticky AppHeader */
+  top: 0;
   z-index: 10;
   height: 46px;
   margin-bottom: -46px; /* cancel flow height so it never pushes content */
