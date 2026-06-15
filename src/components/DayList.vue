@@ -277,7 +277,7 @@ defineExpose({ openAdd })
   border-top: 0.5px solid var(--color-border-secondary);
   border-bottom: 0.5px solid var(--color-border-secondary);
   margin: 4px 0;
-  padding: 12px 0;
+  padding: 12px 0 8px;
 }
 .add-input-row { display: flex; align-items: center; gap: 8px; }
 .add-input {
