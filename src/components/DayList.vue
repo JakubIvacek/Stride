@@ -35,13 +35,15 @@
               <button class="add-cancel" @click="cancelEdit"><i class="ti ti-x"></i></button>
             </div>
             <CategoryPicker v-model="editCat" />
-            <label class="edit-date">
-              <span>{{ t('day.moveTo') }}</span>
-              <input type="date" v-model="editDate" class="date-input">
-            </label>
-            <button class="delete-btn" @click="removeTask(task)">
-              <i class="ti ti-trash"></i> {{ t('day.deleteItem') }}
-            </button>
+            <div class="edit-bottom">
+              <label class="edit-date">
+                <span>{{ t('day.moveTo') }}</span>
+                <input type="date" v-model="editDate" class="date-input">
+              </label>
+              <button class="delete-btn" @click="removeTask(task)">
+                <i class="ti ti-trash"></i> {{ t('day.deleteItem') }}
+              </button>
+            </div>
           </div>
 
           <!-- normal row -->
@@ -259,6 +261,7 @@ defineExpose({ openAdd })
 .drag-handle:active { cursor: grabbing; }
 .drag-ghost { opacity: 0.4; }
 
+.edit-bottom { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .edit-date {
   display: flex; align-items: center; gap: 10px;
   font-size: 14px; color: var(--color-text-secondary);
