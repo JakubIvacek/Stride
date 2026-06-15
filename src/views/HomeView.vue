@@ -1,24 +1,18 @@
 <template>
   <div ref="rootEl" class="home" @touchstart="onTouchStart" @touchend="onTouchEnd">
-    <!-- collapsing sticky strip (shown once the full header scrolls away) -->
+    <AppHeader />
+
+    <!-- collapsing sticky strip (shown once the full week header scrolls away) -->
     <div class="strip" :class="{ show: collapsed }">
-      <span class="strip-title">{{ weekTitle }} · <span class="green">{{ doneCount }}</span>/{{ totalCount }}</span>
+      <div class="strip-info">
+        <span class="strip-title">{{ weekTitle }} · <span class="green">{{ doneCount }}</span>/{{ totalCount }}</span>
+        <span class="strip-range">{{ rangeLabel }}</span>
+      </div>
       <div class="strip-nav">
         <button class="icon-btn" @click="shiftWeek(-1)" :aria-label="t('home.prevWeekAria')"><i class="ti ti-chevron-left"></i></button>
         <button class="icon-btn" @click="shiftWeek(1)" :aria-label="t('home.nextWeekAria')"><i class="ti ti-chevron-right"></i></button>
       </div>
       <div class="strip-progress"><div :style="{ width: progressPercent + '%' }"></div></div>
-    </div>
-
-    <!-- logo -->
-    <div class="brand">
-      <img src="/stride_icon.svg" alt="Stride" class="brand-logo">
-      <div class="brand-actions">
-        <LanguageSwitch />
-        <button v-if="auth.session" class="signout" @click="auth.signOut()" :aria-label="t('home.signOutAria')">
-          <i class="ti ti-logout"></i>
-        </button>
-      </div>
     </div>
 
     <!-- title + week nav -->
@@ -117,10 +111,9 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import DayList from '@/components/DayList.vue'
 import CategoriesSheet from '@/components/CategoriesSheet.vue'
-import LanguageSwitch from '@/components/LanguageSwitch.vue'
+import AppHeader from '@/components/AppHeader.vue'
 import { useTasksStore } from '@/stores/tasks'
 import { useCategoriesStore } from '@/stores/categories'
-import { useAuthStore } from '@/stores/auth'
 import { useFmt } from '@/i18n/dates'
 import { addDays, getMonday, today } from '@/lib/dates'
 
@@ -128,7 +121,6 @@ const { t } = useI18n()
 const fmt = useFmt()
 const tasksStore = useTasksStore()
 const categoriesStore = useCategoriesStore()
-const auth = useAuthStore()
 
 const monday = ref(getMonday(new Date()))
 const expanded = ref<Set<string>>(new Set())
@@ -243,7 +235,7 @@ onBeforeUnmount(() => scroller?.removeEventListener('scroll', onScroll))
 /* collapsing sticky strip */
 .strip {
   position: sticky;
-  top: 0;
+  top: 52px; /* sits right below the sticky AppHeader */
   z-index: 10;
   height: 46px;
   margin-bottom: -46px; /* cancel flow height so it never pushes content */
@@ -260,24 +252,15 @@ onBeforeUnmount(() => scroller?.removeEventListener('scroll', onScroll))
   transition: transform .2s ease, opacity .2s ease;
 }
 .strip.show { transform: translateY(0); opacity: 1; pointer-events: auto; }
-.strip-title { font-size: 14px; font-weight: 500; }
+.strip-info { display: flex; flex-direction: column; gap: 1px; }
+.strip-title { font-size: 14px; font-weight: 500; line-height: 1.2; }
+.strip-range { font-size: 11px; color: var(--color-text-tertiary); line-height: 1; }
 .strip-nav { display: flex; gap: 6px; }
 .strip-progress { position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; }
 .strip-progress > div { height: 100%; background: var(--color-text-success); }
 
-.brand { padding: 14px 18px 2px; display: flex; align-items: center; gap: 8px; }
-.brand-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
-.signout {
-  border: none; background: none; cursor: pointer;
-  color: var(--color-text-tertiary); font-size: 18px; padding: 2px 4px;
-  display: flex; align-items: center;
-}
-.brand-logo { height: 26px; width: auto; }
-@media (prefers-color-scheme: dark) {
-  .brand-logo { filter: invert(1) hue-rotate(180deg); }
-}
 
-.head { padding: 6px 18px 10px; display: flex; align-items: flex-start; justify-content: space-between; }
+.head { padding: 12px 18px 10px; display: flex; align-items: flex-start; justify-content: space-between; }
 .title { font-size: 22px; font-weight: 500; line-height: 1.1; }
 .range { font-size: 13px; color: var(--color-text-secondary); margin-top: 3px; }
 .wk-nav { display: flex; gap: 6px; align-items: center; }

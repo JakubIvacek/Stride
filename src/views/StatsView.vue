@@ -1,10 +1,8 @@
 <template>
   <div class="stats">
+    <AppHeader />
     <div class="top">
-      <div class="title-row">
-        <div class="title">{{ t('stats.title') }}</div>
-        <LanguageSwitch />
-      </div>
+      <div class="title">{{ t('stats.title') }}</div>
       <div class="seg">
         <button v-for="p in periods" :key="p" :class="{ on: period === p }" @click="period = p">
           {{ t('stats.' + p) }}
@@ -71,7 +69,7 @@ import { useI18n } from 'vue-i18n'
 import { useTasksStore } from '@/stores/tasks'
 import { useCategoriesStore } from '@/stores/categories'
 import CategoriesSheet from '@/components/CategoriesSheet.vue'
-import LanguageSwitch from '@/components/LanguageSwitch.vue'
+import AppHeader from '@/components/AppHeader.vue'
 import { useFmt } from '@/i18n/dates'
 import { addDays, getMonday, parseYmd, today, weekdayIndex, ymd } from '@/lib/dates'
 
@@ -274,9 +272,8 @@ onMounted(async () => {
 
 <style scoped>
 .stats { padding-bottom: 16px; }
-.top { padding: 16px 18px 12px; }
-.title-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-.title { font-size: 24px; font-weight: 500; }
+.top { padding: 8px 18px 12px; }
+.title { font-size: 24px; font-weight: 500; margin-bottom: 12px; }
 .seg { display: flex; background: var(--color-background-tertiary); border-radius: 10px; padding: 3px; }
 .seg button {
   flex: 1; border: none; background: none; cursor: pointer;

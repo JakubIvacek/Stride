@@ -1,5 +1,6 @@
 <template>
   <div class="cal">
+    <AppHeader />
     <!-- header -->
     <header class="head">
       <div class="title">
@@ -88,6 +89,7 @@
 import { computed, nextTick, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import DayList from '@/components/DayList.vue'
+import AppHeader from '@/components/AppHeader.vue'
 import { useTasksStore } from '@/stores/tasks'
 import { useFmt } from '@/i18n/dates'
 import { parseYmd, today, ymd } from '@/lib/dates'
@@ -195,7 +197,7 @@ onMounted(async () => {
 
 <style scoped>
 .cal { display: flex; flex-direction: column; height: 100%; }
-.head { padding: 16px 18px 10px; display: flex; align-items: flex-end; justify-content: space-between; }
+.head { padding: 6px 18px 10px; display: flex; align-items: flex-end; justify-content: space-between; }
 .title { font-size: 24px; font-weight: 500; }
 .title .year { color: var(--color-text-secondary); font-weight: 400; }
 .actions { display: flex; gap: 8px; align-items: center; }
@@ -207,8 +209,8 @@ onMounted(async () => {
 .seg button.on { background: var(--color-background-primary); color: var(--color-text-primary); font-weight: 500; }
 .today-btn {
   font-size: 13px; color: var(--color-text-info);
-  padding: 5px 12px; border: 0.5px solid var(--color-border-tertiary);
-  border-radius: 14px; background: none; cursor: pointer;
+  padding: 6px 12px; border: 0.5px solid var(--color-border-tertiary);
+  border-radius: 9px; background: none; cursor: pointer;
 }
 
 .scroll { flex: 1; overflow-y: auto; }
