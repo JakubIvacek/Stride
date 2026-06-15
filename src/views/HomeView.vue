@@ -68,8 +68,14 @@
       <button class="manage" @click="catSheet = true" :aria-label="t('cat.manage')"><i class="ti ti-adjustments-horizontal"></i></button>
     </section>
 
+    <!-- empty state when a category filter matches nothing this week -->
+    <div v-if="selectedCat !== null && totalCount === 0" class="empty-state">
+      <i class="ti ti-mood-empty"></i>
+      <span>{{ t('empty.noTasksCategory') }}</span>
+    </div>
+
     <!-- agenda Po → Ne -->
-    <section class="agenda">
+    <section v-else class="agenda">
       <template v-for="day in weekDays" :key="day.date">
         <div class="agenda-day">
           <DayList
@@ -301,6 +307,14 @@ onBeforeUnmount(() => scroller?.removeEventListener('scroll', onScroll))
   color: var(--color-text-secondary); cursor: pointer;
   display: flex; align-items: center; justify-content: center;
 }
+
+.empty-state {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: 48px 24px; text-align: center;
+  color: var(--color-text-tertiary); font-size: 14px;
+  border-top: 0.5px solid var(--color-border-tertiary);
+}
+.empty-state i { font-size: 30px; }
 
 .agenda-day { border-top: 0.5px solid var(--color-border-tertiary); }
 

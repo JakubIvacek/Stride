@@ -36,9 +36,14 @@
             </div>
             <CategoryPicker v-model="editCat" />
             <div class="edit-bottom">
-              <button class="delete-btn" @click="removeTask(task)">
+              <button v-if="!confirmDelete" class="delete-btn" @click="confirmDelete = true">
                 <i class="ti ti-trash"></i> {{ t('day.deleteItem') }}
               </button>
+              <div v-else class="confirm-row">
+                <span>{{ t('common.confirmDelete') }}</span>
+                <button class="confirm-yes" @click="removeTask(task)">{{ t('common.delete') }}</button>
+                <button class="confirm-no" @click="confirmDelete = false">{{ t('common.cancel') }}</button>
+              </div>
               <label class="edit-date">
                 <span>{{ t('day.moveTo') }}</span>
                 <input type="date" v-model="editDate" class="date-input">
@@ -127,6 +132,7 @@ const editingId = ref<string | null>(null)
 const editTitle = ref('')
 const editCat = ref<string | null>(null)
 const editDate = ref('')
+const confirmDelete = ref(false)
 const editEl = ref<HTMLInputElement[] | HTMLInputElement | null>(null)
 
 const catColor = (id: string | null) => categoriesStore.color(id)
@@ -136,6 +142,7 @@ async function openEdit(task: Task) {
   editTitle.value = task.title
   editCat.value = task.category_id
   editDate.value = task.task_date
+  confirmDelete.value = false
   await nextTick()
   const el = Array.isArray(editEl.value) ? editEl.value[0] : editEl.value
   el?.focus()
@@ -182,9 +189,8 @@ async function submit() {
   if (!title) return
   await tasksStore.addTask(title, props.date, selectedCat.value)
   newTitle.value = ''
-  // keep the form open + chosen category for quick consecutive adds
-  await nextTick()
-  inputEl.value?.focus()
+  selectedCat.value = null
+  adding.value = false
 }
 
 function cancel() {
@@ -252,6 +258,14 @@ defineExpose({ openAdd })
   height: 34px; padding: 0 12px; border-radius: var(--border-radius-md);
 }
 .delete-btn i { font-size: 16px; }
+
+.confirm-row { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--color-text-secondary); }
+.confirm-yes, .confirm-no {
+  border: none; cursor: pointer; font-size: 13px; font-weight: 500;
+  height: 30px; padding: 0 12px; border-radius: var(--border-radius-md);
+}
+.confirm-yes { background: var(--color-text-danger); color: #fff; }
+.confirm-no { background: var(--color-background-tertiary); color: var(--color-text-secondary); }
 
 .cat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 

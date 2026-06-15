@@ -1,5 +1,10 @@
 export const messages = {
   en: {
+    common: { delete: 'Delete', cancel: 'Cancel', confirmDelete: 'Delete?' },
+    empty: {
+      noTasksCategory: 'No tasks in this category this week.',
+      noStats: 'No completed tasks yet — finish a few to see your stats.',
+    },
     tab: { home: 'Home', calendar: 'Calendar', stats: 'Stats' },
     home: {
       brand: 'your name / logo',
@@ -110,6 +115,11 @@ export const messages = {
     lang: { label: 'Language' },
   },
   sk: {
+    common: { delete: 'Zmazať', cancel: 'Zrušiť', confirmDelete: 'Zmazať?' },
+    empty: {
+      noTasksCategory: 'Žiadne úlohy v tejto kategórii tento týždeň.',
+      noStats: 'Zatiaľ žiadne dokončené úlohy — dokonči pár a uvidíš štatistiky.',
+    },
     tab: { home: 'Domov', calendar: 'Kalendár', stats: 'Štatistiky' },
     home: {
       brand: 'tvoj názov / logo',

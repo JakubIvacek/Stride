@@ -32,10 +32,16 @@
     <!-- period bar chart -->
     <section class="block">
       <div class="block-title">{{ chartTitle }}</div>
-      <div class="chart-wrap">
-        <Bar :data="chartData" :options="chartOptions" />
+      <template v-if="hasChartData">
+        <div class="chart-wrap">
+          <Bar :data="chartData" :options="chartOptions" />
+        </div>
+        <div class="insight">{{ t('stats.strongestDay', { day: strongestDay }) }}</div>
+      </template>
+      <div v-else class="empty-state">
+        <i class="ti ti-chart-bar-off"></i>
+        <span>{{ t('empty.noStats') }}</span>
       </div>
-      <div class="insight">{{ t('stats.strongestDay', { day: strongestDay }) }}</div>
     </section>
 
     <!-- category breakdown -->
@@ -193,6 +199,8 @@ const buckets = computed(() => {
   return list
 })
 
+const hasChartData = computed(() => buckets.value.some(b => b.done > 0))
+
 const chartData = computed(() => {
   const success = cssVar('--color-text-success') || '#34c759'
   const danger = cssVar('--color-text-danger') || '#ff3b30'
@@ -293,6 +301,12 @@ onMounted(async () => {
 .block-note { font-size: 12px; color: var(--color-text-tertiary); }
 .manage-link { border: none; background: none; color: var(--color-text-info); font-size: 13px; cursor: pointer; padding: 0; }
 .chart-wrap { height: 120px; margin: 14px 0 10px; }
+.empty-state {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: 28px 16px; text-align: center;
+  color: var(--color-text-tertiary); font-size: 14px;
+}
+.empty-state i { font-size: 28px; }
 .insight { font-size: 12px; color: var(--color-text-tertiary); }
 .insight span { color: var(--color-text-secondary); }
 

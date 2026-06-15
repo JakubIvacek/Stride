@@ -7,10 +7,6 @@ Zoznam ďalších vecí na dorobenie. Zhruba zoradené podľa priority.
 - [ ] **Opakujúce sa úlohy** (denne / týždenne).
 - [ ] **Vyhľadávanie úloh.**
 
-## Polish
-- [ ] **Potvrdenie pred zmazaním kategórie** (teraz maže okamžite).
-- [ ] **Prázdne stavy** — jemné hlášky, keď nie sú žiadne úlohy / kategórie / dáta v štatistikách.
-
 ## Pred ostrým nasadením
 - [ ] **PWA ikony (PNG)** — appka je už inštalovateľná cez `stride_icon.svg`, ale doplniť aj `pwa-192.png` / `pwa-512.png` (+ maskable) pre platformy, čo nemajú radi SVG.
 - [ ] **Supabase URL Configuration** — Site URL + Redirect URLs (aj produkčná doména) pre reset hesla a OAuth.
@@ -18,6 +14,8 @@ Zoznam ďalších vecí na dorobenie. Zhruba zoradené podľa priority.
 - [ ] Zvážiť vypnutie „Confirm email" alebo nastaviť vlastné SMTP.
 
 ## Hotovo
+- [x] Potvrdenie pred zmazaním (kategórie aj úlohy) + add form sa po pridaní zatvorí.
+- [x] Prázdne stavy — filter kategórie bez úloh (Domov), žiadne dáta v grafe (Štatistiky), prázdne kategórie.
 - [x] Kalendár — „Dnes" v ročnom zobrazení skočí na aktuálny mesiac.
 - [x] Prehadzovanie poradia taskov (drag & drop v rámci dňa, `position` stĺpec) + presun úlohy na iný deň (dátum v úprave).
 - [x] Účet / Nastavenia stránka — email, jazyk, téma (Systém/Svetlý/Tmavý), správa kategórií, zmena hesla, odhlásenie; ikona nastavení v hlavičke.

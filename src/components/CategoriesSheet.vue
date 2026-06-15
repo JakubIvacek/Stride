@@ -22,7 +22,11 @@
                 :value="c.name"
                 @change="rename(c, ($event.target as HTMLInputElement).value)"
               >
-              <button class="trash" @click="store.deleteCategory(c.id)" :aria-label="t('cat.deleteAria')">
+              <template v-if="confirmingId === c.id">
+                <button class="confirm-yes" @click="confirmDelete(c.id)">{{ t('common.delete') }}</button>
+                <button class="confirm-no" @click="confirmingId = null">{{ t('common.cancel') }}</button>
+              </template>
+              <button v-else class="trash" @click="confirmingId = c.id" :aria-label="t('cat.deleteAria')">
                 <i class="ti ti-trash"></i>
               </button>
             </div>
@@ -83,10 +87,16 @@ const emit = defineEmits<{ 'update:modelValue': [boolean] }>()
 
 const store = useCategoriesStore()
 const editing = ref<string | null>(null)
+const confirmingId = ref<string | null>(null)
 const newName = ref('')
 const newColor = ref(PALETTE[5])
 
 function close() { emit('update:modelValue', false) }
+
+async function confirmDelete(id: string) {
+  await store.deleteCategory(id)
+  confirmingId.value = null
+}
 
 function rename(c: Category, name: string) {
   const v = name.trim()
@@ -133,6 +143,12 @@ async function add() {
 }
 .cat-name:focus { outline: none; }
 .trash { border: none; background: none; color: var(--color-text-tertiary); cursor: pointer; font-size: 18px; padding: 4px; }
+.confirm-yes, .confirm-no {
+  border: none; cursor: pointer; font-size: 13px; font-weight: 500; flex-shrink: 0;
+  height: 30px; padding: 0 12px; border-radius: var(--border-radius-md);
+}
+.confirm-yes { background: var(--color-text-danger); color: #fff; }
+.confirm-no { background: var(--color-background-tertiary); color: var(--color-text-secondary); }
 .empty { color: var(--color-text-tertiary); font-size: 14px; padding: 12px 0; }
 
 .palette { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 0 4px; }
