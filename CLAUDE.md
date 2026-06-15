@@ -12,7 +12,7 @@ Weekly task-management PWA. Apple-clean, mobile-first, cloud-synced. Personal ap
 - `vite-plugin-pwa` (installable, offline app shell)
 - Supabase (Postgres + Auth + auto REST API) — this is the entire backend, no custom server
 - Chart.js via `vue-chartjs` (Stats screen only)
-- `vue-i18n` (EN/SK, default EN) — all UI strings go through it
+- `vue-i18n` (EN, SK, DE, ES, FR, IT, PT; default = browser language, else EN) — all UI strings go through it; adding a locale = add a block in `src/i18n/messages.ts` (dates/day/month names come from `Intl`, no per-locale arrays needed)
 - `vuedraggable` (SortableJS) — drag & drop task reorder
 
 ## Dev setup (new machine)
@@ -46,7 +46,7 @@ Weekly task-management PWA. Apple-clean, mobile-first, cloud-synced. Personal ap
 
 ## Conventions
 
-- **i18n:** all UI strings go through `vue-i18n` (`src/i18n/messages.ts`, EN + SK, **default EN**). Never hardcode user-facing text — add a key. Dates/day/month names are localized via the `useFmt()` composable (`src/i18n/dates.ts`) using `Intl`. Category/task names are user data, not translated.
+- **i18n:** all UI strings go through `vue-i18n` (`src/i18n/messages.ts`; EN, SK, DE, ES, FR, IT, PT; default = browser language else EN, persisted in `localStorage`). Never hardcode user-facing text — add a key. Dates/day/month names are localized via the `useFmt()` composable (`src/i18n/dates.ts`) using `Intl` (works for any locale). Language switch is a dropdown (`LanguageSwitch.vue`). Category/task names are user data, not translated.
 - Week starts **Monday** (po ut st št pi so ne).
 - **Bootstrap class-name collisions:** `bootstrap.css` is global, so DO NOT use these as custom class names — they break layout (`.row > *` forces full-width, `.card/.progress/.nav` add styles): `.row .col .nav .card .progress .container .badge .btn .form-control`. Use prefixed names (`.trow`, `.ac-card`, `.metric`, `.wk-progress`…). If a flex row mysteriously stacks vertically, suspect this first.
 - **Theme:** light/dark via `data-theme` on `<html>` + `localStorage` (`src/lib/theme.ts`); default follows system. Palettes + `--logo-filter` + `color-scheme` live in `src/styles/app.css` (dark block duplicated for system-dark and `[data-theme=dark]`).

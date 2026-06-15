@@ -15,7 +15,7 @@ Apple-clean, mobile-first týždenná appka na úlohy. Vue 3 + Supabase, inštal
 - **Kalendár** — mesiac + rok (nekonečný scroll), stav dní farebne, detail dňa.
 - **Štatistiky** — Týždeň/Mesiac/Rok, metriky + streaky, graf, rozpad podľa kategórie, **GitHub-style heatmapa** aktivity.
 - **Kategórie** — CRUD + farby, filter, tvorba priamo pri pridávaní úlohy.
-- **Účet** — email/heslo + Google, reset hesla, jazyk **EN/SK**, téma **systém/svetlá/tmavá**.
+- **Účet** — email/heslo + Google, reset hesla, **7 jazykov** (EN/SK/DE/ES/FR/IT/PT, auto podľa prehliadača), téma **systém/svetlá/tmavá**.
 
 ## Stack
 
