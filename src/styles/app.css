@@ -78,9 +78,14 @@ button{font-family:inherit;}
   position:relative;
   overflow:hidden;
 }
-/* roomier on desktop/web */
+/* on desktop/web show it as a centered boxed column */
 @media (min-width:600px){
-  .app-shell{ max-width:560px; }
+  .app-shell{
+    max-width:480px;
+    border-left:0.5px solid var(--color-border-tertiary);
+    border-right:0.5px solid var(--color-border-tertiary);
+    box-shadow:0 0 50px rgba(0,0,0,0.08);
+  }
 }
 .app-main{
   flex:1 1 auto;
