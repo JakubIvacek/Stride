@@ -43,7 +43,23 @@
       </div>
     </section>
 
-    <!-- activity heatmap -->
+    <!-- category breakdown -->
+    <section class="block bordered">
+      <div class="block-head">
+        <span class="block-title">{{ t('stats.byCategory') }}</span>
+        <button class="manage-link" @click="catSheet = true">{{ t('stats.manage') }}</button>
+      </div>
+      <template v-if="catBreakdown.length">
+        <div v-for="c in catBreakdown" :key="c.name" class="cat-row">
+          <span class="cat-name">{{ c.name }}</span>
+          <div class="cat-track"><div class="cat-fill" :style="{ width: c.pct + '%', background: c.color }"></div></div>
+          <span class="cat-val">{{ c.val }}</span>
+        </div>
+      </template>
+      <p v-else class="block-note">{{ t('stats.noneDone') }}</p>
+    </section>
+
+    <!-- activity heatmap (long-range, period-independent) -->
     <section class="block bordered">
       <div class="block-title">{{ t('stats.activity') }}</div>
       <div class="heat-wrap">
@@ -77,22 +93,6 @@
         <span class="heat-cell" :style="{ background: heatColor(4) }"></span>
         <span>{{ t('stats.more') }}</span>
       </div>
-    </section>
-
-    <!-- category breakdown -->
-    <section class="block bordered">
-      <div class="block-head">
-        <span class="block-title">{{ t('stats.byCategory') }}</span>
-        <button class="manage-link" @click="catSheet = true">{{ t('stats.manage') }}</button>
-      </div>
-      <template v-if="catBreakdown.length">
-        <div v-for="c in catBreakdown" :key="c.name" class="cat-row">
-          <span class="cat-name">{{ c.name }}</span>
-          <div class="cat-track"><div class="cat-fill" :style="{ width: c.pct + '%', background: c.color }"></div></div>
-          <span class="cat-val">{{ c.val }}</span>
-        </div>
-      </template>
-      <p v-else class="block-note">{{ t('stats.noneDone') }}</p>
     </section>
 
     <CategoriesSheet v-model="catSheet" />
