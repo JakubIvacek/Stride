@@ -39,6 +39,14 @@
                 :style="{ background: col }"
                 @click="store.updateCategory(c.id, { color: col }); editing = null"
               ></button>
+              <label class="chip custom" :class="{ on: !PALETTE.includes(c.color) }" :aria-label="t('cat.customColorAria')">
+                <input
+                  type="color"
+                  :value="c.color"
+                  @change="store.updateCategory(c.id, { color: ($event.target as HTMLInputElement).value })"
+                >
+                <i class="ti ti-color-picker"></i>
+              </label>
             </div>
           </div>
 
@@ -66,6 +74,10 @@
               :style="{ background: col }"
               @click="newColor = col"
             ></button>
+            <label class="chip custom" :class="{ on: !PALETTE.includes(newColor) }" :aria-label="t('cat.customColorAria')">
+              <input type="color" :value="newColor" @input="newColor = ($event.target as HTMLInputElement).value">
+              <i class="ti ti-color-picker"></i>
+            </label>
           </div>
         </div>
       </div>
@@ -151,9 +163,16 @@ async function add() {
 .confirm-no { background: var(--color-background-tertiary); color: var(--color-text-secondary); }
 .empty { color: var(--color-text-tertiary); font-size: 14px; padding: 12px 0; }
 
-.palette { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 0 4px; }
+.palette { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 0 4px; }
 .chip { width: 26px; height: 26px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0; }
 .chip.on { border-color: var(--color-text-primary); }
+.chip.custom {
+  position: relative; display: flex; align-items: center; justify-content: center;
+  width: 27px; height: 27px;
+  background: var(--color-text-tertiary); color: #fff;
+}
+.chip.custom input { position: absolute; inset: 0; opacity: 0; cursor: pointer; padding: 0; border: none; }
+.chip.custom i { font-size: 14px; pointer-events: none; }
 
 .new { padding: 12px 18px 4px; border-top: 0.5px solid var(--color-border-tertiary); margin-top: 6px; }
 .new-row { display: flex; align-items: center; gap: 12px; }

@@ -4,8 +4,6 @@ Nápady a vylepšenia na premyslenie. Legenda námahy: **S** = malé, **M** = st
 
 ## Správa úloh
 - [ ] **Vyhľadávanie úloh** (S) — hľadať podľa názvu/poznámky. 🔥
-- [ ] **Prenos nesplnených na ďalší deň** (M) — nedokončené sa automaticky posunú na dnešok. 🔥
-- [ ] **Čas úlohy** (S–M) — voliteľný čas dňa (napr. „14:00"), zoradenie podľa času.
 - [ ] **Priorita / vlajka** (S) — zvýrazniť dôležité úlohy.
 - [ ] **Podúlohy / checklist** v úlohe (M).
 - [ ] **Opakujúce sa úlohy** (M–L) — denne / týždenne; každý výskyt = samostatný task. Treba stĺpec `repeat` + generovanie výskytov + „zmazať tento / celú sériu".
@@ -20,7 +18,6 @@ Nápady a vylepšenia na premyslenie. Legenda námahy: **S** = malé, **M** = st
 - [ ] **Trend completion % v čase** (M).
 
 ## Kategórie / organizácia
-- [ ] **Color picker pre kategóriu** (S) — vlastná farba (HTML `color` input) popri preset palete.
 - [ ] **Preradenie poradia kategórií** (S).
 - [ ] **Filter podľa viacerých kategórií naraz** (S).
 - [ ] **Archív / pohľad len hotové** (S).
@@ -42,6 +39,8 @@ Nápady a vylepšenia na premyslenie. Legenda námahy: **S** = malé, **M** = st
 ---
 
 ## Hotovo
+- [x] Čas úlohy — voliteľný čas dňa (hodina:minúta select, 24h) + odhad trvania (15m–12h); riadok ukazuje „14:00 · 2h", zoradenie podľa času.
+- [x] Color picker pre kategóriu — vlastná farba (natívny `color` input s kvapkadlom) popri preset palete.
 - [x] Štatistiky — heatmapa aktivity (GitHub-style) + insight podľa obdobia (najsilnejší deň/týždeň/mesiac).
 - [x] Poznámka k úlohe — textarea v úprave, zobrazená pod názvom.
 - [x] Prehadzovanie poradia (drag & drop, `position`) + presun úlohy na iný deň.

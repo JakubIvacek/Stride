@@ -92,6 +92,7 @@ import { useTasksStore } from '@/stores/tasks'
 import { useFmt } from '@/i18n/dates'
 import { parseYmd, today, ymd } from '@/lib/dates'
 import { STATUS_COLOR, dayStatus, type DayStatus } from '@/lib/status'
+import { byDayOrder } from '@/lib/sortTasks'
 
 const { t } = useI18n()
 const fmt = useFmt()
@@ -166,7 +167,7 @@ function scrollToCurrentInYear() {
 
 const sheetTasks = computed(() =>
   sheetDate.value
-    ? tasksStore.tasks.filter(t => t.task_date === sheetDate.value).sort((a, b) => a.position - b.position)
+    ? tasksStore.tasks.filter(t => t.task_date === sheetDate.value).sort(byDayOrder)
     : [])
 const sheetTitle = computed(() => (sheetDate.value ? fmt.fullDate(sheetDate.value) : ''))
 

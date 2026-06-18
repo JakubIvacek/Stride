@@ -54,12 +54,34 @@
                 <button class="add-cancel" @click="moveOpen = false"><i class="ti ti-x"></i></button>
               </template>
               <template v-else>
-                <button class="delete-btn" @click="confirmDelete = true">
-                  <i class="ti ti-trash"></i> {{ t('day.deleteItem') }}
-                </button>
-                <button class="move-btn" @click="moveOpen = true">
-                  <i class="ti ti-calendar-event"></i> {{ t('day.moveTo') }}
-                </button>
+                <div class="edit-actions">
+                  <div class="time-row">
+                    <div class="time-group">
+                      <select v-model="editHour" class="time-sel" :aria-label="t('day.time')">
+                        <option value="">--</option>
+                        <option v-for="h in HOURS" :key="h" :value="h">{{ h }}</option>
+                      </select>
+                      <span class="unit">h</span>
+                      <select v-model="editMin" class="time-sel" :aria-label="t('day.time')">
+                        <option value="">--</option>
+                        <option v-for="m in MINUTES" :key="m" :value="m">{{ m }}</option>
+                      </select>
+                      <span class="unit">m</span>
+                    </div>
+                    <select v-model="editDur" class="dur-input" :aria-label="t('day.duration')">
+                      <option value="">{{ t('day.duration') }}</option>
+                      <option v-for="m in DURATIONS" :key="m" :value="String(m)">{{ fmtDur(m) }}</option>
+                    </select>
+                  </div>
+                  <div class="action-row">
+                    <button class="delete-btn" @click="confirmDelete = true">
+                      <i class="ti ti-trash"></i> {{ t('common.delete') }}
+                    </button>
+                    <button class="move-btn" @click="moveOpen = true">
+                      <i class="ti ti-calendar-event"></i> {{ t('day.moveTo') }}
+                    </button>
+                  </div>
+                </div>
               </template>
             </div>
           </div>
@@ -75,6 +97,7 @@
             >
               <i v-if="task.status === 'done'" class="ti ti-check"></i>
             </button>
+            <span v-if="task.task_time || task.duration_min" class="row-time" :class="{ done: task.status === 'done' }">{{ timeLabel(task) }}</span>
             <button type="button" class="row-text-btn" @click="openEdit(task)">
               <span class="row-text" :class="{ done: task.status === 'done' }">{{ task.title }}</span>
               <span v-if="task.note" class="row-note">{{ task.note }}</span>
@@ -104,6 +127,24 @@
           <button class="add-confirm" @click="submit"><i class="ti ti-check"></i></button>
           <button class="add-cancel" @click="cancel"><i class="ti ti-x"></i></button>
         </div>
+        <div class="time-row">
+          <div class="time-group">
+            <select v-model="newHour" class="time-sel" :aria-label="t('day.time')">
+              <option value="">--</option>
+              <option v-for="h in HOURS" :key="h" :value="h">{{ h }}</option>
+            </select>
+            <span class="unit">h</span>
+            <select v-model="newMin" class="time-sel" :aria-label="t('day.time')">
+              <option value="">--</option>
+              <option v-for="m in MINUTES" :key="m" :value="m">{{ m }}</option>
+            </select>
+            <span class="unit">m</span>
+          </div>
+          <select v-model="newDur" class="dur-input" :aria-label="t('day.duration')">
+            <option value="">{{ t('day.duration') }}</option>
+            <option v-for="m in DURATIONS" :key="m" :value="String(m)">{{ fmtDur(m) }}</option>
+          </select>
+        </div>
         <CategoryPicker v-model="selectedCat" />
       </div>
       <button v-else type="button" class="trow trow-add" @click="openAdd">
@@ -115,7 +156,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import draggable from 'vuedraggable'
 import { useTasksStore } from '@/stores/tasks'
@@ -137,8 +178,29 @@ const props = withDefaults(defineProps<{
 const tasksStore = useTasksStore()
 const categoriesStore = useCategoriesStore()
 
+const DURATIONS = [15, 30, 45, 60, 90, 120, 180, 240, 480, 720]
+const HOURS = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'))
+const MINUTES = Array.from({ length: 12 }, (_, i) => String(i * 5).padStart(2, '0'))
+
+function fmtDur(min: number): string {
+  if (min < 60) return `${min}m`
+  const h = min / 60
+  return `${Number.isInteger(h) ? h : h.toFixed(1)}h`
+}
+
+function timeLabel(task: Task): string {
+  const time = task.task_time ? task.task_time.slice(0, 5) : ''
+  const dur = task.duration_min ? fmtDur(task.duration_min) : ''
+  if (time && dur) return `${time} · ${dur}`
+  if (time) return time
+  return `~${dur}`
+}
+
 const adding = ref(false)
 const newTitle = ref('')
+const newHour = ref('')
+const newMin = ref('')
+const newDur = ref('')
 const selectedCat = ref<string | null>(null)
 const inputEl = ref<HTMLInputElement | null>(null)
 
@@ -147,6 +209,16 @@ const editTitle = ref('')
 const editCat = ref<string | null>(null)
 const editDate = ref('')
 const editNote = ref('')
+const editHour = ref('')
+const editMin = ref('')
+const editDur = ref('')
+
+// Minute mirrors the hour: no hour → '--', picking an hour defaults minute to '00'.
+watch(newHour, h => { newMin.value = h ? (newMin.value || '00') : '' })
+watch(editHour, h => { editMin.value = h ? (editMin.value || '00') : '' })
+
+// 'HH'+'MM' selects → 'HH:MM' or null when no hour picked
+const composeTime = (hour: string, min: string) => (hour ? `${hour}:${min || '00'}` : null)
 const confirmDelete = ref(false)
 const moveOpen = ref(false)
 const editEl = ref<HTMLInputElement[] | HTMLInputElement | null>(null)
@@ -159,6 +231,9 @@ async function openEdit(task: Task) {
   editCat.value = task.category_id
   editDate.value = task.task_date
   editNote.value = task.note ?? ''
+  editHour.value = task.task_time ? task.task_time.slice(0, 2) : ''
+  editMin.value = task.task_time ? task.task_time.slice(3, 5) : ''
+  editDur.value = task.duration_min != null ? String(task.duration_min) : ''
   confirmDelete.value = false
   moveOpen.value = false
   await nextTick()
@@ -171,6 +246,8 @@ async function saveEdit(task: Task) {
   if (!title) return
   await tasksStore.updateTask(task.id, {
     title, category_id: editCat.value, note: editNote.value.trim() || null,
+    task_time: composeTime(editHour.value, editMin.value),
+    duration_min: editDur.value ? Number(editDur.value) : null,
   })
   editingId.value = null
 }
@@ -214,14 +291,24 @@ async function openAdd() {
 async function submit() {
   const title = newTitle.value.trim()
   if (!title) return
-  await tasksStore.addTask(title, props.date, selectedCat.value)
+  await tasksStore.addTask(
+    title, props.date, selectedCat.value,
+    composeTime(newHour.value, newMin.value),
+    newDur.value ? Number(newDur.value) : null,
+  )
   newTitle.value = ''
+  newHour.value = ''
+  newMin.value = ''
+  newDur.value = ''
   selectedCat.value = null
   adding.value = false
 }
 
 function cancel() {
   newTitle.value = ''
+  newHour.value = ''
+  newMin.value = ''
+  newDur.value = ''
   adding.value = false
 }
 
@@ -276,6 +363,11 @@ defineExpose({ openAdd })
   font-size: 12px; color: var(--color-text-tertiary);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
 }
+.row-time {
+  flex-shrink: 0; font-size: 13px; font-variant-numeric: tabular-nums;
+  color: var(--color-text-secondary); min-width: 38px;
+}
+.row-time.done { color: var(--color-text-tertiary); text-decoration: line-through; }
 .row-text { font-size: 15px; color: var(--color-text-primary); }
 .row-text.done { color: var(--color-text-tertiary); text-decoration: line-through; }
 .row-text.muted { font-size: 14px; color: var(--color-text-tertiary); }
@@ -309,6 +401,14 @@ defineExpose({ openAdd })
 .drag-ghost { opacity: 0.4; }
 
 .edit-bottom { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 0 5px; }
+.edit-actions { width: 100%; display: flex; flex-direction: column; gap: 8px; padding: 0 10%; box-sizing: border-box; }
+@media (max-width: 600px) { .edit-actions { padding: 0 5%; } }
+.time-group { display: flex; align-items: center; gap: 4px; flex: 1; min-width: 0; }
+.time-group .time-sel { flex: 1; min-width: 0; text-align: center; }
+.unit { font-size: 12px; color: var(--color-text-tertiary); }
+.time-row .dur-input { flex: 1; min-width: 0; }
+.action-row { display: flex; gap: 10px; }
+.action-row > button { flex: 1; justify-content: center; }
 .eb-q { font-size: 14px; color: var(--color-text-secondary); }
 .move-btn {
   display: flex; align-items: center; gap: 6px;
@@ -353,6 +453,16 @@ defineExpose({ openAdd })
   padding: 8px 10px; font-size: 14px; font-family: inherit; resize: vertical;
 }
 .note-input:focus { outline: none; border-color: var(--color-text-info); }
+.time-row { display: flex; align-items: center; gap: 8px; color: var(--color-text-tertiary); }
+.time-sel, .dur-input {
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: var(--border-radius-md);
+  background: var(--color-background-primary);
+  color: var(--color-text-primary);
+  height: 34px; padding: 0 8px; font-size: 14px; font-family: inherit; cursor: pointer;
+}
+.time-sel:focus, .dur-input:focus { outline: none; border-color: var(--color-text-info); }
+.time-sel:disabled { opacity: 0.5; cursor: default; }
 .add-confirm, .add-cancel {
   width: 34px; height: 34px; border-radius: var(--border-radius-md);
   border: none; cursor: pointer; flex-shrink: 0;

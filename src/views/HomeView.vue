@@ -119,6 +119,7 @@ import { useTasksStore } from '@/stores/tasks'
 import { useCategoriesStore } from '@/stores/categories'
 import { useFmt } from '@/i18n/dates'
 import { addDays, getMonday, today } from '@/lib/dates'
+import { byDayOrder } from '@/lib/sortTasks'
 
 const { t } = useI18n()
 const fmt = useFmt()
@@ -150,7 +151,7 @@ const weekDays = computed(() => {
     const date = addDays(monday.value, i)
     const tasks = filteredTasks.value
       .filter(task => task.task_date === date)
-      .sort((a, b) => a.position - b.position)
+      .sort(byDayOrder)
     const isToday = date === t
     const isFuture = date > t
     const full = tasks.length > 0 || isToday || expanded.value.has(date)

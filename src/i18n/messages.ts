@@ -28,6 +28,8 @@ export const messages = {
       moveTo: 'Move to',
       reorder: 'Reorder',
       note: 'Note (optional)',
+      time: 'Time (optional)',
+      duration: 'Duration',
     },
     cat: {
       none: 'None',
@@ -41,6 +43,7 @@ export const messages = {
       manage: 'Manage',
       all: 'All',
       colorAria: 'Change color',
+      customColorAria: 'Custom color',
       deleteAria: 'Delete',
     },
     cal: { month: 'Month', year: 'Year', today: 'Today' },
@@ -149,6 +152,8 @@ export const messages = {
       moveTo: 'Presunúť na',
       reorder: 'Presunúť',
       note: 'Poznámka (voliteľné)',
+      time: 'Čas (voliteľné)',
+      duration: 'Trvanie',
     },
     cat: {
       none: 'Žiadna',
@@ -162,6 +167,7 @@ export const messages = {
       manage: 'Spravovať',
       all: 'Všetky',
       colorAria: 'Zmeniť farbu',
+      customColorAria: 'Vlastná farba',
       deleteAria: 'Vymazať',
     },
     cal: { month: 'Mesiac', year: 'Rok', today: 'Dnes' },
@@ -256,12 +262,12 @@ export const messages = {
     day: {
       today: 'heute', addItem: 'Aufgabe hinzufügen', itemName: 'Aufgabenname', deleteItem: 'Aufgabe löschen',
       markDone: 'Als erledigt markieren', markUndone: 'Als offen markieren', moveTo: 'Verschieben auf',
-      reorder: 'Sortieren', note: 'Notiz (optional)',
+      reorder: 'Sortieren', note: 'Notiz (optional)', time: 'Uhrzeit (optional)', duration: 'Dauer',
     },
     cat: {
       none: 'Keine', new: 'Neu', name: 'Kategoriename', title: 'Kategorien', newCategory: 'Neue Kategorie',
       add: 'Hinzufügen', closeAria: 'Schließen', empty: 'Noch keine Kategorien.', manage: 'Verwalten',
-      all: 'Alle', colorAria: 'Farbe ändern', deleteAria: 'Löschen',
+      all: 'Alle', colorAria: 'Farbe ändern', customColorAria: 'Eigene Farbe', deleteAria: 'Löschen',
     },
     cal: { month: 'Monat', year: 'Jahr', today: 'Heute' },
     stats: {
@@ -310,12 +316,12 @@ export const messages = {
     day: {
       today: 'hoy', addItem: 'Añadir tarea', itemName: 'Nombre de la tarea', deleteItem: 'Eliminar tarea',
       markDone: 'Marcar como hecha', markUndone: 'Marcar como pendiente', moveTo: 'Mover a',
-      reorder: 'Reordenar', note: 'Nota (opcional)',
+      reorder: 'Reordenar', note: 'Nota (opcional)', time: 'Hora (opcional)', duration: 'Duración',
     },
     cat: {
       none: 'Ninguna', new: 'Nueva', name: 'Nombre de categoría', title: 'Categorías', newCategory: 'Nueva categoría',
       add: 'Añadir', closeAria: 'Cerrar', empty: 'Aún no hay categorías.', manage: 'Gestionar',
-      all: 'Todas', colorAria: 'Cambiar color', deleteAria: 'Eliminar',
+      all: 'Todas', colorAria: 'Cambiar color', customColorAria: 'Color personalizado', deleteAria: 'Eliminar',
     },
     cal: { month: 'Mes', year: 'Año', today: 'Hoy' },
     stats: {
@@ -364,12 +370,12 @@ export const messages = {
     day: {
       today: 'aujourd’hui', addItem: 'Ajouter une tâche', itemName: 'Nom de la tâche', deleteItem: 'Supprimer la tâche',
       markDone: 'Marquer comme faite', markUndone: 'Marquer comme à faire', moveTo: 'Déplacer au',
-      reorder: 'Réordonner', note: 'Note (facultatif)',
+      reorder: 'Réordonner', note: 'Note (facultatif)', time: 'Heure (facultatif)', duration: 'Durée',
     },
     cat: {
       none: 'Aucune', new: 'Nouvelle', name: 'Nom de catégorie', title: 'Catégories', newCategory: 'Nouvelle catégorie',
       add: 'Ajouter', closeAria: 'Fermer', empty: 'Aucune catégorie pour l’instant.', manage: 'Gérer',
-      all: 'Toutes', colorAria: 'Changer la couleur', deleteAria: 'Supprimer',
+      all: 'Toutes', colorAria: 'Changer la couleur', customColorAria: 'Couleur personnalisée', deleteAria: 'Supprimer',
     },
     cal: { month: 'Mois', year: 'Année', today: 'Aujourd’hui' },
     stats: {
@@ -418,12 +424,12 @@ export const messages = {
     day: {
       today: 'oggi', addItem: 'Aggiungi attività', itemName: 'Nome attività', deleteItem: 'Elimina attività',
       markDone: 'Segna come fatta', markUndone: 'Segna come da fare', moveTo: 'Sposta al',
-      reorder: 'Riordina', note: 'Nota (facoltativa)',
+      reorder: 'Riordina', note: 'Nota (facoltativa)', time: 'Ora (facoltativa)', duration: 'Durata',
     },
     cat: {
       none: 'Nessuna', new: 'Nuova', name: 'Nome categoria', title: 'Categorie', newCategory: 'Nuova categoria',
       add: 'Aggiungi', closeAria: 'Chiudi', empty: 'Ancora nessuna categoria.', manage: 'Gestisci',
-      all: 'Tutte', colorAria: 'Cambia colore', deleteAria: 'Elimina',
+      all: 'Tutte', colorAria: 'Cambia colore', customColorAria: 'Colore personalizzato', deleteAria: 'Elimina',
     },
     cal: { month: 'Mese', year: 'Anno', today: 'Oggi' },
     stats: {
@@ -472,12 +478,12 @@ export const messages = {
     day: {
       today: 'hoje', addItem: 'Adicionar tarefa', itemName: 'Nome da tarefa', deleteItem: 'Eliminar tarefa',
       markDone: 'Marcar como feita', markUndone: 'Marcar como pendente', moveTo: 'Mover para',
-      reorder: 'Reordenar', note: 'Nota (opcional)',
+      reorder: 'Reordenar', note: 'Nota (opcional)', time: 'Hora (opcional)', duration: 'Duração',
     },
     cat: {
       none: 'Nenhuma', new: 'Nova', name: 'Nome da categoria', title: 'Categorias', newCategory: 'Nova categoria',
       add: 'Adicionar', closeAria: 'Fechar', empty: 'Ainda sem categorias.', manage: 'Gerir',
-      all: 'Todas', colorAria: 'Mudar cor', deleteAria: 'Eliminar',
+      all: 'Todas', colorAria: 'Mudar cor', customColorAria: 'Cor personalizada', deleteAria: 'Eliminar',
     },
     cal: { month: 'Mês', year: 'Ano', today: 'Hoje' },
     stats: {

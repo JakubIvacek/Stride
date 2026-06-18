@@ -49,6 +49,8 @@ create table tasks (
   user_id      uuid not null references auth.users (id) on delete cascade default auth.uid(),
   title        text not null,
   task_date    date not null,
+  task_time    time,
+  duration_min int,
   status       text not null default 'todo' check (status in ('todo','done')),
   category_id  uuid references categories (id) on delete set null,
   note         text,
@@ -82,6 +84,13 @@ with ordered as (
   from tasks
 )
 update tasks t set position = o.rn from ordered o where o.id = t.id;
+```
+
+### Migrácia pre existujúcu DB (voliteľný čas + odhad trvania)
+
+```sql
+alter table tasks add column if not exists task_time time;
+alter table tasks add column if not exists duration_min int;
 ```
 
 ## Inštalácia a spustenie

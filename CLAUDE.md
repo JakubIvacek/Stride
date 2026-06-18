@@ -35,12 +35,14 @@ Weekly task-management PWA. Apple-clean, mobile-first, cloud-synced. Personal ap
 
 ## Data model (already created in Supabase, see README.md for SQL)
 
-- `tasks`: `id, user_id, title, task_date (date), status ('todo'|'done'), category_id (nullable FK), note, position (int), created_at, completed_at`
+- `tasks`: `id, user_id, title, task_date (date), task_time (time, nullable), duration_min (int, nullable), status ('todo'|'done'), category_id (nullable FK), note, position (int), created_at, completed_at`
 - `categories`: `id, user_id, name, color, created_at`
 - Notes:
   - Column is `task_date`, NOT `date` (reserved word).
   - `category_id` is nullable. Categories are **active** (CRUD + colors + filter implemented).
   - `position` orders tasks within a day (drag & drop); store sets it on add and on reorder. New DBs: run the `position` migration in `README.md`.
+  - `task_time` is an optional time of day ('HH:MM'). Within a day, timed tasks sort first ascending by time, untimed tasks keep `position` order below them (`src/lib/sortTasks.ts` `byDayOrder`, used by Home + Calendar day detail). Nullable; run the `task_time` migration in `README.md` on existing DBs.
+  - `duration_min` is an optional estimated duration in minutes (dropdown 15m–4h in `DayList.vue`). Independent of `task_time` — can be set alone. Row shows `14:00 · 2h`, or `~2h` when only duration. Nullable; same migration block in `README.md`.
   - `completed_at` is set **app-side** on toggle (store sets `new Date().toISOString()` when status → done, `null` when → todo). No DB trigger.
   - Weeks are NOT stored. Group by ISO week over `task_date`; charts aggregate over the same column. Index `(user_id, task_date)` covers week/month range queries.
 
