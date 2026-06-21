@@ -1,7 +1,7 @@
 export const messages = {
   en: {
     common: { delete: 'Delete', cancel: 'Cancel', confirmDelete: 'Delete?' },
-    undo: { deleted: 'Task deleted', action: 'Undo' },
+    undo: { action: 'Undo' },
     empty: {
       noTasksCategory: 'No tasks in this category this week.',
       noStats: 'No completed tasks yet — finish a few to see your stats.',
@@ -126,7 +126,7 @@ export const messages = {
   },
   sk: {
     common: { delete: 'Zmazať', cancel: 'Zrušiť', confirmDelete: 'Zmazať?' },
-    undo: { deleted: 'Úloha zmazaná', action: 'Späť' },
+    undo: { action: 'Späť' },
     empty: {
       noTasksCategory: 'Žiadne úlohy v tejto kategórii tento týždeň.',
       noStats: 'Zatiaľ žiadne dokončené úlohy — dokonči pár a uvidíš štatistiky.',
@@ -251,7 +251,7 @@ export const messages = {
   },
   de: {
     common: { delete: 'Löschen', cancel: 'Abbrechen', confirmDelete: 'Löschen?' },
-    undo: { deleted: 'Aufgabe gelöscht', action: 'Rückgängig' },
+    undo: { action: 'Rückgängig' },
     empty: {
       noTasksCategory: 'Keine Aufgaben in dieser Kategorie diese Woche.',
       noStats: 'Noch keine erledigten Aufgaben — erledige ein paar, um Statistiken zu sehen.',
@@ -306,7 +306,7 @@ export const messages = {
   },
   es: {
     common: { delete: 'Eliminar', cancel: 'Cancelar', confirmDelete: '¿Eliminar?' },
-    undo: { deleted: 'Tarea eliminada', action: 'Deshacer' },
+    undo: { action: 'Deshacer' },
     empty: {
       noTasksCategory: 'No hay tareas en esta categoría esta semana.',
       noStats: 'Aún no hay tareas completadas — completa algunas para ver tus estadísticas.',
@@ -361,7 +361,7 @@ export const messages = {
   },
   fr: {
     common: { delete: 'Supprimer', cancel: 'Annuler', confirmDelete: 'Supprimer ?' },
-    undo: { deleted: 'Tâche supprimée', action: 'Annuler' },
+    undo: { action: 'Annuler' },
     empty: {
       noTasksCategory: 'Aucune tâche dans cette catégorie cette semaine.',
       noStats: 'Aucune tâche terminée pour l’instant — terminez-en quelques-unes pour voir vos statistiques.',
@@ -416,7 +416,7 @@ export const messages = {
   },
   it: {
     common: { delete: 'Elimina', cancel: 'Annulla', confirmDelete: 'Eliminare?' },
-    undo: { deleted: 'Attività eliminata', action: 'Annulla' },
+    undo: { action: 'Annulla' },
     empty: {
       noTasksCategory: 'Nessuna attività in questa categoria questa settimana.',
       noStats: 'Ancora nessuna attività completata — completane alcune per vedere le statistiche.',
@@ -471,7 +471,7 @@ export const messages = {
   },
   pt: {
     common: { delete: 'Eliminar', cancel: 'Cancelar', confirmDelete: 'Eliminar?' },
-    undo: { deleted: 'Tarefa eliminada', action: 'Anular' },
+    undo: { action: 'Anular' },
     empty: {
       noTasksCategory: 'Sem tarefas nesta categoria esta semana.',
       noStats: 'Ainda sem tarefas concluídas — conclui algumas para ver as estatísticas.',

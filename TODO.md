@@ -25,7 +25,6 @@ Nápady a vylepšenia na premyslenie. Legenda námahy: **S** = malé, **M** = st
 - [ ] **Zmazať účet + dáta** (S).
 
 ## PWA / platforma
-- [ ] **PWA PNG ikony** (S) — `pwa-192.png` / `pwa-512.png` (+ maskable); svg už funguje. 🔥
 - [ ] **Pripomienky / push notifikácie** (L) — „nezabudni na úlohu" (potrebuje riešenie pre push).
 - [ ] **Offline-first** (L) — IndexedDB + sync (CLAUDE.md to vedome odkladá).
 
@@ -37,6 +36,7 @@ Nápady a vylepšenia na premyslenie. Legenda námahy: **S** = malé, **M** = st
 ---
 
 ## Hotovo
+- [x] PWA PNG ikony — pwa-192/512 + maskable-512 v `public/`, zapojené do manifestu (`vite.config.ts`) + apple-touch-icon v `index.html`.
 - [x] Swipe na úlohe (mobil) — → hotovo/nehotovo, ← zmazať (prah 80px, farebný podklad, nekoliduje s prepínaním týždňov).
 - [x] Undo po zmazaní — inline riadok „Späť" (~5 s) na mieste zmazanej úlohy (swipe aj tlačidlo Delete); vráti úlohu vrátane poradia.
 - [x] Čas úlohy — voliteľný čas dňa (hodina:minúta select, 24h) + odhad trvania (15m–12h); riadok ukazuje „14:00 · 2h", zoradenie podľa času.
