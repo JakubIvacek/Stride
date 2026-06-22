@@ -484,7 +484,7 @@ onMounted(async () => {
 .insight { font-size: 12px; color: var(--color-text-tertiary); }
 .insight span { color: var(--color-text-secondary); }
 
-.heat-wrap { display: flex; align-items: flex-start; padding: 6px 0 4px; }
+.heat-wrap { display: flex; align-items: flex-start; justify-content: center; padding: 6px 0 4px; }
 .heat-days { display: flex; flex-direction: column; gap: 3px; margin-right: 6px; flex-shrink: 0; }
 .heat-days span { height: 13px; line-height: 13px; font-size: 9px; color: var(--color-text-tertiary); }
 .heat-days-spacer { height: 18px !important; }
@@ -495,7 +495,7 @@ onMounted(async () => {
 .heat-grid { display: flex; gap: 3px; }
 .heat-col { display: flex; flex-direction: column; gap: 3px; }
 .heat-cell { width: 13px; height: 13px; border-radius: 3px; flex-shrink: 0; }
-.heat-legend { display: flex; align-items: center; gap: 4px; margin-top: 10px; padding-left: 15px; font-size: 11px; color: var(--color-text-tertiary); }
+.heat-legend { display: flex; align-items: center; justify-content: center; gap: 4px; margin-top: 10px; font-size: 11px; color: var(--color-text-tertiary); }
 .heat-legend .heat-cell { width: 11px; height: 11px; }
 
 .cat-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }

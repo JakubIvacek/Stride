@@ -19,12 +19,8 @@ Nápady a vylepšenia na premyslenie. Legenda námahy: **S** = malé, **M** = st
 - [ ] Zvážiť vypnutie „Confirm email" alebo vlastné SMTP (default email má prísne limity).
 
 ## Pred launchom (produkt / právne / marketing)
-- [ ] **Privacy Policy** (S) — nutná, keď zbieraš email + úlohy. Nemusí byť zložitá. *(netreba kód — len text na statickej stránke, route `/privacy` + odkaz v Settings.)*
-- [ ] **Terms of Service** (S) — krátke; aby appka pôsobila ako reálny produkt. *(rovnako: route `/terms` + odkaz v Settings.)*
-- [ ] **Kontaktný email** (S) — napr. `hello@strideapp.xyz` / `support@…`.
 - [ ] **Favicon + social preview / Open Graph** (S) — pri zdieľaní linku sa ukáže logo + názov + popis. Veľa indie appiek na to zabudne. *(lacné, viem spraviť rýchlo.)*
 - [ ] **Analytics** (S) — aspoň niečo: koľko prišlo / zaregistrovalo sa / vrátilo sa. *(Plausible = najjednoduchší, 1 script tag, GDPR-friendly.)*
-- [ ] **Feedback button** (S) — v Settings „Send feedback" → `mailto:`. Lacné a brutálne užitočné. *(pokojne pribaliť k niektorému Settings commitu.)*
 
 ## Nice to have (marketing)
 - [ ] **Demo účet** (S) — „Try demo" bez registrácie (demo mód už existuje v dev — sprístupniť aj v prod). Super pre marketing videá.
@@ -33,6 +29,8 @@ Nápady a vylepšenia na premyslenie. Legenda námahy: **S** = malé, **M** = st
 ---
 
 ## Hotovo
+- [x] Settings „About" — Privacy Policy + Terms of Service ako vlastné pod-stránky (banner s ikonou + sekcie s ikonami/odrážkami), Send Feedback (`mailto:stridebykeno@gmail.com`), Version 1.0.0. Kontaktný email vybavený.
+- [x] Tablet layout — na dotykových zariadeniach (≥600px, `pointer:coarse`) full-screen namiesto úzkeho stĺpca; desktop (myš) ostáva boxovaný.
 - [x] Filter podľa viacerých kategórií naraz — chipy na Domove sú toggle (viac aktívnych naraz, OR), „All" = prázdny výber. Len frontend (`selectedCats` Set).
 - [x] Týždenný cieľ — full-width karta v Štatistikách (progres hotové/cieľ za aktuálny týždeň, zelená pri dosiahnutí); cieľ sa nastavuje v Settings (roller) — `lib/goal.ts` + localStorage.
 - [x] Preradenie poradia kategórií — drag (`⋮⋮` handle) v Categories sheet cez `vuedraggable`; `categories.position` stĺpec, premieta sa do filter-chipov. (migrácia v README)

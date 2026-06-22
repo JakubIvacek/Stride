@@ -78,14 +78,18 @@ button{font-family:inherit;}
   position:relative;
   overflow:hidden;
 }
-/* on desktop/web show it as a centered boxed column */
-@media (min-width:600px){
+/* on desktop (mouse) show it as a centered boxed column */
+@media (min-width:600px) and (pointer:fine){
   .app-shell{
-    max-width:480px;
+    max-width:530px;
     border-left:0.5px solid var(--color-border-tertiary);
     border-right:0.5px solid var(--color-border-tertiary);
     box-shadow:0 0 50px rgba(0,0,0,0.08);
   }
+}
+/* on tablets (touch) use 85% of the screen width, centered */
+@media (min-width:600px) and (pointer:coarse){
+  .app-shell{ max-width:85%; }
 }
 .app-main{
   flex:1 1 auto;

@@ -79,6 +79,29 @@
       <p class="data-note">{{ t('account.importNote') }}</p>
       <p v-if="dataMsg" class="data-msg" :class="{ error: dataErr }">{{ dataMsg }}</p>
 
+      <div class="sec-label">{{ t('account.secAbout') }}</div>
+      <section class="ac-card">
+        <button class="ac-row link" @click="view = 'privacy'">
+          <span class="row-label">{{ t('account.privacy') }}</span>
+          <i class="ti ti-chevron-right row-ic"></i>
+        </button>
+        <div class="divider"></div>
+        <button class="ac-row link" @click="view = 'terms'">
+          <span class="row-label">{{ t('account.terms') }}</span>
+          <i class="ti ti-chevron-right row-ic"></i>
+        </button>
+        <div class="divider"></div>
+        <a class="ac-row link" :href="`mailto:${CONTACT_EMAIL}?subject=Stride feedback`">
+          <span class="row-label">{{ t('account.feedback') }}</span>
+          <i class="ti ti-external-link row-ic"></i>
+        </a>
+        <div class="divider"></div>
+        <div class="ac-row">
+          <span class="row-label">{{ t('account.version') }}</span>
+          <span class="row-value">{{ APP_VERSION }}</span>
+        </div>
+      </section>
+
       <button class="signout-btn" @click="auth.signOut()">
         <i class="ti ti-logout"></i> {{ t('account.signOut') }}
       </button>
@@ -98,7 +121,7 @@
     </div>
 
     <!-- change password sub-view -->
-    <div v-else class="ac-body">
+    <div v-else-if="view === 'password'" class="ac-body">
       <h2 class="pw-title">{{ t('account.changePassword') }}</h2>
 
       <div class="pw-banner">
@@ -166,6 +189,116 @@
       <button class="cancel-btn" @click="cancelPw">{{ t('common.cancel') }}</button>
     </div>
 
+    <!-- privacy policy (static) -->
+    <div v-else-if="view === 'privacy'" class="ac-body legal">
+      <h2 class="pw-title">{{ t('account.privacy') }}</h2>
+      <p class="legal-updated">{{ t('account.lastUpdated') }}</p>
+      <div class="legal-banner">
+        <div class="legal-banner-ic"><i class="ti ti-shield-lock"></i></div>
+        <div>
+          <div class="legal-banner-title">We respect your privacy.</div>
+          <div class="legal-banner-sub">This policy explains what information we collect and how we use it.</div>
+        </div>
+      </div>
+
+      <div class="legal-sec">
+        <i class="ti ti-user legal-ic"></i>
+        <div class="legal-body">
+          <h3 class="legal-h">Information we collect</h3>
+          <p class="legal-sub">We collect only what is necessary to provide and improve Stride.</p>
+          <ul class="legal-list">
+            <li>Email address</li>
+            <li>Tasks and categories you create</li>
+            <li>Basic usage analytics</li>
+          </ul>
+        </div>
+      </div>
+      <div class="legal-sec">
+        <i class="ti ti-database legal-ic"></i>
+        <div class="legal-body">
+          <h3 class="legal-h">How we use your information</h3>
+          <p class="legal-sub">Your information is used to:</p>
+          <ul class="legal-list">
+            <li>Provide and sync the service</li>
+            <li>Authenticate your account</li>
+            <li>Improve Stride and fix issues</li>
+          </ul>
+        </div>
+      </div>
+      <div class="legal-sec">
+        <i class="ti ti-lock legal-ic"></i>
+        <div class="legal-body">
+          <h3 class="legal-h">Your rights</h3>
+          <p class="legal-sub">You have full control over your data.</p>
+          <ul class="legal-list">
+            <li>Export your data at any time</li>
+            <li>Delete your account and data</li>
+          </ul>
+        </div>
+      </div>
+      <div class="legal-sec">
+        <i class="ti ti-mail legal-ic"></i>
+        <div class="legal-body">
+          <h3 class="legal-h">Contact</h3>
+          <p class="legal-sub">If you have any questions, contact us at:</p>
+          <p class="legal-p"><a :href="`mailto:${CONTACT_EMAIL}`">{{ CONTACT_EMAIL }}</a></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- terms of service (static) -->
+    <div v-else class="ac-body legal">
+      <h2 class="pw-title">{{ t('account.terms') }}</h2>
+      <p class="legal-updated">{{ t('account.lastUpdated') }}</p>
+      <div class="legal-banner">
+        <div class="legal-banner-ic"><i class="ti ti-file-text"></i></div>
+        <div>
+          <div class="legal-banner-title">By using Stride you agree to these terms.</div>
+          <div class="legal-banner-sub">Please read them carefully.</div>
+        </div>
+      </div>
+
+      <div class="legal-sec">
+        <i class="ti ti-circle-check legal-ic"></i>
+        <div class="legal-body">
+          <h3 class="legal-h">Using Stride</h3>
+          <p class="legal-sub">Stride is a productivity and task management tool.</p>
+          <p class="legal-sub">You agree to use it for personal and lawful purposes only.</p>
+        </div>
+      </div>
+      <div class="legal-sec">
+        <i class="ti ti-user legal-ic"></i>
+        <div class="legal-body">
+          <h3 class="legal-h">Your content</h3>
+          <p class="legal-sub">You are responsible for the tasks, notes and any other content you create in Stride.</p>
+          <p class="legal-sub">You keep full ownership of your content.</p>
+        </div>
+      </div>
+      <div class="legal-sec">
+        <i class="ti ti-shield legal-ic"></i>
+        <div class="legal-body">
+          <h3 class="legal-h">Availability</h3>
+          <p class="legal-sub">Stride is provided "as is" without warranties of any kind.</p>
+          <p class="legal-sub">We do our best to keep the service reliable and secure.</p>
+        </div>
+      </div>
+      <div class="legal-sec">
+        <i class="ti ti-circle-x legal-ic"></i>
+        <div class="legal-body">
+          <h3 class="legal-h">Termination</h3>
+          <p class="legal-sub">You may stop using Stride and delete your account at any time through the application.</p>
+        </div>
+      </div>
+      <div class="legal-sec">
+        <i class="ti ti-mail legal-ic"></i>
+        <div class="legal-body">
+          <h3 class="legal-h">Contact</h3>
+          <p class="legal-sub">If you have any questions, contact us at:</p>
+          <p class="legal-p"><a :href="`mailto:${CONTACT_EMAIL}`">{{ CONTACT_EMAIL }}</a></p>
+        </div>
+      </div>
+    </div>
+
     <CategoriesSheet v-model="catSheet" />
   </div>
 </template>
@@ -190,7 +323,9 @@ const router = useRouter()
 const auth = useAuthStore()
 const categoriesStore = useCategoriesStore()
 
-const view = ref<'main' | 'password'>('main')
+const view = ref<'main' | 'password' | 'privacy' | 'terms'>('main')
+const CONTACT_EMAIL = 'stridebykeno@gmail.com'
+const APP_VERSION = '1.0.0'
 const email = computed(() => auth.session?.user.email ?? 'demo@stride.app')
 const initial = computed(() => email.value.charAt(0).toUpperCase())
 
@@ -304,7 +439,7 @@ async function doDelete() {
 
 // back arrow: from the password sub-view return to the list, otherwise leave settings
 function goBack() {
-  if (view.value === 'password') { view.value = 'main'; return }
+  if (view.value !== 'main') { view.value = 'main'; return }
   if (window.history.length > 1) router.back()
   else router.push('/')
 }
@@ -349,7 +484,7 @@ function goBack() {
 .account-card .ac-email { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .ac-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 32px; }
-.ac-row.link { width: 100%; border: none; background: none; cursor: pointer; padding: 0; text-align: left; }
+.ac-row.link { width: 100%; border: none; background: none; cursor: pointer; padding: 0; text-align: left; text-decoration: none; color: inherit; }
 .row-label { font-size: 15px; color: var(--color-text-primary); }
 .row-value { display: flex; align-items: center; gap: 4px; font-size: 15px; color: var(--color-text-tertiary); }
 .row-value i { font-size: 18px; }
@@ -379,6 +514,35 @@ function goBack() {
 .seg button.on { background: var(--color-background-primary); color: var(--color-text-primary); font-weight: 500; }
 
 .pw-title { font-size: 22px; font-weight: 500; margin: 8px 4px 14px; }
+.legal .pw-title { margin-bottom: 4px; }
+.legal-updated { font-size: 12px; color: var(--color-text-tertiary); margin: 0 4px 16px; }
+.legal-banner {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--color-background-secondary);
+  border-radius: var(--border-radius-lg);
+  padding: 16px; margin-bottom: 4px;
+}
+.legal-banner-ic {
+  width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--color-border-secondary);
+  color: var(--color-text-info); font-size: 22px;
+}
+.legal-banner-title { font-size: 15px; font-weight: 600; color: var(--color-text-primary); line-height: 1.3; }
+.legal-banner-sub { font-size: 13px; color: var(--color-text-secondary); line-height: 1.4; margin-top: 3px; }
+
+.legal-sec { display: flex; gap: 14px; padding: 18px 2px; }
+.legal-sec + .legal-sec { border-top: 0.5px solid var(--color-border-tertiary); }
+.legal-ic { color: var(--color-text-info); font-size: 22px; flex-shrink: 0; line-height: 1; margin-top: 1px; }
+.legal-body { min-width: 0; flex: 1; }
+.legal-h { font-size: 16px; font-weight: 600; color: var(--color-text-primary); margin: 0 0 5px; }
+.legal-sub { font-size: 14px; color: var(--color-text-secondary); line-height: 1.5; margin: 0 0 6px; }
+.legal-sub:last-child { margin-bottom: 0; }
+.legal-list { margin: 8px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.legal-list li { position: relative; padding-left: 16px; font-size: 14px; color: var(--color-text-secondary); line-height: 1.35; }
+.legal-list li::before { content: ''; position: absolute; left: 3px; top: 7px; width: 5px; height: 5px; border-radius: 50%; background: var(--color-text-info); }
+.legal-p { font-size: 14px; line-height: 1.5; margin: 0; }
+.legal-p a { color: var(--color-text-info); text-decoration: none; }
 .pw-banner {
   display: flex; align-items: center; justify-content: center; gap: 10px;
   background: var(--color-background-secondary);
