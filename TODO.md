@@ -5,7 +5,6 @@ Nápady a vylepšenia na premyslenie. Legenda námahy: **S** = malé, **M** = st
 ## Roadmap (poradie implementácie)
 
 1. [ ] **Haptika** (S) — vibrácia pri akcii (Android cez Vibration API; iOS Safari nepodporuje).
-2. [ ] **Filter podľa viacerých kategórií naraz** (S).
 
 ## Polish (leštenie pred „launchom")
 - [ ] **Jemné animácie** (S) — rozšíriť o plynulý expand úlohy (edit form sa roztvorí, nie skok) + prechod do Settings (fade/slide route transition); jednotných 150–200 ms. (Základ — checkbox pop, prečiarknutie, press, „Späť" riadok — už hotový.)
@@ -34,6 +33,7 @@ Nápady a vylepšenia na premyslenie. Legenda námahy: **S** = malé, **M** = st
 ---
 
 ## Hotovo
+- [x] Filter podľa viacerých kategórií naraz — chipy na Domove sú toggle (viac aktívnych naraz, OR), „All" = prázdny výber. Len frontend (`selectedCats` Set).
 - [x] Týždenný cieľ — full-width karta v Štatistikách (progres hotové/cieľ za aktuálny týždeň, zelená pri dosiahnutí); cieľ sa nastavuje v Settings (roller) — `lib/goal.ts` + localStorage.
 - [x] Preradenie poradia kategórií — drag (`⋮⋮` handle) v Categories sheet cez `vuedraggable`; `categories.position` stĺpec, premieta sa do filter-chipov. (migrácia v README)
 - [x] Export / Import JSON — Settings → DATA: export všetkých úloh+kategórií do `stride-backup-<dátum>.json`; import (nedeštruktívny, pridáva) s premapovaním category_id. (`src/lib/backup.ts`)

@@ -54,13 +54,13 @@
     <!-- category filter -->
     <section v-if="categoriesStore.categories.length" class="filters">
       <div class="chips" ref="chipsEl" @wheel="onChipsWheel">
-        <button class="chip" :class="{ on: selectedCat === null }" @click="selectedCat = null">{{ t('cat.all') }}</button>
+        <button class="chip" :class="{ on: selectedCats.size === 0 }" @click="selectedCats = new Set()">{{ t('cat.all') }}</button>
         <button
           v-for="c in categoriesStore.categories"
           :key="c.id"
           class="chip"
-          :class="{ on: selectedCat === c.id }"
-          @click="selectedCat = selectedCat === c.id ? null : c.id"
+          :class="{ on: selectedCats.has(c.id) }"
+          @click="toggleCat(c.id)"
         >
           <span class="cat-dot" :style="{ background: c.color }"></span>{{ c.name }}
         </button>
@@ -72,7 +72,7 @@
     <OverdueSection v-if="isThisWeek" />
 
     <!-- empty state when a category filter matches nothing this week -->
-    <div v-if="selectedCat !== null && totalCount === 0" class="empty-state">
+    <div v-if="selectedCats.size > 0 && totalCount === 0" class="empty-state">
       <i class="ti ti-mood-empty"></i>
       <span>{{ t('empty.noTasksCategory') }}</span>
     </div>
@@ -133,7 +133,12 @@ const categoriesStore = useCategoriesStore()
 
 const monday = ref(getMonday(new Date()))
 const expanded = ref<Set<string>>(new Set())
-const selectedCat = ref<string | null>(null)
+const selectedCats = ref<Set<string>>(new Set()) // empty = all categories
+function toggleCat(id: string) {
+  const s = new Set(selectedCats.value)
+  s.has(id) ? s.delete(id) : s.add(id)
+  selectedCats.value = s
+}
 const isThisWeek = computed(() => monday.value === getMonday(today()))
 const catSheet = ref(false)
 const dayRefs = new Map<string, InstanceType<typeof DayList>>()
@@ -145,11 +150,11 @@ const weekTitle = computed(() => {
   return monday.value < cur ? t('home.lastWeek') : t('home.nextWeek')
 })
 
-// tasks for the current category filter
+// tasks for the current category filter (empty selection = all; otherwise OR)
 const filteredTasks = computed(() =>
-  selectedCat.value === null
+  selectedCats.value.size === 0
     ? tasksStore.tasks
-    : tasksStore.tasks.filter(t => t.category_id === selectedCat.value))
+    : tasksStore.tasks.filter(t => t.category_id !== null && selectedCats.value.has(t.category_id)))
 
 const weekDays = computed(() => {
   const t = today()
