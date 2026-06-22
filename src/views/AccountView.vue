@@ -50,6 +50,22 @@
         <i class="ti ti-chevron-right"></i>
       </button>
 
+      <div class="sec-label">{{ t('account.secData') }}</div>
+      <section class="ac-card">
+        <button class="ac-row link" @click="doExport">
+          <span class="row-label">{{ t('account.exportData') }}</span>
+          <i class="ti ti-download row-ic"></i>
+        </button>
+        <div class="divider"></div>
+        <button class="ac-row link" @click="fileInput?.click()">
+          <span class="row-label">{{ t('account.importData') }}</span>
+          <i class="ti ti-upload row-ic"></i>
+        </button>
+        <input ref="fileInput" type="file" accept="application/json,.json" class="hidden-file" @change="doImport">
+      </section>
+      <p class="data-note">{{ t('account.importNote') }}</p>
+      <p v-if="dataMsg" class="data-msg" :class="{ error: dataErr }">{{ dataMsg }}</p>
+
       <button class="signout-btn" @click="auth.signOut()">
         <i class="ti ti-logout"></i> {{ t('account.signOut') }}
       </button>
@@ -151,6 +167,7 @@ import LanguageSwitch from '@/components/LanguageSwitch.vue'
 import CategoriesSheet from '@/components/CategoriesSheet.vue'
 import { applyTheme, getTheme, type Theme } from '@/lib/theme'
 import { isDemo } from '@/lib/demo'
+import { exportBackup, importBackup } from '@/lib/backup'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -230,6 +247,28 @@ async function changePassword() {
   }
 }
 
+// export / import data
+const fileInput = ref<HTMLInputElement | null>(null)
+const dataMsg = ref('')
+const dataErr = ref(false)
+async function doExport() {
+  dataMsg.value = ''; dataErr.value = false
+  try { await exportBackup() } catch (e) { dataErr.value = true; dataMsg.value = (e as Error).message }
+}
+async function doImport(e: Event) {
+  const input = e.target as HTMLInputElement
+  const file = input.files?.[0]
+  input.value = '' // allow re-importing the same file
+  if (!file) return
+  dataMsg.value = ''; dataErr.value = false
+  try {
+    const res = await importBackup(file)
+    dataMsg.value = t('account.importDone', { n: res.tasks })
+  } catch (err) {
+    dataErr.value = true; dataMsg.value = (err as Error).message
+  }
+}
+
 // delete account (irreversible)
 const confirmDelete = ref(false)
 const deleting = ref(false)
@@ -306,6 +345,11 @@ function goBack() {
   font-size: 15px; color: var(--color-text-primary);
 }
 .row-card i { color: var(--color-text-tertiary); font-size: 18px; }
+.row-ic { color: var(--color-text-tertiary); font-size: 18px; }
+.hidden-file { display: none; }
+.data-note { font-size: 12px; color: var(--color-text-tertiary); margin: 6px 4px 0; line-height: 1.4; }
+.data-msg { font-size: 13px; margin: 8px 4px 0; color: var(--color-text-success); }
+.data-msg.error { color: var(--color-text-danger); }
 
 .seg { display: flex; background: var(--color-background-tertiary); border-radius: 9px; padding: 2px; }
 .seg button {

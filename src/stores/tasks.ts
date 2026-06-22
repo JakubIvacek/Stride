@@ -16,6 +16,28 @@ export const useTasksStore = defineStore('tasks', () => {
     return inDay.length ? Math.max(...inDay.map(t => t.position ?? 0)) + 1 : 0
   }
 
+  // all of the user's tasks (for export/backup)
+  async function getAllTasks(): Promise<Task[]> {
+    if (isDemo) return demoTasksForRange(addDays(today(), -120), addDays(today(), 30))
+    const { data, error } = await supabase
+      .from('tasks').select('*').order('task_date', { ascending: true })
+    if (error) throw error
+    return data ?? []
+  }
+
+  // bulk-insert imported tasks (rows already carry remapped category_id);
+  // strips id/user_id so the DB assigns fresh ones
+  async function importTasks(rows: Partial<Task>[]) {
+    if (!rows.length) return
+    const clean = rows.map(({ id: _id, ...r }) => r)
+    if (isDemo) {
+      clean.forEach(r => tasks.value.push({ ...(r as Task), id: `demo-${crypto.randomUUID()}` }))
+      return
+    }
+    const { error } = await supabase.from('tasks').insert(clean)
+    if (error) throw error
+  }
+
   // e.g. Monday–Sunday of a week ('2026-06-08', '2026-06-14')
   async function fetchRange(from: string, to: string) {
     loading.value = true
@@ -201,7 +223,7 @@ export const useTasksStore = defineStore('tasks', () => {
 
   return {
     tasks, overdue, loading,
-    fetchRange, fetchOverdue, moveToToday, restoreOverdue,
+    fetchRange, fetchOverdue, moveToToday, restoreOverdue, getAllTasks, importTasks,
     addTask, toggleTask, deleteTask, restoreTask, updateTask, reorderTasks,
   }
 })
