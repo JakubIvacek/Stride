@@ -24,11 +24,16 @@ Nápady a vylepšenia na premyslenie. Legenda námahy: **S** = malé, **M** = st
 
 ## Nice to have (marketing)
 - [ ] **Demo účet** (S) — „Try demo" bez registrácie (demo mód už existuje v dev — sprístupniť aj v prod). Super pre marketing videá.
-- [ ] **Landing page** (M) — jednoduchá: „Stride — simple weekly planner", [Get Started], pár screenshotov. Nie 20 sekcií.
+- [ ] **Landing page — ďalšie kroky** (na pokračovanie):
+  - [ ] **Narrow / responsive verzia** (M) — mobilný layout landingu (z `LandingPage_Narrow.png`); zatiaľ je hotová len wide verzia.
+  - [ ] **Reálne screenshoty do rámčekov** (S) — nahradiť placeholder `.lp-frame` skutočnými zábermi appky (hero + Home/Calendar/Stats).
+  - [ ] **Favicon + Open Graph preview** (S) — favicon + OG/Twitter meta (logo + názov + popis) pre pekné zdieľanie linku. *(viď aj „Pred launchom".)*
 
 ---
 
 ## Hotovo
+- [x] Landing page (wide) — full-width uvítacia stránka pre odhlásených (aj `/welcome`): nav, hero, tagline diferenciátor, Why Stride, A simple view, Devices + Roadmap, CTA, footer (logo by Keno). Placeholder rámčeky zatiaľ namiesto screenshotov.
+- [x] Privacy / Terms ako samostatné tmavé stránky (`/privacy`, `/terms`) — zdieľaný `LegalPage` komponent zladený s landingom (rovnaký nav + footer), prepojené z footer linkov; back → welcome (resp. home pri prihlásení).
 - [x] Settings „About" — Privacy Policy + Terms of Service ako vlastné pod-stránky (banner s ikonou + sekcie s ikonami/odrážkami), Send Feedback (`mailto:stridebykeno@gmail.com`), Version 1.0.0. Kontaktný email vybavený.
 - [x] Tablet layout — na dotykových zariadeniach (≥600px, `pointer:coarse`) full-screen namiesto úzkeho stĺpca; desktop (myš) ostáva boxovaný.
 - [x] Filter podľa viacerých kategórií naraz — chipy na Domove sú toggle (viac aktívnych naraz, OR), „All" = prázdny výber. Len frontend (`selectedCats` Set).
