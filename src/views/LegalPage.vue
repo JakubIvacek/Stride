@@ -153,7 +153,10 @@ const CONTACT_EMAIL = 'stridebykeno@gmail.com'
   .lg-main { padding: 40px 22px 64px; }
   .lg-container { padding: 0 22px; }
   .lg-hero { padding: 24px; }
-  .lg-footer-inner { flex-direction: column; align-items: flex-start; gap: 4px; }
-  .lg-footer-logo { height: 90px; }
+  .lg-footer { padding: 36px 0; }
+  .lg-footer-inner { flex-direction: column-reverse; align-items: center; gap: 22px; text-align: center; }
+  .lg-footer-logo { height: 92px; }
+  .lg-footer-links { flex-direction: column; gap: 14px; }
+  .lg-copy { margin-top: 4px; }
 }
 </style>

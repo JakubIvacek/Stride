@@ -3,6 +3,10 @@ import HomeView from '@/views/HomeView.vue'
 
 export default createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  // landing/legal pages scroll the window; reset to top on navigate (restore on back/forward)
+  scrollBehavior(_to, _from, savedPosition) {
+    return savedPosition ?? { top: 0 }
+  },
   routes: [
     { path: '/', name: 'home', component: HomeView },
     { path: '/welcome', name: 'welcome', component: () => import('@/views/LandingView.vue') },

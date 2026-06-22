@@ -246,10 +246,49 @@ const roadmapSoon = ['iOS App', 'Android App', 'Push Notifications']
 .lp-footer-links a:hover { color: var(--tx); }
 .lp-copy { color: var(--mut); font-size: 13px; white-space: nowrap; }
 
+/* tablet: 2-up cards, narrower gaps */
+@media (max-width: 900px) {
+  .lp-cards3 { grid-template-columns: repeat(2, 1fr); }
+  .lp-hero-inner { gap: 32px; }
+}
+
+/* mobile: single column, tuned type + spacing */
 @media (max-width: 760px) {
+  .lp { overflow-x: hidden; }
+  .lp-container { padding: 0 22px; }
+  .lp-links a { display: none; }
+
   .lp-hero-inner, .lp-devices-inner { grid-template-columns: 1fr; }
   .lp-cards3 { grid-template-columns: 1fr; }
-  .lp-hero-text h1 { font-size: 40px; }
-  .lp-links a { display: none; }
+
+  /* hero (centered on mobile) */
+  .lp-hero { padding: 44px 0 52px; }
+  .lp-hero-text { text-align: center; }
+  .lp-hero-text h1 { font-size: 40px; letter-spacing: -1px; }
+  .lp-hero-text p { font-size: 17px; }
+  .lp-hero-shot { margin-top: 36px; }
+  .lp-frame.tall { max-width: 280px; aspect-ratio: 10 / 14; }
+
+  /* tagline */
+  .lp-tagline { padding: 44px 0; }
+  .lp-tag-small { font-size: 15px; }
+  .lp-tag-big { font-size: 28px; }
+
+  /* sections */
+  .lp-why, .lp-views, .lp-devices { padding: 56px 0; }
+  .lp-why h2, .lp-views h2, .lp-devices-left h2 { font-size: 24px; line-height: 1.3; margin-bottom: 28px; }
+  .lp-roadmap { margin-top: 24px; }
+
+  /* cta */
+  .lp-cta { padding: 64px 0; }
+  .lp-cta h2 { font-size: 27px; }
+  .lp-cta p { font-size: 16px; }
+
+  /* footer: links stacked as a menu, logo at the very bottom */
+  .lp-footer { padding: 36px 0; }
+  .lp-footer-inner { flex-direction: column-reverse; align-items: center; gap: 22px; text-align: center; }
+  .lp-footer-logo { height: 92px; }
+  .lp-footer-links { flex-direction: column; gap: 14px; }
+  .lp-copy { margin-top: 4px; }
 }
 </style>
