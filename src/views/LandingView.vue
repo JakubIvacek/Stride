@@ -21,7 +21,10 @@
         <div class="lp-hero-text">
           <h1>Simple weekly<br>planner.</h1>
           <p>Plan your week.<br>Track your progress.<br>Stay consistent.</p>
-          <button class="lp-btn" @click="$emit('start')">Get Started</button>
+          <div class="lp-hero-actions">
+            <button class="lp-btn" @click="$emit('start')">Get Started</button>
+            <button class="lp-btn ghost" @click="tryDemo">Try Demo</button>
+          </div>
           <span class="lp-note">Free · no credit card needed</span>
         </div>
         <div class="lp-hero-shot">
@@ -121,7 +124,13 @@
 </template>
 
 <script setup lang="ts">
+import { activateDemo } from '@/lib/demo'
+
 defineEmits<{ start: [] }>()
+
+function tryDemo() {
+  activateDemo()
+}
 
 const CONTACT_EMAIL = 'stridebykeno@gmail.com'
 
@@ -175,7 +184,10 @@ const roadmapSoon = ['iOS App', 'Android App', 'Push Notifications']
   font-size: 15px; font-weight: 600; padding: 12px 22px; border-radius: 10px;
 }
 .lp-btn.sm { padding: 8px 16px; font-size: 14px; border-radius: 8px; }
+.lp-btn.ghost { background: transparent; border: 0.5px solid rgba(255,255,255,0.2); color: var(--tx); }
+.lp-btn.ghost:hover { background: rgba(255,255,255,0.06); filter: none; }
 .lp-btn:hover { filter: brightness(1.08); }
+.lp-hero-actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 
 /* hero */
 .lp-hero { padding: 80px 0 90px; }
@@ -212,6 +224,7 @@ const roadmapSoon = ['iOS App', 'Android App', 'Push Notifications']
 
 /* views */
 .lp-views { padding: 80px 0; }
+.lp-view { text-align: center; }
 .lp-view h3 { font-size: 17px; font-weight: 600; margin: 16px 0 6px; }
 
 /* devices */
@@ -250,6 +263,15 @@ const roadmapSoon = ['iOS App', 'Android App', 'Push Notifications']
 @media (max-width: 900px) {
   .lp-cards3 { grid-template-columns: repeat(2, 1fr); }
   .lp-hero-inner { gap: 32px; }
+
+  /* 3rd item centers when it wraps to a new row */
+  .lp-cards3 > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    width: calc(50% - 10px);
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+  }
 }
 
 /* mobile: single column, tuned type + spacing */

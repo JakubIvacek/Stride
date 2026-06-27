@@ -10,7 +10,19 @@ import { parseYmd, today, weekdayIndex } from '@/lib/dates'
 // a tuned history so Calendar shows nice status dots and Stats shows a strong
 // streak + high completion. Titles/categories are English to match the landing
 // — switch the app language to English before taking screenshots.
-export const isDemo = import.meta.env.DEV && import.meta.env.VITE_DEMO !== 'false'
+export const isDemo =
+  (import.meta.env.DEV && import.meta.env.VITE_DEMO !== 'false') ||
+  localStorage.getItem('stride-demo') === 'true'
+
+export function activateDemo() {
+  localStorage.setItem('stride-demo', 'true')
+  window.location.href = '/'
+}
+
+export function exitDemo() {
+  localStorage.removeItem('stride-demo')
+  window.location.href = '/?auth=1'
+}
 
 export const DEMO_CATEGORIES: Category[] = [
   { id: 'demo-cat-1', name: 'Work', color: '#007aff', position: 0 },
@@ -30,34 +42,29 @@ const WEEK_PLAN: Plan[][] = [
   [
     { title: 'Plan the week', cat: 3, time: '08:30', dur: 30, priority: true },
     { title: 'Team standup', cat: 0, time: '09:30', dur: 15, repeat: 'daily' },
-    { title: 'Write thesis intro', cat: 1, time: '11:00', dur: 90, note: 'Outline first' },
     { title: 'Gym — push day', cat: 2, time: '18:00', dur: 60 },
   ],
   // Tuesday
   [
     { title: 'Team standup', cat: 0, time: '09:30', dur: 15, repeat: 'daily' },
     { title: 'Review pull requests', cat: 0, time: '10:30', dur: 45 },
-    { title: 'Read 20 pages', cat: 1 },
     { title: 'Evening walk', cat: 3, time: '19:00', dur: 30 },
   ],
   // Wednesday
   [
     { title: 'Morning run', cat: 2, time: '07:00', dur: 30 },
     { title: 'Deep work block', cat: 0, time: '09:00', dur: 120, priority: true },
-    { title: 'Answer emails', cat: 0 },
     { title: 'Call mom', cat: 3, time: '20:00' },
   ],
   // Thursday
   [
     { title: 'Team standup', cat: 0, time: '09:30', dur: 15, repeat: 'daily' },
     { title: 'Design review', cat: 0, time: '13:00', dur: 60 },
-    { title: 'Read 20 pages', cat: 1 },
     { title: 'Yoga session', cat: 2, time: '18:30', dur: 45 },
   ],
   // Friday
   [
     { title: 'Finish slides', cat: 0, time: '10:00', dur: 90, priority: true },
-    { title: 'Grocery shopping', cat: 3, time: '17:00' },
     { title: 'Gym — pull day', cat: 2, time: '18:30', dur: 60 },
   ],
   // Saturday
@@ -154,7 +161,7 @@ function currentWeekTasks(dateStr: string, todayStr: string): Task[] {
 function otherWeekTasks(dateStr: string, todayStr: string): Task[] {
   const h = hash(dateStr)
   const wd = weekdayIndex(dateStr)
-  let count = wd === 6 ? 1 + (h % 2) : 2 + (h % 3) // Sun 1–2, else 2–4
+  let count = wd === 6 ? 1 : 1 + (h % 2) // Sun 1, else 1–2
   if (wd < 5 && (h >> 4) % 9 === 0) return [] // a few empty weekdays for variety
   if (count === 0) return []
 
@@ -186,9 +193,11 @@ function tasksForDate(dateStr: string, todayStr: string, currentMonday: string):
 export function demoTasksForRange(from: string, to: string): Task[] {
   const todayStr = today()
   const currentMonday = mondayOf(todayStr)
+  const cutoff = ymd(new Date(parseYmd(todayStr).getFullYear() - 1, parseYmd(todayStr).getMonth(), parseYmd(todayStr).getDate()))
+  const clampedFrom = from < cutoff ? cutoff : from
   const out: Task[] = []
   const end = parseYmd(to)
-  for (let d = parseYmd(from); d <= end; d.setDate(d.getDate() + 1)) {
+  for (let d = parseYmd(clampedFrom); d <= end; d.setDate(d.getDate() + 1)) {
     out.push(...tasksForDate(ymd(d), todayStr, currentMonday))
   }
   return out

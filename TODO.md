@@ -19,17 +19,17 @@ Nápady a vylepšenia na premyslenie. Legenda námahy: **S** = malé, **M** = st
 - [ ] Zvážiť vypnutie „Confirm email" alebo vlastné SMTP (default email má prísne limity).
 
 ## Pred launchom (produkt / právne / marketing)
-- [ ] **Favicon + social preview / Open Graph** (S) — pri zdieľaní linku sa ukáže logo + názov + popis. Veľa indie appiek na to zabudne. *(lacné, viem spraviť rýchlo.)*
+- [ ] **Favicon + social preview / Open Graph** ⚠️ Pred nasadením nahradiť `YOUR_DOMAIN` skutočnou URL na 4 miestach v `index.html`.
 - [ ] **Analytics** (S) — aspoň niečo: koľko prišlo / zaregistrovalo sa / vrátilo sa. *(Plausible = najjednoduchší, 1 script tag, GDPR-friendly.)*
 
 ## Nice to have (marketing)
-- [ ] **Demo účet** (S) — „Try demo" bez registrácie (demo mód už existuje v dev — sprístupniť aj v prod). Super pre marketing videá.
-- [ ] **Landing page — ďalšie kroky** (na pokračovanie):
-  - [ ] **Favicon + Open Graph preview** (S) — favicon + OG/Twitter meta (logo + názov + popis) pre pekné zdieľanie linku. *(viď aj „Pred launchom".)*
 
 ---
 
 ## Hotovo
+- [x] **Demo účet** — „Try Demo" tlačidlo na landing; demo mód cez localStorage aj v prode; banner „Demo mode" s Back + Sign up free; auto-exit pri prihlásení. Demo generuje max 1 rok dozadu, menej úloh/deň.
+- [x] **Kalendár — infinite scroll** — mesačný aj ročný pohľad: nekonečný scroll hore/dole (IntersectionObserver + sentinely), scroll pozícia stabilná pri prepend, header sa aktualizuje pri scrolle.
+- [x] **Favicon + OG meta** — OG + Twitter tagy v `index.html`; screenshoty centrované na tablete. ⚠️ Pred nasadením nahradiť `YOUR_DOMAIN` (4 miesta v `index.html`).
 - [x] Landing page (wide) — full-width uvítacia stránka pre odhlásených (aj `/welcome`): nav, hero, tagline diferenciátor, Why Stride, A simple view, Devices + Roadmap, CTA, footer (logo by Keno). Placeholder rámčeky zatiaľ namiesto screenshotov.
 - [x] Landing — narrow / responsive (mobil): jednostĺpcový vycentrovaný hero, menšie fonty/rozostupy, 2 karty na tablete, footer pod seba (odkazy ako menu + logo dole), scroll-to-top pri navigácii.
 - [x] Landing — reálne screenshoty: hero + 3 karty (Home/Calendar/Stats) z `public/screens/` (phone-portrait rámčeky, object-fit cover); kurátorované demo dáta pre pekné zábery.

@@ -22,16 +22,17 @@
       <div class="calm-wd">
         <span v-for="(w, i) in fmt.weekdayShort()" :key="i">{{ w }}</span>
       </div>
-      <div ref="scroller" class="scroll">
+      <div ref="scroller" class="scroll" @scroll.passive="onMonthScroll">
+        <div ref="topSentM" class="sentinel"></div>
         <section
-          v-for="m in months"
+          v-for="m in monthList"
           :key="m.key"
           :ref="el => registerMonth(m.key, el)"
           class="month"
         >
           <div class="month-label" :class="{ cur: m.isCurrent }">{{ fmt.monthName(m.month) }} {{ m.year }}</div>
           <div class="calm-grid">
-            <div v-for="(cell, i) in m.cells" :key="i" class="calm-cell-wrap">
+            <div v-for="(cell, i) in monthCells(m.year, m.month)" :key="i" class="calm-cell-wrap">
               <button v-if="cell" class="calm-cell" @click="openDay(cell.date)">
                 <div class="calm-num" :class="{ t: cell.isToday }">{{ cell.day }}</div>
                 <div class="calm-meta">
@@ -43,20 +44,22 @@
             </div>
           </div>
         </section>
+        <div ref="botSentM" class="sentinel"></div>
       </div>
     </template>
 
     <!-- YEAR MODE -->
-    <div v-else class="scroll year-scroll">
-      <section v-for="y in years" :key="y" class="year-block">
-        <div class="year-heading">{{ y }}</div>
+    <div v-else ref="yearScroller" class="scroll year-scroll" @scroll.passive="onYearScroll">
+      <div ref="topSentY" class="sentinel"></div>
+      <section v-for="y in yearList" :key="y" :ref="el => registerYear(y, el)" class="year-block">
+        <div class="year-heading" :class="{ cur: y === todayY }">{{ y }}</div>
         <div class="yr2">
           <div v-for="(mo, mi) in 12" :key="mi" :ref="el => registerCur(y, mi, el)">
             <button class="yr2-lab" :class="{ cur: y === todayY && mi === todayM }" @click="openMonth(y, mi)">
               {{ fmt.monthName(mi) }}
             </button>
             <div class="yr2-g">
-              <div v-for="(cell, i) in yearCells(y, mi)" :key="i" class="yr2-c">
+              <div v-for="(cell, i) in monthCells(y, mi)" :key="i" class="yr2-c">
                 <template v-if="cell">
                   <span class="yr2-n" :class="{ t: cell.isToday }">{{ cell.day }}</span>
                   <span v-if="cell.status !== 'none'" class="yr2-d" :style="{ background: STATUS_COLOR[cell.status] }"></span>
@@ -66,6 +69,7 @@
           </div>
         </div>
       </section>
+      <div ref="botSentY" class="sentinel"></div>
     </div>
 
     <!-- DAY DETAIL SHEET -->
@@ -85,7 +89,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import DayList from '@/components/DayList.vue'
 import { useTasksStore } from '@/stores/tasks'
@@ -104,78 +108,199 @@ const todayDate = parseYmd(todayStr)
 const todayY = todayDate.getFullYear()
 const todayM = todayDate.getMonth()
 
-const MONTHS_BACK = 6
-const MONTHS_FWD = 6
-
-// anchor month shown in header (updated as user scrolls)
 const anchor = ref({ year: todayY, month: todayM })
 const yearAnchor = ref(todayY)
 
-const scroller = ref<HTMLElement | null>(null)
-const monthEls = new Map<string, HTMLElement>()
 const sheetDate = ref<string | null>(null)
+
+// ─── Cell builder ─────────────────────────────────────────────────────────
 
 interface Cell { day: number; date: string; isToday: boolean; status: DayStatus; count: number }
 
 function monthCells(year: number, month: number): (Cell | null)[] {
-  const offset = (new Date(year, month, 1).getDay() + 6) % 7 // Monday-start
+  const offset = (new Date(year, month, 1).getDay() + 6) % 7
   const len = new Date(year, month + 1, 0).getDate()
   const cells: (Cell | null)[] = []
   for (let i = 0; i < offset; i++) cells.push(null)
   for (let d = 1; d <= len; d++) {
     const date = ymd(new Date(year, month, d))
     const dayTasks = tasksStore.tasks.filter(t => t.task_date === date)
-    cells.push({
-      day: d, date,
-      isToday: date === todayStr,
-      status: dayStatus(dayTasks, date, todayStr),
-      count: dayTasks.length,
-    })
+    cells.push({ day: d, date, isToday: date === todayStr, status: dayStatus(dayTasks, date, todayStr), count: dayTasks.length })
   }
   return cells
 }
 
-const months = computed(() => {
-  const list = []
-  for (let off = -MONTHS_BACK; off <= MONTHS_FWD; off++) {
-    const d = new Date(todayY, todayM + off, 1)
-    const year = d.getFullYear(), month = d.getMonth()
-    list.push({
-      key: `${year}-${month}`, year, month,
-      isCurrent: year === todayY && month === todayM,
-      cells: monthCells(year, month),
-    })
-  }
-  return list
-})
+// ─── Month infinite scroll ────────────────────────────────────────────────
 
-const years = computed(() => [yearAnchor.value - 1, yearAnchor.value, yearAnchor.value + 1])
-function yearCells(year: number, month: number) { return monthCells(year, month) }
+interface MonthItem { key: string; year: number; month: number; isCurrent: boolean }
+
+const CHUNK = 3
+
+function makeMonth(off: number): MonthItem {
+  const d = new Date(todayY, todayM + off, 1)
+  const year = d.getFullYear(), month = d.getMonth()
+  return { key: `${year}-${month}`, year, month, isCurrent: year === todayY && month === todayM }
+}
+
+function monthOff(item: MonthItem): number {
+  return (item.year - todayY) * 12 + (item.month - todayM)
+}
+
+const monthList = ref<MonthItem[]>(Array.from({ length: 13 }, (_, i) => makeMonth(i - 6)))
+
+// Track the loaded DB range so we always fetch the cumulative span.
+let loadedFrom = ymd(new Date(todayY, todayM - 6, 1))
+let loadedTo = ymd(new Date(todayY, todayM + 7, 0))
+
+async function extendFetch(from: string, to: string) {
+  const newFrom = from < loadedFrom ? from : loadedFrom
+  const newTo   = to   > loadedTo   ? to   : loadedTo
+  if (newFrom !== loadedFrom || newTo !== loadedTo) {
+    loadedFrom = newFrom
+    loadedTo   = newTo
+    await tasksStore.fetchRange(loadedFrom, loadedTo)
+  }
+}
+
+const scroller    = ref<HTMLElement | null>(null)
+const topSentM    = ref<HTMLElement | null>(null)
+const botSentM    = ref<HTMLElement | null>(null)
+const monthEls    = new Map<string, HTMLElement>()
 
 function registerMonth(key: string, el: unknown) {
   if (el) monthEls.set(key, (el as { $el?: HTMLElement }).$el ?? (el as HTMLElement))
 }
 
-// remember the current month's cell in the year grid so "Today" can scroll to it
-const curMonthEl = ref<HTMLElement | null>(null)
+function prependMonths() {
+  const off = monthOff(monthList.value[0])
+  const items = Array.from({ length: CHUNK }, (_, i) => makeMonth(off - CHUNK + i))
+  const sh = scroller.value?.scrollHeight ?? 0
+  const st = scroller.value?.scrollTop ?? 0
+  monthList.value.unshift(...items)
+  nextTick(() => requestAnimationFrame(() => {
+    if (scroller.value) scroller.value.scrollTop = st + (scroller.value.scrollHeight - sh)
+  }))
+  const first = items[0]
+  extendFetch(ymd(new Date(first.year, first.month, 1)), ymd(new Date(items[CHUNK - 1].year, items[CHUNK - 1].month + 1, 0)))
+}
+
+function appendMonths() {
+  const off = monthOff(monthList.value[monthList.value.length - 1])
+  const items = Array.from({ length: CHUNK }, (_, i) => makeMonth(off + 1 + i))
+  monthList.value.push(...items)
+  const last = items[CHUNK - 1]
+  extendFetch(ymd(new Date(items[0].year, items[0].month, 1)), ymd(new Date(last.year, last.month + 1, 0)))
+}
+
+function onMonthScroll() {
+  if (!scroller.value) return
+  const scrollerRect = scroller.value.getBoundingClientRect()
+  for (const item of monthList.value) {
+    const el = monthEls.get(item.key)
+    if (!el) continue
+    const rect = el.getBoundingClientRect()
+    if (rect.bottom > scrollerRect.top + 1) {
+      anchor.value = { year: item.year, month: item.month }
+      break
+    }
+  }
+}
+
+// ─── Year infinite scroll ─────────────────────────────────────────────────
+
+const yearList    = ref<number[]>([todayY - 2, todayY - 1, todayY, todayY + 1, todayY + 2])
+const yearScroller = ref<HTMLElement | null>(null)
+const topSentY    = ref<HTMLElement | null>(null)
+const botSentY    = ref<HTMLElement | null>(null)
+const yearEls     = new Map<number, HTMLElement>()
+const curMonthEl  = ref<HTMLElement | null>(null)
+
+function registerYear(y: number, el: unknown) {
+  if (el) yearEls.set(y, (el as { $el?: HTMLElement }).$el ?? (el as HTMLElement))
+}
+
 function registerCur(year: number, month: number, el: unknown) {
   if (el && year === todayY && month === todayM) curMonthEl.value = el as HTMLElement
 }
+
+function prependYears() {
+  const first = yearList.value[0]
+  const sh = yearScroller.value?.scrollHeight ?? 0
+  const st = yearScroller.value?.scrollTop ?? 0
+  yearList.value.unshift(first - 1)
+  nextTick(() => requestAnimationFrame(() => {
+    if (yearScroller.value) yearScroller.value.scrollTop = st + (yearScroller.value.scrollHeight - sh)
+  }))
+  extendFetch(ymd(new Date(first - 1, 0, 1)), ymd(new Date(first - 1, 11, 31)))
+}
+
+function appendYears() {
+  const last = yearList.value[yearList.value.length - 1]
+  yearList.value.push(last + 1)
+  extendFetch(ymd(new Date(last + 1, 0, 1)), ymd(new Date(last + 1, 11, 31)))
+}
+
+function onYearScroll() {
+  if (!yearScroller.value) return
+  const scrollerRect = yearScroller.value.getBoundingClientRect()
+  for (const y of yearList.value) {
+    const el = yearEls.get(y)
+    if (!el) continue
+    const rect = el.getBoundingClientRect()
+    if (rect.bottom > scrollerRect.top + 1) {
+      yearAnchor.value = y
+      break
+    }
+  }
+}
+
+// ─── IntersectionObservers ────────────────────────────────────────────────
+
+let mObs: IntersectionObserver | null = null
+let yObs: IntersectionObserver | null = null
+
+function setupObservers() {
+  mObs?.disconnect()
+  yObs?.disconnect()
+
+  if (mode.value === 'month' && scroller.value && topSentM.value && botSentM.value) {
+    mObs = new IntersectionObserver(entries => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue
+        if (e.target === topSentM.value) prependMonths()
+        else appendMonths()
+      }
+    }, { root: scroller.value, rootMargin: '400px' })
+    mObs.observe(topSentM.value)
+    mObs.observe(botSentM.value)
+  }
+
+  if (mode.value === 'year' && yearScroller.value && topSentY.value && botSentY.value) {
+    yObs = new IntersectionObserver(entries => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue
+        if (e.target === topSentY.value) prependYears()
+        else appendYears()
+      }
+    }, { root: yearScroller.value, rootMargin: '400px' })
+    yObs.observe(topSentY.value)
+    yObs.observe(botSentY.value)
+  }
+}
+
+onUnmounted(() => { mObs?.disconnect(); yObs?.disconnect() })
+
+// ─── Navigation ───────────────────────────────────────────────────────────
+
+function scrollToMonth(key: string) {
+  monthEls.get(key)?.scrollIntoView({ block: 'start' })
+}
+
 function scrollToCurrentInYear() {
   nextTick(() => curMonthEl.value?.scrollIntoView({ block: 'center' }))
 }
 
-const sheetTasks = computed(() =>
-  sheetDate.value
-    ? tasksStore.tasks.filter(t => t.task_date === sheetDate.value).sort(byDayOrder)
-    : [])
-const sheetTitle = computed(() => (sheetDate.value ? fmt.fullDate(sheetDate.value) : ''))
-
 function openDay(date: string) { sheetDate.value = date }
-function setMode(m: 'month' | 'year') {
-  mode.value = m
-  if (m === 'year') scrollToCurrentInYear()
-}
 
 function openMonth(year: number, month: number) {
   anchor.value = { year, month }
@@ -183,29 +308,48 @@ function openMonth(year: number, month: number) {
   nextTick(() => scrollToMonth(`${year}-${month}`))
 }
 
-function scrollToMonth(key: string) {
-  monthEls.get(key)?.scrollIntoView({ block: 'start' })
+function setMode(m: 'month' | 'year') {
+  mode.value = m
+  nextTick(() => {
+    setupObservers()
+    if (m === 'year') scrollToCurrentInYear()
+  })
 }
 
 function goToday() {
   if (mode.value === 'month') {
     anchor.value = { year: todayY, month: todayM }
-    nextTick(() => scrollToMonth(`${todayY}-${todayM}`))
+    // ensure today's month is in the list
+    const key = `${todayY}-${todayM}`
+    if (!monthList.value.find(m => m.key === key)) {
+      monthList.value = Array.from({ length: 13 }, (_, i) => makeMonth(i - 6))
+    }
+    nextTick(() => scrollToMonth(key))
   } else {
     yearAnchor.value = todayY
+    if (!yearList.value.includes(todayY)) {
+      yearList.value = [todayY - 2, todayY - 1, todayY, todayY + 1, todayY + 2]
+    }
     scrollToCurrentInYear()
   }
 }
 
-async function load() {
-  const from = ymd(new Date(todayY, todayM - MONTHS_BACK, 1))
-  const to = ymd(new Date(todayY, todayM + MONTHS_FWD + 1, 0))
-  await tasksStore.fetchRange(from, to)
-}
+// ─── Sheet ────────────────────────────────────────────────────────────────
+
+const sheetTasks = computed(() =>
+  sheetDate.value
+    ? tasksStore.tasks.filter(t => t.task_date === sheetDate.value).sort(byDayOrder)
+    : [])
+const sheetTitle = computed(() => (sheetDate.value ? fmt.fullDate(sheetDate.value) : ''))
+
+// ─── Init ─────────────────────────────────────────────────────────────────
 
 onMounted(async () => {
-  await load()
-  nextTick(() => scrollToMonth(`${todayY}-${todayM}`))
+  await tasksStore.fetchRange(loadedFrom, loadedTo)
+  nextTick(() => {
+    scrollToMonth(`${todayY}-${todayM}`)
+    setupObservers()
+  })
 })
 </script>
 
@@ -227,7 +371,9 @@ onMounted(async () => {
   border-radius: 9px; background: none; cursor: pointer;
 }
 
-.scroll { flex: 1; overflow-y: auto; }
+.scroll { flex: 1; overflow-y: auto; overflow-anchor: none; }
+.sentinel { height: 1px; }
+
 .month { padding: 0 4px; }
 .month-label {
   padding: 12px 14px 6px; font-size: 15px; color: var(--color-text-tertiary);
@@ -240,6 +386,7 @@ onMounted(async () => {
 
 .year-scroll { padding: 0 16px 16px; }
 .year-heading { font-size: 26px; font-weight: 500; padding: 16px 2px 12px; }
+.year-heading.cur { color: var(--color-text-danger); }
 .year-block + .year-block .year-heading { border-top: 0.5px solid var(--color-border-tertiary); margin-top: 8px; }
 
 /* day sheet */
