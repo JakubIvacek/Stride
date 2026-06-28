@@ -163,3 +163,7 @@ Installable, service worker caches the app shell. Icon: `public/stride_icon.svg`
 ---
 
 Backlog and ideas: see **`TODO.md`**.
+
+## License
+
+[MIT](LICENSE)
