@@ -2,27 +2,25 @@
 
 Nápady a vylepšenia na premyslenie. Legenda námahy: **S** = malé, **M** = stredné, **L** = veľké. 🔥 = odporúčané (dobrý pomer hodnota/námaha).
 
-## Roadmap (poradie implementácie)
-
-1. [ ] **Haptika** (S) — vibrácia pri akcii (Android cez Vibration API; iOS Safari nepodporuje).
-
-## Polish (leštenie pred „launchom")
-- [ ] **Jemné animácie** (S) — rozšíriť o plynulý expand úlohy (edit form sa roztvorí, nie skok) + prechod do Settings (fade/slide route transition); jednotných 150–200 ms. (Základ — checkbox pop, prečiarknutie, press, „Späť" riadok — už hotový.)
 
 ## Veľké / neskôr (L)
 - [ ] **Pripomienky / push notifikácie** — „nezabudni na úlohu" (potrebuje riešenie pre push).
 - [ ] **Offline-first** — IndexedDB + sync (CLAUDE.md to vedome odkladá).
 
-## Pred ostrým nasadením (technické)
-- [ ] **Hosting** (Vercel / Cloudflare Pages / Netlify) + SPA rewrite config + env premenné.
-- [ ] Pri nasadení pridať produkčnú doménu do **Supabase → Auth → URL Configuration**.
-- [ ] Zvážiť vypnutie „Confirm email" alebo vlastné SMTP (default email má prísne limity).
+## Nasadenie na Vercel — checklist
 
-## Pred launchom (produkt / právne / marketing)
-- [ ] **Favicon + social preview / Open Graph** ⚠️ Pred nasadením nahradiť `YOUR_DOMAIN` skutočnou URL na 4 miestach v `index.html`.
-- [ ] **Analytics** (S) — aspoň niečo: koľko prišlo / zaregistrovalo sa / vrátilo sa. *(Plausible = najjednoduchší, 1 script tag, GDPR-friendly.)*
+- [ ] Pridať `vercel.json` s SPA rewrite (Vue Router fallback na `index.html`)
+- [ ] Vercel → Import `JakubIvacek/CheckList` → Framework: Vite, Build: `npm run build`, Output: `dist`
+- [ ] Vercel → Environment Variables: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` (**anon** kľúč, nie service_role!), `VITE_DEMO=false`
+- [ ] Po deployi: Supabase → **Auth → URL Configuration** → Site URL + Redirect URLs = Vercel URL
+- [ ] `index.html` — nahradiť `YOUR_DOMAIN` Vercel URL (4 miesta)
+- [ ] Edge Function: `supabase functions deploy delete-account`
+- [ ] Zvážiť vypnutie „Confirm email" alebo vlastné SMTP
+- [ ] **Analytics** (S) — Plausible alebo iné (1 script tag, GDPR-friendly)
 
-## Nice to have (marketing)
+## Nice to have
+- [ ] **Haptika** (S) — vibrácia pri akcii (Android cez Vibration API; iOS Safari nepodporuje).
+- [ ] **Jemné animácie** (S) — plynulý expand úlohy + prechod do Settings (fade/slide); 150–200 ms.
 
 ---
 
