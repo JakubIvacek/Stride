@@ -1,5 +1,5 @@
 <template>
-  <div ref="rootEl" class="home" @touchstart="onTouchStart" @touchend="onTouchEnd">
+  <div ref="rootEl" class="home">
     <!-- collapsing sticky strip (shown once the full week header scrolls away) -->
     <div class="strip" :class="{ show: collapsed }">
       <div class="strip-info">
@@ -220,14 +220,6 @@ function shiftWeek(dir: number) {
   load()
 }
 
-// swipe between weeks
-let startX = 0, startY = 0
-function onTouchStart(e: TouchEvent) { startX = e.touches[0].clientX; startY = e.touches[0].clientY }
-function onTouchEnd(e: TouchEvent) {
-  const dx = e.changedTouches[0].clientX - startX
-  const dy = e.changedTouches[0].clientY - startY
-  if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) shiftWeek(dx < 0 ? 1 : -1)
-}
 
 // desktop: vertical wheel scrolls the category filter row horizontally
 const chipsEl = ref<HTMLElement | null>(null)

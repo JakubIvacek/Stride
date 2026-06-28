@@ -172,6 +172,7 @@ function registerMonth(key: string, el: unknown) {
 }
 
 function prependMonths() {
+  mObs?.disconnect()
   const off = monthOff(monthList.value[0])
   const items = Array.from({ length: CHUNK }, (_, i) => makeMonth(off - CHUNK + i))
   const sh = scroller.value?.scrollHeight ?? 0
@@ -179,6 +180,7 @@ function prependMonths() {
   monthList.value.unshift(...items)
   nextTick(() => requestAnimationFrame(() => {
     if (scroller.value) scroller.value.scrollTop = st + (scroller.value.scrollHeight - sh)
+    setupObservers()
   }))
   const first = items[0]
   extendFetch(ymd(new Date(first.year, first.month, 1)), ymd(new Date(items[CHUNK - 1].year, items[CHUNK - 1].month + 1, 0)))
@@ -224,12 +226,14 @@ function registerCur(year: number, month: number, el: unknown) {
 }
 
 function prependYears() {
+  yObs?.disconnect()
   const first = yearList.value[0]
   const sh = yearScroller.value?.scrollHeight ?? 0
   const st = yearScroller.value?.scrollTop ?? 0
   yearList.value.unshift(first - 1)
   nextTick(() => requestAnimationFrame(() => {
     if (yearScroller.value) yearScroller.value.scrollTop = st + (yearScroller.value.scrollHeight - sh)
+    setupObservers()
   }))
   extendFetch(ymd(new Date(first - 1, 0, 1)), ymd(new Date(first - 1, 11, 31)))
 }
