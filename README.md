@@ -2,6 +2,8 @@
 
 Apple-clean, mobile-first týždenná appka na úlohy. Vue 3 + Supabase, inštalovateľná ako PWA.
 
+**Live:** https://stride-by-keno.vercel.app
+
 <p align="center">
   <img src="docs/screenshot-home.png" width="260" alt="Domov">
   <img src="docs/screenshot-stats.png" width="260" alt="Štatistiky">
