@@ -187,7 +187,7 @@ const roadmapSoon = ['iOS App', 'Android App', 'Push Notifications']
 .lp-btn.ghost { background: transparent; border: 0.5px solid rgba(255,255,255,0.2); color: var(--tx); }
 .lp-btn.ghost:hover { background: rgba(255,255,255,0.06); filter: none; }
 .lp-btn:hover { filter: brightness(1.08); }
-.lp-hero-actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.lp-hero-actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: center; }
 
 /* hero */
 .lp-hero { padding: 80px 0 90px; }
@@ -282,6 +282,7 @@ const roadmapSoon = ['iOS App', 'Android App', 'Push Notifications']
 
   .lp-hero-inner, .lp-devices-inner { grid-template-columns: 1fr; }
   .lp-cards3 { grid-template-columns: 1fr; }
+  .lp-cards3 > :last-child:nth-child(odd) { grid-column: unset; width: 100%; margin-left: 0; margin-right: 0; }
 
   /* hero (centered on mobile) */
   .lp-hero { padding: 44px 0 52px; }

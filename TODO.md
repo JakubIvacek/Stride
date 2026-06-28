@@ -7,24 +7,16 @@ Nápady a vylepšenia na premyslenie. Legenda námahy: **S** = malé, **M** = st
 - [ ] **Pripomienky / push notifikácie** — „nezabudni na úlohu" (potrebuje riešenie pre push).
 - [ ] **Offline-first** — IndexedDB + sync (CLAUDE.md to vedome odkladá).
 
-## Nasadenie na Vercel — checklist
-
-- [ ] Pridať `vercel.json` s SPA rewrite (Vue Router fallback na `index.html`)
-- [ ] Vercel → Import `JakubIvacek/CheckList` → Framework: Vite, Build: `npm run build`, Output: `dist`
-- [ ] Vercel → Environment Variables: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` (**anon** kľúč, nie service_role!), `VITE_DEMO=false`
-- [ ] Po deployi: Supabase → **Auth → URL Configuration** → Site URL + Redirect URLs = Vercel URL
-- [ ] `index.html` — nahradiť `YOUR_DOMAIN` Vercel URL (4 miesta)
-- [ ] Edge Function: `supabase functions deploy delete-account`
-- [ ] Zvážiť vypnutie „Confirm email" alebo vlastné SMTP
+## Todo
 - [ ] **Analytics** (S) — Plausible alebo iné (1 script tag, GDPR-friendly)
-
-## Nice to have
 - [ ] **Haptika** (S) — vibrácia pri akcii (Android cez Vibration API; iOS Safari nepodporuje).
 - [ ] **Jemné animácie** (S) — plynulý expand úlohy + prechod do Settings (fade/slide); 150–200 ms.
 
 ---
 
 ## Hotovo
+- [x] **Nasadenie na Vercel** — `vercel.json`, env vars, Supabase Auth URLs, OG domain, Edge Function, Confirm email vypnuté. Live: https://stride-by-keno.vercel.app
+
 - [x] **Demo účet** — „Try Demo" tlačidlo na landing; demo mód cez localStorage aj v prode; banner „Demo mode" s Back + Sign up free; auto-exit pri prihlásení. Demo generuje max 1 rok dozadu, menej úloh/deň.
 - [x] **Kalendár — infinite scroll** — mesačný aj ročný pohľad: nekonečný scroll hore/dole (IntersectionObserver + sentinely), scroll pozícia stabilná pri prepend, header sa aktualizuje pri scrolle.
 - [x] **Favicon + OG meta** — OG + Twitter tagy v `index.html`; screenshoty centrované na tablete. ⚠️ Pred nasadením nahradiť `YOUR_DOMAIN` (4 miesta v `index.html`).
