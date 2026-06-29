@@ -155,3 +155,8 @@ button{font-family:inherit;}
 .yr2-n{font-size:11px;color:var(--color-text-secondary);line-height:1;width:14px;height:14px;display:flex;align-items:center;justify-content:center;border-radius:50%;}
 .yr2-n.t{background:var(--color-text-danger);color:#fff;}
 .yr2-d{width:3.5px;height:3.5px;border-radius:50%;}
+
+/* Prevent iOS Safari viewport zoom on input focus (triggered when font-size < 16px) */
+@media (hover:none) and (pointer:coarse){
+  input,textarea,select{font-size:16px!important;}
+}
