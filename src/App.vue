@@ -1,4 +1,5 @@
 <template>
+  <Analytics />
   <!-- full-width legal pages (accessible logged-in or out) -->
   <PrivacyView v-if="route.path === '/privacy'" @back="goBack" />
   <TermsView v-else-if="route.path === '/terms'" @back="goBack" />
@@ -25,6 +26,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { Analytics } from '@vercel/analytics/vue'
 import { useAuthStore } from '@/stores/auth'
 import { useCategoriesStore } from '@/stores/categories'
 import { isDemo, exitDemo } from '@/lib/demo'
