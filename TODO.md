@@ -8,13 +8,15 @@ Nápady a vylepšenia na premyslenie. Legenda námahy: **S** = malé, **M** = st
 - [ ] **Offline-first** — IndexedDB + sync (CLAUDE.md to vedome odkladá).
 
 ## Todo
-- [ ] **Analytics** (S) — Plausible alebo iné (1 script tag, GDPR-friendly)
+- [ ] **Landing page i18n** (M) — preložiť všetky texty landingu cez `vue-i18n` + pridať `LanguageSwitch` do nav-u landingu. Dôvod: používatelia čo nevedia po anglicky (napr. SK) nerozumejú landingu pred registráciou.
 - [ ] **Haptika** (S) — vibrácia pri akcii (Android cez Vibration API; iOS Safari nepodporuje).
 - [ ] **Jemné animácie** (S) — plynulý expand úlohy + prechod do Settings (fade/slide); 150–200 ms.
+- [ ] **Onboarding / help** (M) — 3 slidy pri prvom otvorení (čo je týždeň, ako pridať úlohu, čo sú kategórie). Zvážiť či to stojí za to — landing page už vysvetľuje app, UI je intuitívne; reálna hodnota by bola len pre nových používateľov bez kontextu z landingu.
 
 ---
 
 ## Hotovo
+- [x] **Analytics** — Vercel Web Analytics (`@vercel/analytics/vue`); page views, unikátni návštevníci, zdroje; zadarmo, bez cookies, GDPR ok.
 - [x] **Nasadenie na Vercel** — `vercel.json`, env vars, Supabase Auth URLs, OG domain, Edge Function, Confirm email vypnuté. Live: https://stride-by-keno.vercel.app
 
 - [x] **Demo účet** — „Try Demo" tlačidlo na landing; demo mód cez localStorage aj v prode; banner „Demo mode" s Back + Sign up free; auto-exit pri prihlásení. Demo generuje max 1 rok dozadu, menej úloh/deň.

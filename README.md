@@ -166,4 +166,4 @@ Backlog and ideas: see **`TODO.md`**.
 
 ## License
 
-[MIT](LICENSE)
+All rights reserved — see [LICENSE](LICENSE). The source is available for viewing/reference only; use, copying, or distribution requires prior written permission.
