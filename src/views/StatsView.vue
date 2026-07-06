@@ -437,13 +437,15 @@ const catBreakdown = computed(() => {
       total.set(key, (total.get(key) ?? 0) + t.duration_min)
       if (t.status === 'done') done.set(key, (done.get(key) ?? 0) + t.duration_min)
     }
-    const rows = [...total.entries()].map(([id, totalMin]) => ({
-      ...catMeta(id),
-      val: totalMin,
-      label: `${fmtH(done.get(id) ?? 0)}h / ${fmtH(totalMin)}h`,
-    })).sort((a, b) => b.val - a.val)
-    const max = Math.max(1, ...rows.map(r => r.val))
-    return rows.map(r => ({ ...r, pct: Math.round(r.val / max * 100) }))
+    return [...total.entries()].map(([id, totalMin]) => {
+      const doneMin = done.get(id) ?? 0
+      return {
+        ...catMeta(id),
+        val: totalMin,
+        label: `${fmtH(doneMin)}h / ${fmtH(totalMin)}h`,
+        pct: Math.round(doneMin / totalMin * 100),
+      }
+    }).sort((a, b) => b.val - a.val || b.pct - a.pct)
   }
 
   const counts = new Map<string, number>()
