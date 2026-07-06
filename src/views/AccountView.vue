@@ -325,7 +325,7 @@ const categoriesStore = useCategoriesStore()
 
 const view = ref<'main' | 'password' | 'privacy' | 'terms'>('main')
 const CONTACT_EMAIL = 'stridebykeno@gmail.com'
-const APP_VERSION = '1.1.0'
+const APP_VERSION = '1.1.1'
 const email = computed(() => auth.session?.user.email ?? 'demo@stride.app')
 const initial = computed(() => email.value.charAt(0).toUpperCase())
 

@@ -73,7 +73,7 @@
         <div v-for="c in catBreakdown" :key="c.name" class="cat-row">
           <span class="cat-name">{{ c.name }}</span>
           <div class="cat-track"><div class="cat-fill" :style="{ width: c.pct + '%', background: c.color }"></div></div>
-          <span class="cat-val">{{ catMode === 'hours' ? c.val + 'h' : c.val }}</span>
+          <span class="cat-val">{{ c.label }}</span>
         </div>
       </template>
       <p v-else class="block-note">{{ t('stats.noneDone') }}</p>
@@ -413,33 +413,47 @@ function heatMonthLabel(wi: number): string {
   return m !== prev ? fmt.monthShort(m) : ''
 }
 
-// done tasks per category within the selected period (incl. "Bez kategórie"), sorted desc
+function catMeta(id: string) {
+  if (id === NO_CAT) return { name: t('stats.noCategory'), color: 'var(--color-text-tertiary)' }
+  return {
+    name: categoriesStore.byId.get(id)?.name ?? t('stats.deletedCategory'),
+    color: categoriesStore.byId.get(id)?.color ?? 'var(--color-text-info)',
+  }
+}
+function fmtH(min: number) {
+  return Math.round(min / 60 * 10) / 10
+}
+
+// per category within the selected period (incl. "Bez kategórie"), sorted desc:
+// count mode = done task count; hours mode = done h / planned h (tasks with a duration set)
 const NO_CAT = '__none__'
 const catBreakdown = computed(() => {
+  if (catMode.value === 'hours') {
+    const done = new Map<string, number>()
+    const total = new Map<string, number>()
+    for (const t of periodTasks.value) {
+      if (t.duration_min == null) continue
+      const key = t.category_id ?? NO_CAT
+      total.set(key, (total.get(key) ?? 0) + t.duration_min)
+      if (t.status === 'done') done.set(key, (done.get(key) ?? 0) + t.duration_min)
+    }
+    const rows = [...total.entries()].map(([id, totalMin]) => ({
+      ...catMeta(id),
+      val: totalMin,
+      label: `${fmtH(done.get(id) ?? 0)}h / ${fmtH(totalMin)}h`,
+    })).sort((a, b) => b.val - a.val)
+    const max = Math.max(1, ...rows.map(r => r.val))
+    return rows.map(r => ({ ...r, pct: Math.round(r.val / max * 100) }))
+  }
+
   const counts = new Map<string, number>()
   for (const t of periodTasks.value) {
     if (t.status !== 'done') continue
     const key = t.category_id ?? NO_CAT
-    if (catMode.value === 'hours') {
-      if (t.duration_min == null) continue
-      counts.set(key, (counts.get(key) ?? 0) + t.duration_min)
-    } else {
-      counts.set(key, (counts.get(key) ?? 0) + 1)
-    }
+    counts.set(key, (counts.get(key) ?? 0) + 1)
   }
-  if (catMode.value === 'hours') {
-    for (const [key, min] of counts) counts.set(key, Math.round(min / 60 * 10) / 10)
-  }
-  const rows = [...counts.entries()].map(([id, val]) => {
-    if (id === NO_CAT) {
-      return { name: t('stats.noCategory'), color: 'var(--color-text-tertiary)', val }
-    }
-    return {
-      name: categoriesStore.byId.get(id)?.name ?? t('stats.deletedCategory'),
-      color: categoriesStore.byId.get(id)?.color ?? 'var(--color-text-info)',
-      val,
-    }
-  }).sort((a, b) => b.val - a.val)
+  const rows = [...counts.entries()].map(([id, val]) => ({ ...catMeta(id), val, label: String(val) }))
+    .sort((a, b) => b.val - a.val)
   const max = Math.max(1, ...rows.map(r => r.val))
   return rows.map(r => ({ ...r, pct: Math.round(r.val / max * 100) }))
 })
@@ -522,5 +536,5 @@ onMounted(async () => {
 }
 .cat-track { flex: 1; height: 8px; border-radius: 5px; background: var(--color-background-tertiary); overflow: hidden; }
 .cat-fill { height: 100%; background: var(--color-text-info); }
-.cat-val { font-size: 12px; color: var(--color-text-secondary); width: 18px; text-align: right; }
+.cat-val { font-size: 12px; color: var(--color-text-secondary); text-align: right; white-space: nowrap; flex-shrink: 0; }
 </style>
