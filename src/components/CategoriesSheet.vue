@@ -8,7 +8,23 @@
           <button class="icon-btn" @click="close" :aria-label="t('cat.closeAria')"><i class="ti ti-x"></i></button>
         </div>
 
-        <div class="list">
+        <div class="seg">
+          <button :class="{ on: tab === 'manage' }" @click="tab = 'manage'">{{ t('cat.manage') }}</button>
+          <button :class="{ on: tab === 'time' }" @click="tab = 'time'">{{ t('cat.time') }}</button>
+        </div>
+
+        <div v-if="tab === 'time'" class="list time-list">
+          <div v-for="c in catTime" :key="c.id" class="cat">
+            <div class="cat-fore">
+              <span class="swatch static" :style="{ background: c.color }"></span>
+              <span class="cat-name">{{ c.name }}</span>
+              <span class="cat-time-val">{{ fmtHours(c.doneMin) }} / {{ fmtHours(c.totalMin) }}</span>
+            </div>
+          </div>
+          <p v-if="!catTime.length" class="empty">{{ t('cat.timeEmpty') }}</p>
+        </div>
+
+        <div v-else class="list">
           <draggable
             :model-value="store.categories"
             item-key="id"
@@ -81,7 +97,7 @@
         </div>
 
         <!-- new category -->
-        <div class="new">
+        <div v-if="tab === 'manage'" class="new">
           <div class="new-row">
             <button class="swatch" :style="{ background: newColor }" @click="cyclePalette"></button>
             <input
@@ -113,10 +129,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import draggable from 'vuedraggable'
 import { useCategoriesStore } from '@/stores/categories'
+import { useTasksStore } from '@/stores/tasks'
 import { PALETTE } from '@/lib/colors'
 import type { Category } from '@/types'
 
@@ -126,9 +143,29 @@ defineProps<{ modelValue: boolean }>()
 const emit = defineEmits<{ 'update:modelValue': [boolean] }>()
 
 const store = useCategoriesStore()
+const tasksStore = useTasksStore()
 const editing = ref<string | null>(null)
 const newName = ref('')
 const newColor = ref(PALETTE[5])
+const tab = ref<'manage' | 'time'>('manage')
+
+// hours tracked per category for the currently viewed week (done / planned), categories without any timed task hidden
+const catTime = computed(() => {
+  const rows = store.categories.map(c => {
+    let doneMin = 0, totalMin = 0
+    for (const task of tasksStore.tasks) {
+      if (task.category_id !== c.id || task.duration_min == null) continue
+      totalMin += task.duration_min
+      if (task.status === 'done') doneMin += task.duration_min
+    }
+    return { id: c.id, name: c.name, color: c.color, doneMin, totalMin }
+  })
+  return rows.filter(r => r.totalMin > 0).sort((a, b) => b.totalMin - a.totalMin)
+})
+function fmtHours(min: number) {
+  const h = Math.round(min / 60 * 10) / 10
+  return `${h}h`
+}
 
 function close() { emit('update:modelValue', false) }
 
@@ -223,6 +260,18 @@ async function add() {
 .sheet-grip { width: 36px; height: 5px; border-radius: 3px; background: var(--color-border-secondary); margin: 6px auto 4px; }
 .sheet-head { display: flex; align-items: center; justify-content: space-between; padding: 6px 18px 8px; }
 .sheet-title { font-size: 17px; font-weight: 500; }
+
+.seg { display: flex; background: var(--color-background-tertiary); border-radius: 10px; padding: 3px; margin: 0 18px 8px; }
+.seg button {
+  flex: 1; border: none; background: none; cursor: pointer;
+  font-size: 13px; color: var(--color-text-secondary); padding: 6px 0; border-radius: 8px;
+}
+.seg button.on { background: var(--color-background-primary); color: var(--color-text-primary); font-weight: 500; }
+
+.time-list { min-height: 220px; }
+.time-list .empty { padding-top: 24px; }
+.swatch.static { cursor: default; }
+.cat-time-val { font-size: 13px; color: var(--color-text-secondary); font-variant-numeric: tabular-nums; flex-shrink: 0; }
 
 .list { padding: 0 18px; }
 .cat { padding: 8px 0; border-top: 0.5px solid var(--color-border-tertiary); }

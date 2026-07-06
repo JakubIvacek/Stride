@@ -62,12 +62,18 @@
 
     <!-- category breakdown -->
     <section class="block bordered">
-      <div class="block-title">{{ t('stats.byCategory') }}</div>
+      <div class="block-head">
+        <span class="block-title">{{ t('stats.byCategory') }}</span>
+        <div class="seg seg-sm">
+          <button :class="{ on: catMode === 'count' }" @click="catMode = 'count'">{{ t('stats.count') }}</button>
+          <button :class="{ on: catMode === 'hours' }" @click="catMode = 'hours'">{{ t('stats.hours') }}</button>
+        </div>
+      </div>
       <template v-if="catBreakdown.length">
         <div v-for="c in catBreakdown" :key="c.name" class="cat-row">
           <span class="cat-name">{{ c.name }}</span>
           <div class="cat-track"><div class="cat-fill" :style="{ width: c.pct + '%', background: c.color }"></div></div>
-          <span class="cat-val">{{ c.val }}</span>
+          <span class="cat-val">{{ catMode === 'hours' ? c.val + 'h' : c.val }}</span>
         </div>
       </template>
       <p v-else class="block-note">{{ t('stats.noneDone') }}</p>
@@ -136,6 +142,7 @@ const todayStr = today()
 const periods = ['week', 'month', 'year'] as const
 const period = ref<'week' | 'month' | 'year'>('week')
 const chartMode = ref<'count' | 'percent'>('count')
+const catMode = ref<'count' | 'hours'>('count')
 
 function cssVar(name: string) {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim()
@@ -413,7 +420,15 @@ const catBreakdown = computed(() => {
   for (const t of periodTasks.value) {
     if (t.status !== 'done') continue
     const key = t.category_id ?? NO_CAT
-    counts.set(key, (counts.get(key) ?? 0) + 1)
+    if (catMode.value === 'hours') {
+      if (t.duration_min == null) continue
+      counts.set(key, (counts.get(key) ?? 0) + t.duration_min)
+    } else {
+      counts.set(key, (counts.get(key) ?? 0) + 1)
+    }
+  }
+  if (catMode.value === 'hours') {
+    for (const [key, min] of counts) counts.set(key, Math.round(min / 60 * 10) / 10)
   }
   const rows = [...counts.entries()].map(([id, val]) => {
     if (id === NO_CAT) {
