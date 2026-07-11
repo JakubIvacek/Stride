@@ -245,7 +245,7 @@ const roadmapSoon = ['iOS App', 'Android App', 'Push Notifications']
 .lp-shot-glow {
   position: absolute; bottom: -8%; left: 50%; transform: translateX(-50%);
   width: 140%; height: 65%;
-  background: radial-gradient(ellipse at center bottom, rgba(255,45,32,0.15) 0%, transparent 65%);
+  background: radial-gradient(ellipse 42% 90% at center bottom, rgba(255,45,32,0.16) 0%, transparent 100%);
   pointer-events: none; z-index: 0;
 }
 
