@@ -333,13 +333,15 @@ async function saveEdit(task: Task) {
   const title = editTitle.value.trim()
   if (!title) return
   const start = composeTime(editHour.value, editMin.value)
+  const dateChanged = editDate.value && editDate.value !== task.task_date
   await tasksStore.updateTask(task.id, {
     title, category_id: editCat.value, note: editNote.value.trim() || null,
     task_time: start,
     duration_min: durFrom(start, editEndHour.value, editEndMin.value),
     repeat: editRepeat.value,
+    ...(dateChanged ? { task_date: editDate.value } : {}),
   })
-  editingId.value = null
+  editingId.value = null // dateChanged: task moved, leaves this list; otherwise just closes edit form
 }
 
 async function applyMove(task: Task) {
