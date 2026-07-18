@@ -17,6 +17,7 @@ Apple-clean, mobile-first weekly task management app. Vue 3 + Supabase, installa
 - **Calendar** — month + year view (infinite scroll), color-coded day status, day detail sheet.
 - **Statistics** — Week/Month/Year, metrics + streaks, bar chart, category breakdown, **GitHub-style activity heatmap**.
 - **Categories** — CRUD + colors, filter, create directly when adding a task.
+- **Notes** — Apple Notes-style folders + notes, pin, search, autosave.
 - **Account** — email/password + Google, password reset, **7 languages** (EN/SK/DE/ES/FR/IT/PT, auto from browser), **system/light/dark** theme.
 
 ## Stack
@@ -66,13 +67,43 @@ create table tasks (
 
 create index tasks_user_date_idx on tasks (user_id, task_date);
 
-alter table tasks      enable row level security;
-alter table categories enable row level security;
+create table note_folders (
+  id          uuid primary key default gen_random_uuid(),
+  user_id     uuid not null references auth.users (id) on delete cascade default auth.uid(),
+  name        text not null,
+  position    int not null default 0,
+  created_at  timestamptz not null default now()
+);
+
+create table notes (
+  id          uuid primary key default gen_random_uuid(),
+  user_id     uuid not null references auth.users (id) on delete cascade default auth.uid(),
+  title       text not null default '',
+  body        text not null default '',
+  pinned      boolean not null default false,
+  folder_id   uuid references note_folders (id) on delete set null,
+  position    int not null default 0,
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
+);
+
+create index notes_user_updated_idx on notes (user_id, updated_at);
+
+alter table tasks        enable row level security;
+alter table categories   enable row level security;
+alter table note_folders enable row level security;
+alter table notes        enable row level security;
 
 create policy "tasks owner only" on tasks
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
 create policy "categories owner only" on categories
+  for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+create policy "note_folders owner only" on note_folders
+  for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+create policy "notes owner only" on notes
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 ```
 
@@ -112,9 +143,13 @@ with ordered as (
 update categories c set position = o.rn from ordered o where o.id = c.id;
 ```
 
+### Migration — notes
+
+If your database was created before the Notes feature, run the `note_folders`/`notes` `create table` + RLS blocks above (they're additive — safe to run once on an existing project; skip if the tables already exist).
+
 ### Account deletion (Edge Function)
 
-Deleting an auth user can't be done from the browser — it runs via the `supabase/functions/delete-account` Edge Function (service-role). Deleting the user **cascades** to their `tasks` and `categories`.
+Deleting an auth user can't be done from the browser — it runs via the `supabase/functions/delete-account` Edge Function (service-role). Deleting the user **cascades** to their `tasks`, `categories`, `notes`, and `note_folders`.
 
 Deploy (Supabase CLI, logged in and linked):
 

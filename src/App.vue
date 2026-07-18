@@ -14,11 +14,11 @@
     </div>
     <AuthView v-if="auth.ready && (!authed || auth.recovery)" />
     <template v-else-if="authed">
-      <AppHeader v-if="$route.path !== '/account'" />
+      <AppHeader v-if="showChrome" />
       <main class="app-main">
         <RouterView />
       </main>
-      <TabBar v-if="$route.path !== '/account'" />
+      <TabBar v-if="showChrome" />
     </template>
   </div>
 </template>
@@ -50,6 +50,10 @@ function backToLanding() {
   localStorage.removeItem('stride-demo')
   window.location.href = '/welcome'
 }
+
+// hide the global header/tab bar on full-screen sub-pages that draw their own
+// back-header (settings and the notes folder/editor drill-down)
+const showChrome = computed(() => route.path !== '/account' && !route.path.startsWith('/notes/'))
 
 // landing is the welcome screen for logged-out visitors (and the /welcome route)
 const showAuth = ref(false)

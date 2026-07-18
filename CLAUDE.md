@@ -38,6 +38,8 @@ Weekly task-management PWA. Apple-clean, mobile-first, cloud-synced. Personal ap
 
 - `tasks`: `id, user_id, title, task_date (date), task_time (time, nullable), duration_min (int, nullable), priority (bool), repeat ('none'|'daily'|'weekly'|'monthly'), status ('todo'|'done'), category_id (nullable FK), note, position (int), created_at, completed_at`
 - `categories`: `id, user_id, name, color, position (int), created_at`. `position` orders the chips/filter and the categories sheet (drag & drop reorder via `vuedraggable`); new DBs run the `position` migration in `README.md`.
+- `note_folders`: `id, user_id, name, position (int), created_at`. Apple Notes-style folders for the Notes tab; `position` orders the folder list (drag & drop via `vuedraggable`).
+- `notes`: `id, user_id, title, body, pinned (bool), folder_id (nullable FK, on delete set null), position (int), created_at, updated_at`. `folder_id` null = unfiled (still shown in "All Notes"). Sort is **pinned desc, then `updated_at` desc** (matches Apple Notes' default "Date Edited" sort) — no manual drag reorder for notes (would fight that sort), so `position` exists for schema parity but isn't currently used to order the list.
 - Notes:
   - Column is `task_date`, NOT `date` (reserved word).
   - `category_id` is nullable. Categories are **active** (CRUD + colors + filter implemented).
@@ -63,7 +65,8 @@ Weekly task-management PWA. Apple-clean, mobile-first, cloud-synced. Personal ap
 ## Design system (Apple-clean)
 
 - System font stack (`-apple-system, SF Pro, Inter, system-ui`). Lots of whitespace, subtle grays, hairline `0.5px` borders, generous corner radii.
-- Persistent top header (`AppHeader.vue`, **outside** the scroll area) = Stride logo + name, language switch, settings/account gear. Bottom tab bar with 3 tabs: Domov, Štatistiky, Kalendár. Active tab = brand red (`--color-text-info`).
+- Persistent top header (`AppHeader.vue`, **outside** the scroll area) = Stride logo + name, language switch, settings/account gear. Bottom tab bar with 4 tabs: Domov, Štatistiky, Kalendár, Poznámky. Active tab = brand red (`--color-text-info`).
+- Full-screen sub-pages draw their **own** back-header and hide the global `AppHeader`/`TabBar` (see `App.vue`'s `showChrome`): `/account` and everything under `/notes/` (folder contents, note editor) — mirrors how Account's sub-views work. The Notes root (`/notes`, the folder list) is a normal tab and keeps the global chrome.
 - Icons: Tabler outline webfont (`<i class="ti ti-...">`).
 - Two font weights only: 400 and 500. Sentence case. No emoji.
 - Color tokens + light/dark are defined in `src/styles/app.css` (imported in `main.ts`). `design/*.html` are the original static mockups for reference.
@@ -117,6 +120,13 @@ To avoid the today/missed red clash: **today** = red filled circle around the nu
 - Bar chart that buckets by the selected period (week→days, month→last 6 weeks, year→12 months); current/partial bucket label highlighted red. Build with Chart.js / vue-chartjs. A small `Count ↔ %` toggle in the chart header switches the bars between done **count** and **completion %** (`done/total`, y-axis 0–100) over the same buckets. Value labels are drawn above each non-zero bar via a tiny inline plugin (`valueLabels`).
 - Small insight line ("Najsilnejší deň v týždni: …").
 - "Podľa kategórie" breakdown (horizontal bars). Currently placeholder data; activates when categories are turned on. Per-category colors are TBD — bars are neutral blue for now.
+
+### Poznámky (Notes) — 4th tab, Apple Notes-style
+
+- **Root (`/notes`, `NotesHomeView.vue`)**: "All Notes" row (total count) + folder list (name, note count, drag handle, rename/delete). `+` in the header creates a folder (inline name input, autofocus). Swipe-left or trash-tap deletes with the same swipe/tombstone-undo pattern as tasks/categories; deleting a folder clears `folder_id` on its notes (mirrors the DB's `on delete set null`) and undo relinks them back.
+- **Folder contents (`/notes/folder/:id`, `NotesListView.vue`; `:id = 'all'` for All Notes)**: back arrow + folder name + `+` new note. Search bar filters title+body client-side. Pinned section above the regular list (`NoteRow.vue`: title, single-line preview, localized date via `useFmt`-style `Intl` formatting, pin toggle). Swipe-left deletes with tombstone-undo.
+- **Editor (`/notes/note/:id`)**: full-screen, own back-header (pin toggle + delete, no confirm dialog — matches the task edit-form's direct-delete convention). Borderless bold title + plain-text body textarea, debounced autosave (600ms) + flush on blur/unmount, no save button. Small folder `<select>` to move the note between folders. New notes auto-focus the title.
+- **Scope (v1, deliberate cuts)**: plain text only (no rich formatting/checklists — no editor library in the stack), no note↔task linking (tasks already have their own per-task note field).
 
 ## Build order (suggested)
 
