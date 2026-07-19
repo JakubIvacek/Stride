@@ -1,4 +1,4 @@
-import type { Category, Task } from '@/types'
+import type { Category, Note, NoteFolder, Task } from '@/types'
 import { parseYmd, today, weekdayIndex } from '@/lib/dates'
 
 // Demo mode lets the app render realistic data during `npm run dev` without a
@@ -202,3 +202,42 @@ export function demoTasksForRange(from: string, to: string): Task[] {
   }
   return out
 }
+
+export const DEMO_NOTE_FOLDERS: NoteFolder[] = [
+  { id: 'demo-folder-1', name: 'Work', position: 0, created_at: new Date().toISOString() },
+  { id: 'demo-folder-2', name: 'Personal', position: 1, created_at: new Date().toISOString() },
+]
+
+const daysAgo = (n: number) => {
+  const d = new Date()
+  d.setDate(d.getDate() - n)
+  return d.toISOString()
+}
+
+export const DEMO_NOTES: Note[] = [
+  {
+    id: 'demo-note-1', title: 'Project kickoff notes', pinned: true, folder_id: 'demo-folder-1',
+    body: 'Attendees: Alex, Priya, Sam.\n\n- Scope: v1 covers web only, mobile later\n- Deadline target: end of quarter\n- Next sync Thursday 10am',
+    position: 0, created_at: daysAgo(6), updated_at: daysAgo(0),
+  },
+  {
+    id: 'demo-note-2', title: 'Grocery list', pinned: false, folder_id: 'demo-folder-2',
+    body: 'Oat milk\nEggs\nSpinach\nCoffee beans\nOlive oil',
+    position: 0, created_at: daysAgo(3), updated_at: daysAgo(1),
+  },
+  {
+    id: 'demo-note-3', title: 'Book recommendations', pinned: false, folder_id: 'demo-folder-2',
+    body: 'Deep Work — Cal Newport\nThe Pragmatic Programmer\nAtomic Habits',
+    position: 0, created_at: daysAgo(20), updated_at: daysAgo(5),
+  },
+  {
+    id: 'demo-note-4', title: 'Standup talking points', pinned: false, folder_id: 'demo-folder-1',
+    body: 'Yesterday: finished the API integration\nToday: start on the settings screen\nBlockers: none',
+    position: 0, created_at: daysAgo(1), updated_at: daysAgo(1),
+  },
+  {
+    id: 'demo-note-5', title: 'Trip ideas', pinned: false, folder_id: null,
+    body: 'Somewhere with good hiking, not too far, long weekend works best.',
+    position: 0, created_at: daysAgo(45), updated_at: daysAgo(30),
+  },
+]

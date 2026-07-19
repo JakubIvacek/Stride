@@ -16,6 +16,7 @@ Nápady a vylepšenia na premyslenie. Legenda námahy: **S** = malé, **M** = st
 ---
 
 ## Hotovo
+- [x] **Poznámky (Notes)** — nový tab v spodnej navigácii, Apple Notes štýl. Priečinky (CRUD, drag & drop poradie, „All Notes"), poznámky (názov + text, autosave, pripnutie, vyhľadávanie, presun medzi priečinkami), swipe/undo mazanie zhodné s existujúcim vzorom pre úlohy/kategórie. `notes` + `note_folders` tabuľky (RLS, `on delete set null` pre priečinok), demo dáta.
 - [x] **Čas podľa kategórie** — Categories sheet má tab „Čas" (hotové/naplánované hodiny za týždeň na kategóriu, `duration_min`); Štatistiky → rozpad podľa kategórie má prepínač Počet ↔ Hodiny.
 - [x] **Analytics** — Vercel Web Analytics (`@vercel/analytics/vue`); page views, unikátni návštevníci, zdroje; zadarmo, bez cookies, GDPR ok.
 - [x] **Nasadenie na Vercel** — `vercel.json`, env vars, Supabase Auth URLs, OG domain, Edge Function, Confirm email vypnuté. Live: https://stride-by-keno.vercel.app
