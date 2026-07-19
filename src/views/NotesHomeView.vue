@@ -69,15 +69,22 @@
       </div>
 
       <div v-if="creatingFolder" class="new-folder-row">
-        <input
-          ref="newFolderInput"
-          v-model="newFolderName"
-          class="rename-input"
-          :placeholder="t('notes.folderNamePlaceholder')"
-          @keyup.enter="addFolder"
-          @keyup.esc="creatingFolder = false"
-          @blur="addFolder"
-        >
+        <div class="add-input-row">
+          <input
+            ref="newFolderInput"
+            v-model="newFolderName"
+            class="add-input"
+            :placeholder="t('notes.folderNamePlaceholder')"
+            @keyup.enter="addFolder"
+            @keyup.esc="cancelNewFolder"
+          >
+          <button class="add-confirm" @mousedown.prevent @click="addFolder" :aria-label="t('common.confirm')">
+            <i class="ti ti-check"></i>
+          </button>
+          <button class="add-cancel" @mousedown.prevent @click="cancelNewFolder" :aria-label="t('common.cancel')">
+            <i class="ti ti-x"></i>
+          </button>
+        </div>
       </div>
 
       <p v-if="!folders.folders.length && !tombstones.length && !creatingFolder" class="empty">{{ t('notes.emptyFolders') }}</p>
@@ -113,14 +120,15 @@ const newFolderInput = ref<HTMLInputElement | null>(null)
 watch(creatingFolder, async v => {
   if (v) { await nextTick(); newFolderInput.value?.focus() }
 })
-// closing the input (v-if unmount) fires a blur event on top of keyup.enter's
-// explicit call, so guard against the resulting double-submit
 async function addFolder() {
-  if (!creatingFolder.value) return
   const name = newFolderName.value.trim()
   creatingFolder.value = false
   if (!name) { newFolderName.value = ''; return }
   await folders.addFolder(name)
+  newFolderName.value = ''
+}
+function cancelNewFolder() {
+  creatingFolder.value = false
   newFolderName.value = ''
 }
 
@@ -248,5 +256,24 @@ function onUp(_e: TouchEvent, f: NoteFolder) {
 @keyframes tomb-in { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0); } }
 
 .new-folder-row { padding: 11px 0; border-top: 0.5px solid var(--color-border-tertiary); }
+.add-input-row { display: flex; align-items: center; gap: 8px; }
+.add-input {
+  flex: 1; min-width: 0;
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: var(--border-radius-md);
+  background: var(--color-background-primary);
+  color: var(--color-text-primary);
+  padding: 8px 10px; font-size: 15px;
+}
+.add-input:focus { outline: none; border-color: var(--color-text-info); }
+.add-confirm, .add-cancel {
+  width: 34px; height: 34px; border-radius: var(--border-radius-md);
+  border: none; cursor: pointer; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform .1s ease, background-color .15s ease, color .15s ease;
+}
+.add-confirm { background: var(--color-text-success); color: #fff; }
+.add-cancel { background: var(--color-background-tertiary); color: var(--color-text-secondary); }
+.add-confirm:active, .add-cancel:active { transform: scale(0.92); }
 .empty { color: var(--color-text-tertiary); font-size: 14px; padding: 16px 0; }
 </style>
