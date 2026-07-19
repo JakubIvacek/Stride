@@ -29,6 +29,8 @@ export const messages = {
       backAria: 'Back',
       folderAria: 'Folder',
       renameAria: 'Rename',
+      editAria: 'Edit note',
+      doneAria: 'Done',
       noFolder: 'No Folder',
     },
     home: {
@@ -215,6 +217,8 @@ export const messages = {
       backAria: 'Späť',
       folderAria: 'Priečinok',
       renameAria: 'Premenovať',
+      editAria: 'Upraviť poznámku',
+      doneAria: 'Hotovo',
       noFolder: 'Bez priečinka',
     },
     home: {
@@ -401,6 +405,8 @@ export const messages = {
       backAria: 'Zurück',
       folderAria: 'Ordner',
       renameAria: 'Umbenennen',
+      editAria: 'Notiz bearbeiten',
+      doneAria: 'Fertig',
       noFolder: 'Kein Ordner',
     },
     home: {
@@ -496,6 +502,8 @@ export const messages = {
       backAria: 'Atrás',
       folderAria: 'Carpeta',
       renameAria: 'Cambiar nombre',
+      editAria: 'Editar nota',
+      doneAria: 'Listo',
       noFolder: 'Sin carpeta',
     },
     home: {
@@ -591,6 +599,8 @@ export const messages = {
       backAria: 'Retour',
       folderAria: 'Dossier',
       renameAria: 'Renommer',
+      editAria: 'Modifier la note',
+      doneAria: 'Terminé',
       noFolder: 'Aucun dossier',
     },
     home: {
@@ -686,6 +696,8 @@ export const messages = {
       backAria: 'Indietro',
       folderAria: 'Cartella',
       renameAria: 'Rinomina',
+      editAria: 'Modifica nota',
+      doneAria: 'Fatto',
       noFolder: 'Nessuna cartella',
     },
     home: {
@@ -781,6 +793,8 @@ export const messages = {
       backAria: 'Voltar',
       folderAria: 'Pasta',
       renameAria: 'Renomear',
+      editAria: 'Editar nota',
+      doneAria: 'Concluído',
       noFolder: 'Sem pasta',
     },
     home: {

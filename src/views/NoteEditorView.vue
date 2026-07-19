@@ -6,47 +6,56 @@
       </button>
       <div class="head-actions">
         <button
-          v-if="note"
-          class="icon-btn"
-          :class="{ accent: note.pinned }"
-          @click="togglePin"
-          :aria-label="note.pinned ? t('notes.unpinAria') : t('notes.pinAria')"
+          v-if="note && editing"
+          class="icon-btn accent"
+          @click="exitEdit"
+          :aria-label="t('notes.doneAria')"
         >
-          <i class="ti" :class="note.pinned ? 'ti-pinned' : 'ti-pin'"></i>
+          <i class="ti ti-check"></i>
         </button>
-        <button v-if="note" class="icon-btn" @click="remove" :aria-label="t('notes.deleteNoteAria')">
-          <i class="ti ti-trash"></i>
-        </button>
+        <template v-else-if="note">
+          <button
+            class="icon-btn"
+            :class="{ accent: note.pinned }"
+            @click="togglePin"
+            :aria-label="note.pinned ? t('notes.unpinAria') : t('notes.pinAria')"
+          >
+            <i class="ti" :class="note.pinned ? 'ti-pinned' : 'ti-pin'"></i>
+          </button>
+          <button class="icon-btn" @click="remove" :aria-label="t('notes.deleteNoteAria')">
+            <i class="ti ti-trash"></i>
+          </button>
+        </template>
       </div>
     </header>
 
     <div v-if="note" class="body">
-      <select
-        class="folder-select"
-        :value="note.folder_id ?? ''"
-        @change="onFolderChange(($event.target as HTMLSelectElement).value)"
-        :aria-label="t('notes.folderAria')"
-      >
-        <option value="">{{ t('notes.noFolder') }}</option>
-        <option v-for="f in foldersStore.folders" :key="f.id" :value="f.id">{{ f.name }}</option>
-      </select>
-
-      <input
-        ref="titleEl"
-        v-model="title"
-        class="title-input"
-        :placeholder="t('notes.untitled')"
-        @input="scheduleSave"
-        @blur="saveNow"
-      >
-      <textarea
-        v-model="body"
-        class="body-input"
-        :placeholder="t('notes.bodyPlaceholder')"
-        @input="scheduleSave"
-        @blur="saveNow"
-      ></textarea>
+      <template v-if="editing">
+        <input
+          ref="titleEl"
+          v-model="title"
+          class="title-input"
+          :placeholder="t('notes.untitled')"
+          @input="scheduleSave"
+          @blur="saveNow"
+        >
+        <textarea
+          v-model="body"
+          class="body-input"
+          :placeholder="t('notes.bodyPlaceholder')"
+          @input="scheduleSave"
+          @blur="saveNow"
+        ></textarea>
+      </template>
+      <template v-else>
+        <div class="title-display" @click="enterEdit">{{ title || t('notes.untitled') }}</div>
+        <div class="body-display" @click="enterEdit">{{ body || t('notes.bodyPlaceholder') }}</div>
+      </template>
     </div>
+
+    <button v-if="note && !editing" class="edit-fab" @click="enterEdit" :aria-label="t('notes.editAria')">
+      <i class="ti ti-pencil"></i>
+    </button>
   </div>
 </template>
 
@@ -55,13 +64,11 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { useNotesStore } from '@/stores/notes'
-import { useNoteFoldersStore } from '@/stores/noteFolders'
 
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const notesStore = useNotesStore()
-const foldersStore = useNoteFoldersStore()
 
 const noteId = computed(() => route.params.id as string)
 const note = computed(() => notesStore.notes.find(n => n.id === noteId.value) ?? null)
@@ -69,19 +76,30 @@ const note = computed(() => notesStore.notes.find(n => n.id === noteId.value) ??
 const title = ref('')
 const body = ref('')
 const titleEl = ref<HTMLInputElement | null>(null)
+const editing = ref(false)
 
 onMounted(async () => {
   if (!notesStore.loaded) await notesStore.fetchAll()
-  if (!foldersStore.loaded) await foldersStore.fetchAll()
   if (note.value) {
     title.value = note.value.title
     body.value = note.value.body
     if (!title.value && !body.value) {
+      editing.value = true
       await nextTick()
       titleEl.value?.focus()
     }
   }
 })
+
+async function enterEdit() {
+  editing.value = true
+  await nextTick()
+  titleEl.value?.focus()
+}
+function exitEdit() {
+  saveNow()
+  editing.value = false
+}
 
 // debounced autosave; also flushes on blur and before leaving the page
 let saveTimer: ReturnType<typeof setTimeout> | null = null
@@ -101,10 +119,6 @@ function togglePin() {
   if (note.value) notesStore.togglePin(note.value)
 }
 
-function onFolderChange(value: string) {
-  if (note.value) notesStore.updateNote(note.value.id, { folder_id: value || null })
-}
-
 async function remove() {
   if (!note.value) return
   const folderId = note.value.folder_id
@@ -120,16 +134,11 @@ function goBack() {
 </script>
 
 <style scoped>
-.editor { display: flex; flex-direction: column; height: 100%; }
+.editor { display: flex; flex-direction: column; height: 100%; position: relative; }
 .head { flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 12px 18px 8px; }
 .head-actions { display: flex; align-items: center; gap: 8px; }
 
-.body { flex: 1 1 auto; overflow-y: auto; padding: 4px 18px 24px; display: flex; flex-direction: column; }
-.folder-select {
-  align-self: flex-start; margin-bottom: 10px; border: 0.5px solid var(--color-border-tertiary);
-  background: var(--color-background-secondary); color: var(--color-text-secondary);
-  font-size: 13px; padding: 5px 10px; border-radius: 999px;
-}
+.body { flex: 1 1 auto; overflow-y: auto; padding: 4px 18px 88px; display: flex; flex-direction: column; }
 .title-input {
   border: none; background: none; color: var(--color-text-primary);
   font-size: 22px; font-weight: 600; letter-spacing: -0.3px; padding: 4px 0 8px;
@@ -141,4 +150,24 @@ function goBack() {
   font-family: inherit;
 }
 .body-input:focus { outline: none; }
+
+.title-display {
+  font-size: 26px; font-weight: 700; letter-spacing: -0.4px; color: var(--color-text-primary);
+  padding: 4px 0 10px; cursor: text;
+}
+.body-display {
+  flex: 1 1 auto; white-space: pre-wrap; word-break: break-word;
+  color: var(--color-text-primary); font-size: 16px; line-height: 1.5; padding: 4px 0; cursor: text;
+}
+
+.edit-fab {
+  position: absolute; right: 18px; bottom: calc(18px + env(safe-area-inset-bottom));
+  width: 46px; height: 46px; border-radius: 50%;
+  border: none; cursor: pointer;
+  background: var(--color-text-info); color: #fff;
+  display: flex; align-items: center; justify-content: center; font-size: 19px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  transition: transform .1s ease;
+}
+.edit-fab:active { transform: scale(0.92); }
 </style>

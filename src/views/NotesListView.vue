@@ -1,29 +1,42 @@
 <template>
   <div class="notes-list">
     <header class="head">
+      <div class="brand">
+        <img src="/stride_icon.svg" alt="Stride" class="logo">
+        <span class="brand-name">Stride</span>
+      </div>
       <button class="icon-btn" @click="router.push('/notes')" :aria-label="t('notes.backAria')">
-        <i class="ti ti-chevron-left"></i>
-      </button>
-      <div class="title">{{ folderTitle }}</div>
-      <button class="icon-btn accent" @click="createNote" :aria-label="t('notes.newNoteAria')">
-        <i class="ti ti-plus"></i>
+        <i class="ti ti-arrow-left"></i>
       </button>
     </header>
 
-    <div class="search">
-      <i class="ti ti-search search-icon"></i>
-      <input v-model="query" class="search-input" :placeholder="t('notes.searchPlaceholder')">
+    <div class="title-row">
+      <div class="title">{{ folderTitle }}</div>
+      <button class="icon-btn accent" @click="createNote" :aria-label="t('notes.newNoteAria')">
+        <i class="ti ti-pencil"></i>
+      </button>
+    </div>
+
+    <div class="float-bar">
+      <div class="search-pill">
+        <i class="ti ti-search search-icon"></i>
+        <input v-model="query" class="search-input" :placeholder="t('notes.searchPlaceholder')">
+      </div>
     </div>
 
     <div class="body">
       <template v-if="pinned.length">
         <div class="sec-label"><i class="ti ti-pinned"></i> {{ t('notes.pinned') }}</div>
-        <NoteRow v-for="n in pinned" :key="n.id" :note="n" @open="open" @pin="togglePin" @delete="deleteWithUndo" />
+        <div class="note-card">
+          <NoteRow v-for="n in pinned" :key="n.id" :note="n" @open="open" @pin="togglePin" @delete="deleteWithUndo" />
+        </div>
       </template>
 
-      <template v-if="rest.length">
-        <div v-if="pinned.length" class="sec-label">{{ t('notes.section') }}</div>
-        <NoteRow v-for="n in rest" :key="n.id" :note="n" @open="open" @pin="togglePin" @delete="deleteWithUndo" />
+      <template v-for="group in yearGroups" :key="group.year">
+        <div class="sec-label">{{ group.year }}</div>
+        <div class="note-card">
+          <NoteRow v-for="n in group.notes" :key="n.id" :note="n" @open="open" @pin="togglePin" @delete="deleteWithUndo" />
+        </div>
       </template>
 
       <div v-for="tomb in tombstones" :key="'tomb-' + tomb.id" class="tomb-row">
@@ -34,7 +47,7 @@
         </button>
       </div>
 
-      <p v-if="!pinned.length && !rest.length && !tombstones.length" class="empty">{{ t('notes.empty') }}</p>
+      <p v-if="!pinned.length && !yearGroups.length && !tombstones.length" class="empty">{{ t('notes.empty') }}</p>
     </div>
   </div>
 </template>
@@ -75,6 +88,23 @@ const scoped = computed(() => {
 const pinned = computed(() => scoped.value.filter(n => n.pinned))
 const rest = computed(() => scoped.value.filter(n => !n.pinned))
 
+// non-pinned notes bucketed by year (Apple Notes style), newest year and newest note first
+const yearGroups = computed(() => {
+  const byYear = new Map<number, Note[]>()
+  for (const n of rest.value) {
+    const year = new Date(n.updated_at).getFullYear()
+    const bucket = byYear.get(year)
+    if (bucket) bucket.push(n)
+    else byYear.set(year, [n])
+  }
+  return [...byYear.keys()]
+    .sort((a, b) => b - a)
+    .map(year => ({
+      year,
+      notes: byYear.get(year)!.sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()),
+    }))
+})
+
 function open(n: Note) {
   router.push(`/notes/note/${n.id}`)
 }
@@ -112,24 +142,33 @@ async function undoTomb(n: Note) {
 </script>
 
 <style scoped>
-.notes-list { display: flex; flex-direction: column; height: 100%; }
+.notes-list { display: flex; flex-direction: column; height: 100%; position: relative; }
 .head {
   flex-shrink: 0; display: flex; align-items: center; justify-content: space-between;
   padding: 12px 18px 8px;
 }
-.title { font-size: 17px; font-weight: 500; }
-.search { flex-shrink: 0; display: flex; align-items: center; gap: 6px; margin: 0 18px 8px; padding: 7px 10px; border-radius: 10px; background: var(--color-background-secondary); }
-.search-icon { font-size: 15px; color: var(--color-text-tertiary); }
-.search-input { flex: 1; border: none; background: none; color: var(--color-text-primary); font-size: 15px; }
-.search-input:focus { outline: none; }
+.brand { display: flex; align-items: center; gap: 9px; }
+.logo { height: 26px; width: auto; filter: var(--logo-filter); }
+.brand-name { font-size: 19px; font-weight: 600; letter-spacing: -0.5px; color: var(--color-text-primary); position: relative; top: -2px; }
 
-.body { flex: 1 1 auto; overflow-y: auto; padding: 0 18px 24px; }
-.sec-label { display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 500; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.03em; padding: 12px 0 4px; }
-.sec-label i { font-size: 12px; }
+.title-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px 10px; }
+.title { font-size: 28px; font-weight: 600; letter-spacing: -0.5px; }
+
+.body { flex: 1 1 auto; overflow-y: auto; padding: 4px 18px 24px; }
+.sec-label { font-size: 13px; font-weight: 600; color: var(--color-text-tertiary); padding: 14px 4px 6px; }
+.sec-label:first-child { padding-top: 4px; }
+.sec-label i { font-size: 12px; margin-right: 4px; }
+
+.note-card {
+  border-radius: var(--border-radius-lg);
+  background: var(--color-background-secondary);
+  overflow: hidden;
+}
+.note-card :deep(.row-wrap:first-child .note-row) { border-top: none; }
 
 .tomb-row {
   display: flex; align-items: center; gap: 12px;
-  padding: 10px 0; border-top: 0.5px solid var(--color-border-tertiary);
+  padding: 10px 4px; border-top: 0.5px solid var(--color-border-tertiary);
   color: var(--color-text-tertiary); animation: tomb-in .2s ease;
 }
 .tomb-row .tomb-icon { display: flex; align-items: center; font-size: 18px; }
@@ -144,4 +183,19 @@ async function undoTomb(n: Note) {
 @keyframes tomb-in { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0); } }
 
 .empty { color: var(--color-text-tertiary); font-size: 14px; padding: 24px 0; text-align: center; }
+
+.float-bar {
+  flex-shrink: 0;
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 18px 14px;
+}
+.search-pill {
+  flex: 1; min-width: 0; display: flex; align-items: center; gap: 6px;
+  padding: 8px 12px; border-radius: 999px;
+  background: var(--color-background-secondary);
+  border: 0.5px solid var(--color-border-tertiary);
+}
+.search-icon { font-size: 15px; color: var(--color-text-tertiary); }
+.search-input { flex: 1; min-width: 0; border: none; background: none; color: var(--color-text-primary); font-size: 15px; }
+.search-input:focus { outline: none; }
 </style>

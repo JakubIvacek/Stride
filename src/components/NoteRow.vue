@@ -88,12 +88,12 @@ function onUp() {
 .row-wrap { position: relative; overflow: hidden; }
 .note-row {
   display: flex; align-items: center; gap: 8px;
-  padding: 10px 0; border-top: 0.5px solid var(--color-border-tertiary);
-  background: var(--color-background-primary); cursor: pointer;
+  padding: 11px 14px; border-top: 0.5px solid var(--color-border-tertiary);
+  background: var(--color-background-secondary); cursor: pointer;
 }
 .note-row.swiping { transition: transform .2s; }
 .note-main { flex: 1; min-width: 0; }
-.note-title { font-size: 16px; font-weight: 500; color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.note-title { font-size: 16px; font-weight: 600; color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .note-sub { display: flex; gap: 5px; font-size: 13px; color: var(--color-text-secondary); margin-top: 2px; white-space: nowrap; overflow: hidden; }
 .note-date { flex-shrink: 0; }
 .note-sep { flex-shrink: 0; }
