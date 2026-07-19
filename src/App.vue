@@ -14,11 +14,11 @@
     </div>
     <AuthView v-if="auth.ready && (!authed || auth.recovery)" />
     <template v-else-if="authed">
-      <AppHeader v-if="showChrome" />
+      <AppHeader v-if="showHeader" />
       <main class="app-main">
         <RouterView />
       </main>
-      <TabBar v-if="showChrome" />
+      <TabBar v-if="showTabBar" />
     </template>
   </div>
 </template>
@@ -51,9 +51,12 @@ function backToLanding() {
   window.location.href = '/welcome'
 }
 
-// hide the global header/tab bar on full-screen sub-pages that draw their own
-// back-header (settings and the notes folder/editor drill-down)
-const showChrome = computed(() => route.path !== '/account' && !route.path.startsWith('/notes/'))
+// hide the global header on full-screen sub-pages that draw their own brand
+// header (settings, and the notes folder/editor drill-down which mirrors it)
+const showHeader = computed(() => route.path !== '/account' && !route.path.startsWith('/notes/'))
+// the tab bar stays visible one level deeper — inside a notes folder — since
+// that view still uses vertical navigation; only the note editor hides it
+const showTabBar = computed(() => route.path !== '/account' && !route.path.startsWith('/notes/note/'))
 
 // landing is the welcome screen for logged-out visitors (and the /welcome route)
 const showAuth = ref(false)

@@ -1,6 +1,6 @@
 export const messages = {
   en: {
-    common: { delete: 'Delete', cancel: 'Cancel', confirmDelete: 'Delete?' },
+    common: { delete: 'Delete', cancel: 'Cancel', confirm: 'Confirm', confirmDelete: 'Delete?' },
     undo: { action: 'Undo' },
     overdue: { title: 'Overdue', toToday: 'Today' },
     empty: {
@@ -188,7 +188,7 @@ export const messages = {
     lang: { label: 'Language' },
   },
   sk: {
-    common: { delete: 'Zmazať', cancel: 'Zrušiť', confirmDelete: 'Zmazať?' },
+    common: { delete: 'Zmazať', cancel: 'Zrušiť', confirm: 'Potvrdiť', confirmDelete: 'Zmazať?' },
     undo: { action: 'Späť' },
     overdue: { title: 'Po termíne', toToday: 'Dnes' },
     empty: {
@@ -376,7 +376,7 @@ export const messages = {
     lang: { label: 'Jazyk' },
   },
   de: {
-    common: { delete: 'Löschen', cancel: 'Abbrechen', confirmDelete: 'Löschen?' },
+    common: { delete: 'Löschen', cancel: 'Abbrechen', confirm: 'Bestätigen', confirmDelete: 'Löschen?' },
     undo: { action: 'Rückgängig' },
     overdue: { title: 'Überfällig', toToday: 'Heute' },
     empty: {
@@ -473,7 +473,7 @@ export const messages = {
     lang: { label: 'Sprache' },
   },
   es: {
-    common: { delete: 'Eliminar', cancel: 'Cancelar', confirmDelete: '¿Eliminar?' },
+    common: { delete: 'Eliminar', cancel: 'Cancelar', confirm: 'Confirmar', confirmDelete: '¿Eliminar?' },
     undo: { action: 'Deshacer' },
     overdue: { title: 'Atrasadas', toToday: 'Hoy' },
     empty: {
@@ -570,7 +570,7 @@ export const messages = {
     lang: { label: 'Idioma' },
   },
   fr: {
-    common: { delete: 'Supprimer', cancel: 'Annuler', confirmDelete: 'Supprimer ?' },
+    common: { delete: 'Supprimer', cancel: 'Annuler', confirm: 'Confirmer', confirmDelete: 'Supprimer ?' },
     undo: { action: 'Annuler' },
     overdue: { title: 'En retard', toToday: "Aujourd'hui" },
     empty: {
@@ -667,7 +667,7 @@ export const messages = {
     lang: { label: 'Langue' },
   },
   it: {
-    common: { delete: 'Elimina', cancel: 'Annulla', confirmDelete: 'Eliminare?' },
+    common: { delete: 'Elimina', cancel: 'Annulla', confirm: 'Conferma', confirmDelete: 'Eliminare?' },
     undo: { action: 'Annulla' },
     overdue: { title: 'In ritardo', toToday: 'Oggi' },
     empty: {
@@ -764,7 +764,7 @@ export const messages = {
     lang: { label: 'Lingua' },
   },
   pt: {
-    common: { delete: 'Eliminar', cancel: 'Cancelar', confirmDelete: 'Eliminar?' },
+    common: { delete: 'Eliminar', cancel: 'Cancelar', confirm: 'Confirmar', confirmDelete: 'Eliminar?' },
     undo: { action: 'Anular' },
     overdue: { title: 'Em atraso', toToday: 'Hoje' },
     empty: {
