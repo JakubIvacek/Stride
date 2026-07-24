@@ -6,7 +6,7 @@
     </div>
     <div class="app-actions">
       <LanguageSwitch compact />
-      <RouterLink to="/account" class="settings" :aria-label="t('account.title')">
+      <RouterLink to="/account" class="settings" :aria-label="t('account.title')" :title="t('account.title')">
         <i class="ti ti-settings"></i>
       </RouterLink>
     </div>

@@ -12,11 +12,11 @@ Nápady a vylepšenia na premyslenie. Legenda námahy: **S** = malé, **M** = st
 - [ ] **Haptika** (S) — vibrácia pri akcii (Android cez Vibration API; iOS Safari nepodporuje).
 - [ ] **Jemné animácie** (S) — plynulý expand úlohy + prechod do Settings (fade/slide); 150–200 ms.
 - [ ] **Onboarding / help** (M) — 3 slidy pri prvom otvorení (čo je týždeň, ako pridať úlohu, čo sú kategórie). Zvážiť či to stojí za to — landing page už vysvetľuje app, UI je intuitívne; reálna hodnota by bola len pre nových používateľov bez kontextu z landingu.
-- [ ] **Hover tooltips na ikonových tlačidlách** (S) — natívny `title` atribút (alebo malý tooltip) na všetkých ikonových tlačidlách bez viditeľného textu (`.icon-btn`, `.act-btn`, pin/trash/reorder tlačidlá v `DayList.vue`, `NoteRow.vue`, `NotesHomeView.vue`, `NotesListView.vue`, `NoteEditorView.vue`, `AppHeader.vue`...), aby myš-používatelia na desktope videli pri hoveri čo tlačidlo robí. Väčšina tlačidiel má už `:aria-label` cez `t(...)` — stačí rovnaký i18n text napojiť aj na `:title`, netreba nové preklady.
 
 ---
 
 ## Hotovo
+- [x] **Hover tooltips na ikonových tlačidlách** — natívny `:title` (mirror existujúceho `:aria-label`) na všetkých ikonových tlačidlách bez viditeľného textu naprieč appkou (`DayList.vue`, `NoteRow.vue`, `NoteEditorView.vue`, `NotesHomeView.vue`, `NotesListView.vue`, `AppHeader.vue`, `LanguageSwitch.vue`, `OverdueSection.vue`, `CategoriesSheet.vue`, `HomeView.vue`, `AuthView.vue`, `AccountView.vue`, `CalendarView.vue`, `LegalPage.vue`); po ceste opravený aj natvrdo napísaný neprekladaný aria-label (`CalendarView.vue` "Zavrieť" → `t('cat.closeAria')`).
 - [x] **Poznámky na landing page** — 4. karta „Notes" vo feature-showcase sekcii v `LandingView.vue`, + screenshot `public/screens/Notes.png` (rovnaký phone-portrait rámček ako ostatné, kurátorované demo dáta).
 - [x] **Poznámky (Notes)** — nový tab v spodnej navigácii, Apple Notes štýl. Priečinky (CRUD, drag & drop poradie, „All Notes"), poznámky (názov + text, autosave, pripnutie, vyhľadávanie, presun medzi priečinkami), swipe/undo mazanie zhodné s existujúcim vzorom pre úlohy/kategórie. `notes` + `note_folders` tabuľky (RLS, `on delete set null` pre priečinok), demo dáta.
 - [x] **Čas podľa kategórie** — Categories sheet má tab „Čas" (hotové/naplánované hodiny za týždeň na kategóriu, `duration_min`); Štatistiky → rozpad podľa kategórie má prepínač Počet ↔ Hodiny.

@@ -1,7 +1,7 @@
 <template>
   <div class="editor">
     <header class="head">
-      <button class="icon-btn" @click="goBack" :aria-label="t('notes.backAria')">
+      <button class="icon-btn" @click="goBack" :aria-label="t('notes.backAria')" :title="t('notes.backAria')">
         <i class="ti ti-chevron-left"></i>
       </button>
       <div class="head-actions">
@@ -10,6 +10,7 @@
           class="icon-btn accent"
           @click="exitEdit"
           :aria-label="t('notes.doneAria')"
+          :title="t('notes.doneAria')"
         >
           <i class="ti ti-check"></i>
         </button>
@@ -19,10 +20,11 @@
             :class="{ accent: note.pinned }"
             @click="togglePin"
             :aria-label="note.pinned ? t('notes.unpinAria') : t('notes.pinAria')"
+            :title="note.pinned ? t('notes.unpinAria') : t('notes.pinAria')"
           >
             <i class="ti" :class="note.pinned ? 'ti-pinned' : 'ti-pin'"></i>
           </button>
-          <button class="icon-btn" @click="remove" :aria-label="t('notes.deleteNoteAria')">
+          <button class="icon-btn" @click="remove" :aria-label="t('notes.deleteNoteAria')" :title="t('notes.deleteNoteAria')">
             <i class="ti ti-trash"></i>
           </button>
         </template>
@@ -66,7 +68,7 @@
       </template>
     </div>
 
-    <button v-if="note && !editing" class="edit-fab" @click="enterEdit" :aria-label="t('notes.editAria')">
+    <button v-if="note && !editing" class="edit-fab" @click="enterEdit" :aria-label="t('notes.editAria')" :title="t('notes.editAria')">
       <i class="ti ti-pencil"></i>
     </button>
   </div>
