@@ -66,7 +66,7 @@
       <div class="lp-container">
         <h2 class="center">A clear view for every part of your week.</h2>
         <div class="lp-screens">
-          <div v-for="(v, i) in views" :key="v.title" class="lp-screen" :class="{ 'lp-screen-mid': i === 1 }">
+          <div v-for="(v, i) in views" :key="v.title" class="lp-screen" :class="{ 'lp-screen-mid': i === 1 || i === 2 }">
             <div class="lp-frame"><img :src="v.img" :alt="v.title"></div>
             <h3>{{ v.title }}</h3>
             <p>{{ v.text }}</p>
@@ -150,6 +150,7 @@ const views = [
   { img: '/screens/Home.png', title: 'Home', text: 'Your week at a glance, day by day.' },
   { img: '/screens/Calendar.png', title: 'Calendar', text: 'Month and year views to plan ahead.' },
   { img: '/screens/Stats_Month.png', title: 'Statistics', text: 'Streaks, goals and your activity over time.' },
+  { img: '/screens/Notes.png', title: 'Notes', text: 'Quick notes, folders and pinning, Apple Notes-style.' },
 ]
 const devices = [
   { icon: 'ti-world', title: 'Web app', text: 'Works in any browser.' },
@@ -301,7 +302,7 @@ const roadmapSoon = ['iOS App', 'Android App', 'Push Notifications']
 
 .lp-screens {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 20px;
   align-items: end;
 }
