@@ -2,7 +2,7 @@
   <div class="notes-home">
     <header class="head">
       <div class="title">{{ t('tab.notes') }}</div>
-      <button class="icon-btn accent" @click="creatingFolder = true" :aria-label="t('notes.newFolderAria')">
+      <button class="icon-btn accent" @click="creatingFolder = true" :aria-label="t('notes.newFolderAria')" :title="t('notes.newFolderAria')">
         <i class="ti ti-folder-plus"></i>
       </button>
     </header>
@@ -35,7 +35,7 @@
               @touchmove="onMove($event, f)"
               @touchend="onUp($event, f)"
             >
-              <span class="folder-drag" @touchstart.stop :aria-label="t('day.reorder')"><i class="ti ti-grip-vertical"></i></span>
+              <span class="folder-drag" @touchstart.stop :aria-label="t('day.reorder')" :title="t('day.reorder')"><i class="ti ti-grip-vertical"></i></span>
               <span class="frow-icon"><i class="ti ti-folder"></i></span>
               <input
                 v-if="renamingId === f.id"
@@ -49,10 +49,10 @@
                 {{ f.name }}
               </RouterLink>
               <span class="frow-count">{{ countFor(f.id) }}</span>
-              <button class="trash" @click.stop="startRename(f)" :aria-label="t('notes.renameAria')">
+              <button class="trash" @click.stop="startRename(f)" :aria-label="t('notes.renameAria')" :title="t('notes.renameAria')">
                 <i class="ti ti-pencil"></i>
               </button>
-              <button class="trash" @click.stop="deleteFolder(f)" :aria-label="t('notes.deleteFolderAria')">
+              <button class="trash" @click.stop="deleteFolder(f)" :aria-label="t('notes.deleteFolderAria')" :title="t('notes.deleteFolderAria')">
                 <i class="ti ti-trash"></i>
               </button>
             </div>
@@ -78,10 +78,10 @@
             @keyup.enter="addFolder"
             @keyup.esc="cancelNewFolder"
           >
-          <button class="add-confirm" @mousedown.prevent @click="addFolder" :aria-label="t('common.confirm')">
+          <button class="add-confirm" @mousedown.prevent @click="addFolder" :aria-label="t('common.confirm')" :title="t('common.confirm')">
             <i class="ti ti-check"></i>
           </button>
-          <button class="add-cancel" @mousedown.prevent @click="cancelNewFolder" :aria-label="t('common.cancel')">
+          <button class="add-cancel" @mousedown.prevent @click="cancelNewFolder" :aria-label="t('common.cancel')" :title="t('common.cancel')">
             <i class="ti ti-x"></i>
           </button>
         </div>

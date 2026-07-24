@@ -79,7 +79,7 @@
           <div class="sheet-grip"></div>
           <div class="sheet-head">
             <div class="sheet-title">{{ sheetTitle }}</div>
-            <button class="icon-btn" @click="sheetDate = null" aria-label="Zavrieť"><i class="ti ti-x"></i></button>
+            <button class="icon-btn" @click="sheetDate = null" :aria-label="t('cat.closeAria')" :title="t('cat.closeAria')"><i class="ti ti-x"></i></button>
           </div>
           <DayList v-if="sheetDate" :date="sheetDate" :tasks="sheetTasks" :show-header="false" />
         </div>

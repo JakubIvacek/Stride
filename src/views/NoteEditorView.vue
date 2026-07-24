@@ -1,7 +1,7 @@
 <template>
   <div class="editor">
     <header class="head">
-      <button class="icon-btn" @click="goBack" :aria-label="t('notes.backAria')">
+      <button class="icon-btn" @click="goBack" :aria-label="t('notes.backAria')" :title="t('notes.backAria')">
         <i class="ti ti-chevron-left"></i>
       </button>
       <div class="head-actions">
@@ -10,6 +10,7 @@
           class="icon-btn accent"
           @click="exitEdit"
           :aria-label="t('notes.doneAria')"
+          :title="t('notes.doneAria')"
         >
           <i class="ti ti-check"></i>
         </button>
@@ -19,10 +20,11 @@
             :class="{ accent: note.pinned }"
             @click="togglePin"
             :aria-label="note.pinned ? t('notes.unpinAria') : t('notes.pinAria')"
+            :title="note.pinned ? t('notes.unpinAria') : t('notes.pinAria')"
           >
             <i class="ti" :class="note.pinned ? 'ti-pinned' : 'ti-pin'"></i>
           </button>
-          <button class="icon-btn" @click="remove" :aria-label="t('notes.deleteNoteAria')">
+          <button class="icon-btn" @click="remove" :aria-label="t('notes.deleteNoteAria')" :title="t('notes.deleteNoteAria')">
             <i class="ti ti-trash"></i>
           </button>
         </template>
@@ -49,11 +51,24 @@
       </template>
       <template v-else>
         <div class="title-display" @click="enterEdit">{{ title || t('notes.untitled') }}</div>
-        <div class="body-display" @click="enterEdit">{{ body || t('notes.bodyPlaceholder') }}</div>
+        <div v-if="body" class="body-display" @click="enterEdit">
+          <template v-for="(segment, i) in bodySegments" :key="i">
+            <a
+              v-if="segment.url"
+              :href="segment.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="body-link"
+              @click.stop
+            >{{ segment.text }}</a>
+            <template v-else>{{ segment.text }}</template>
+          </template>
+        </div>
+        <div v-else class="body-display" @click="enterEdit">{{ t('notes.bodyPlaceholder') }}</div>
       </template>
     </div>
 
-    <button v-if="note && !editing" class="edit-fab" @click="enterEdit" :aria-label="t('notes.editAria')">
+    <button v-if="note && !editing" class="edit-fab" @click="enterEdit" :aria-label="t('notes.editAria')" :title="t('notes.editAria')">
       <i class="ti ti-pencil"></i>
     </button>
   </div>
@@ -77,6 +92,40 @@ const title = ref('')
 const body = ref('')
 const titleEl = ref<HTMLInputElement | null>(null)
 const editing = ref(false)
+
+// matches http(s) urls, bare www. urls, and email addresses
+const LINK_RE = /(https?:\/\/[^\s]+)|(www\.[^\s]+)|([\w.+-]+@[\w-]+\.[a-zA-Z]{2,})/g
+
+function toHref(matched: string): string | null {
+  let href = matched
+  if (href.startsWith('www.')) href = `https://${href}`
+  else if (!href.includes('://') && href.includes('@')) href = `mailto:${href}`
+  try {
+    const scheme = new URL(href).protocol
+    if (scheme !== 'http:' && scheme !== 'https:' && scheme !== 'mailto:') return null
+    return href
+  } catch {
+    return null
+  }
+}
+
+interface BodySegment { text: string; url: string | null }
+
+const bodySegments = computed<BodySegment[]>(() => {
+  const segments: BodySegment[] = []
+  let lastIndex = 0
+  for (const match of body.value.matchAll(LINK_RE)) {
+    const raw = match[0]
+    const start = match.index ?? 0
+    const href = toHref(raw)
+    if (!href) continue
+    if (start > lastIndex) segments.push({ text: body.value.slice(lastIndex, start), url: null })
+    segments.push({ text: raw, url: href })
+    lastIndex = start + raw.length
+  }
+  if (lastIndex < body.value.length) segments.push({ text: body.value.slice(lastIndex), url: null })
+  return segments
+})
 
 onMounted(async () => {
   if (!notesStore.loaded) await notesStore.fetchAll()
@@ -159,6 +208,7 @@ function goBack() {
   flex: 1 1 auto; white-space: pre-wrap; word-break: break-word;
   color: var(--color-text-primary); font-size: 16px; line-height: 1.5; padding: 4px 0; cursor: text;
 }
+.body-link { color: var(--color-text-info); text-decoration: underline; cursor: pointer; }
 
 .edit-fab {
   position: absolute; right: 18px; bottom: calc(18px + env(safe-area-inset-bottom));

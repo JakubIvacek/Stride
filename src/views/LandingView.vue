@@ -8,9 +8,10 @@
           <span class="lp-name">Stride</span>
         </div>
         <nav class="lp-links">
-          <a href="#features">Features</a>
-          <a href="#devices">Devices</a>
-          <button class="lp-btn sm" @click="$emit('start')">Get started</button>
+          <a href="#features">{{ t('landing.navFeatures') }}</a>
+          <a href="#devices">{{ t('landing.navDevices') }}</a>
+          <LanguageSwitch compact />
+          <button class="lp-btn sm" @click="$emit('start')">{{ t('landing.navGetStarted') }}</button>
         </nav>
       </div>
     </header>
@@ -19,14 +20,14 @@
     <section class="lp-hero">
       <div class="lp-container lp-hero-inner">
         <div class="lp-hero-text">
-          <div class="lp-badge">Weekly planner · free</div>
-          <h1>Your week,<br>finally under<br>control.</h1>
-          <p>Plan your week. Check things off. Track your progress. No clutter, no learning curve.</p>
+          <div class="lp-badge">{{ t('landing.badge') }}</div>
+          <h1>{{ t('landing.heroTitle') }}</h1>
+          <p>{{ t('landing.heroSubtitle') }}</p>
           <div class="lp-hero-actions">
-            <button class="lp-btn" @click="$emit('start')">Get started free</button>
-            <button class="lp-text-btn" @click="tryDemo">Try the demo →</button>
+            <button class="lp-btn" @click="$emit('start')">{{ t('landing.getStartedFree') }}</button>
+            <button class="lp-text-btn" @click="tryDemo">{{ t('landing.tryDemo') }}</button>
           </div>
-          <span class="lp-note">No credit card needed</span>
+          <span class="lp-note">{{ t('landing.noCard') }}</span>
         </div>
         <div class="lp-hero-shot">
           <div class="lp-shot-glow"></div>
@@ -38,16 +39,16 @@
     <!-- tagline / differentiator -->
     <section class="lp-tagline">
       <div class="lp-container">
-        <p class="lp-tag-small">No projects. No workspaces. No endless settings.</p>
-        <p class="lp-tag-big">Just your week.</p>
+        <p class="lp-tag-small">{{ t('landing.tagSmall') }}</p>
+        <p class="lp-tag-big">{{ t('landing.tagBig') }}</p>
       </div>
     </section>
 
     <!-- why -->
     <section id="features" class="lp-why">
       <div class="lp-container">
-        <p class="lp-eyebrow">Why Stride</p>
-        <h2>Most productivity apps are too complicated.<br>Stride focuses on three things.</h2>
+        <p class="lp-eyebrow">{{ t('landing.whyEyebrow') }}</p>
+        <h2>{{ t('landing.whyTitle') }}</h2>
         <div class="lp-feat-rows">
           <div v-for="(f, i) in features" :key="f.title" class="lp-feat-row">
             <span class="lp-feat-num">0{{ i + 1 }}</span>
@@ -64,9 +65,9 @@
     <!-- views / screenshots -->
     <section class="lp-views">
       <div class="lp-container">
-        <h2 class="center">A clear view for every part of your week.</h2>
+        <h2 class="center">{{ t('landing.viewsTitle') }}</h2>
         <div class="lp-screens">
-          <div v-for="(v, i) in views" :key="v.title" class="lp-screen" :class="{ 'lp-screen-mid': i === 1 }">
+          <div v-for="(v, i) in views" :key="v.title" class="lp-screen" :class="{ 'lp-screen-mid': i === 1 || i === 2 }">
             <div class="lp-frame"><img :src="v.img" :alt="v.title"></div>
             <h3>{{ v.title }}</h3>
             <p>{{ v.text }}</p>
@@ -79,7 +80,7 @@
     <section id="devices" class="lp-devices">
       <div class="lp-container lp-devices-inner">
         <div class="lp-devices-left">
-          <h2>Use Stride on all your devices.</h2>
+          <h2>{{ t('landing.devicesTitle') }}</h2>
           <ul class="lp-device-list">
             <li v-for="d in devices" :key="d.title">
               <i class="ti" :class="d.icon"></i>
@@ -91,13 +92,13 @@
           </ul>
         </div>
         <div class="lp-roadmap">
-          <p class="lp-eyebrow">Roadmap</p>
+          <p class="lp-eyebrow">{{ t('landing.roadmap') }}</p>
           <div class="rm-group">
-            <span class="rm-label">Today</span>
+            <span class="rm-label">{{ t('landing.roadmapToday') }}</span>
             <div v-for="r in roadmapNow" :key="r" class="rm-row done"><i class="ti ti-circle-check"></i>{{ r }}</div>
           </div>
           <div class="rm-group">
-            <span class="rm-label">Coming later</span>
+            <span class="rm-label">{{ t('landing.roadmapLater') }}</span>
             <div v-for="r in roadmapSoon" :key="r" class="rm-row"><i class="ti ti-circle"></i>{{ r }}</div>
           </div>
         </div>
@@ -108,10 +109,10 @@
     <section class="lp-cta">
       <div class="lp-cta-glow"></div>
       <div class="lp-container lp-cta-inner">
-        <h2>Ready to get organized?</h2>
-        <p>Start using Stride today — it's free.</p>
-        <button class="lp-btn lp-btn-lg" @click="$emit('start')">Get started free</button>
-        <span class="lp-note">No credit card needed</span>
+        <h2>{{ t('landing.ctaTitle') }}</h2>
+        <p>{{ t('landing.ctaSubtitle') }}</p>
+        <button class="lp-btn lp-btn-lg" @click="$emit('start')">{{ t('landing.getStartedFree') }}</button>
+        <span class="lp-note">{{ t('landing.noCard') }}</span>
       </div>
     </section>
 
@@ -120,9 +121,9 @@
       <div class="lp-container lp-footer-inner">
         <img src="/stride_by_keno.svg" alt="Stride by Keno" class="lp-footer-logo">
         <div class="lp-footer-links">
-          <a :href="`mailto:${CONTACT_EMAIL}`">Contact</a>
-          <a href="#" @click.prevent="$router.push('/privacy')">Privacy</a>
-          <a href="#" @click.prevent="$router.push('/terms')">Terms</a>
+          <a :href="`mailto:${CONTACT_EMAIL}`">{{ t('landing.footerContact') }}</a>
+          <a href="#" @click.prevent="$router.push('/privacy')">{{ t('landing.footerPrivacy') }}</a>
+          <a href="#" @click.prevent="$router.push('/terms')">{{ t('landing.footerTerms') }}</a>
           <span class="lp-copy">© 2026 Stride · by Keno</span>
         </div>
       </div>
@@ -131,7 +132,12 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { activateDemo } from '@/lib/demo'
+import LanguageSwitch from '@/components/LanguageSwitch.vue'
+
+const { t } = useI18n()
 
 defineEmits<{ start: [] }>()
 
@@ -141,24 +147,25 @@ function tryDemo() {
 
 const CONTACT_EMAIL = 'stridebykeno@gmail.com'
 
-const features = [
-  { icon: 'ti-calendar', title: 'Weekly planning', text: 'Organize your tasks across a clean, weekly view.' },
-  { icon: 'ti-circle-check', title: 'Daily execution', text: 'Check things off and get through your day.' },
-  { icon: 'ti-chart-bar', title: 'Progress tracking', text: 'Streaks, completion and a weekly goal keep you on track.' },
-]
-const views = [
-  { img: '/screens/Home.png', title: 'Home', text: 'Your week at a glance, day by day.' },
-  { img: '/screens/Calendar.png', title: 'Calendar', text: 'Month and year views to plan ahead.' },
-  { img: '/screens/Stats_Month.png', title: 'Statistics', text: 'Streaks, goals and your activity over time.' },
-]
-const devices = [
-  { icon: 'ti-world', title: 'Web app', text: 'Works in any browser.' },
-  { icon: 'ti-device-mobile', title: 'Installable as an app (PWA)', text: 'Add it to your home screen.' },
-  { icon: 'ti-device-desktop', title: 'Desktop install', text: 'Install it on your computer too.' },
-  { icon: 'ti-cloud', title: 'Synced everywhere', text: 'Your tasks follow you across devices.' },
-]
-const roadmapNow = ['Web App', 'PWA (install as an app)']
-const roadmapSoon = ['iOS App', 'Android App', 'Push Notifications']
+const features = computed(() => [
+  { icon: 'ti-calendar', title: t('landing.feat1Title'), text: t('landing.feat1Text') },
+  { icon: 'ti-circle-check', title: t('landing.feat2Title'), text: t('landing.feat2Text') },
+  { icon: 'ti-chart-bar', title: t('landing.feat3Title'), text: t('landing.feat3Text') },
+])
+const views = computed(() => [
+  { img: '/screens/Home.png', title: t('landing.viewHomeTitle'), text: t('landing.viewHomeText') },
+  { img: '/screens/Calendar.png', title: t('landing.viewCalendarTitle'), text: t('landing.viewCalendarText') },
+  { img: '/screens/Stats_Month.png', title: t('landing.viewStatsTitle'), text: t('landing.viewStatsText') },
+  { img: '/screens/Notes.png', title: t('landing.viewNotesTitle'), text: t('landing.viewNotesText') },
+])
+const devices = computed(() => [
+  { icon: 'ti-world', title: t('landing.deviceWebTitle'), text: t('landing.deviceWebText') },
+  { icon: 'ti-device-mobile', title: t('landing.devicePwaTitle'), text: t('landing.devicePwaText') },
+  { icon: 'ti-device-desktop', title: t('landing.deviceDesktopTitle'), text: t('landing.deviceDesktopText') },
+  { icon: 'ti-cloud', title: t('landing.deviceSyncTitle'), text: t('landing.deviceSyncText') },
+])
+const roadmapNow = computed(() => [t('landing.roadmapWeb'), t('landing.roadmapPwa')])
+const roadmapSoon = computed(() => [t('landing.roadmapIos'), t('landing.roadmapAndroid'), t('landing.roadmapPush')])
 </script>
 
 <style scoped>
@@ -192,6 +199,11 @@ const roadmapSoon = ['iOS App', 'Android App', 'Push Notifications']
 .lp-links { display: flex; align-items: center; gap: 26px; }
 .lp-links a { color: var(--mut); text-decoration: none; font-size: 14px; transition: color 0.2s; }
 .lp-links a:hover { color: var(--tx); }
+/* LanguageSwitch uses the app's --color-* tokens (light/dark theme-aware); the
+   nav is always dark, so pin it to the landing page's own --mut/--tx palette. */
+.lp-links :deep(.lang-icon) { color: var(--mut); }
+.lp-links :deep(.lang-icon:hover) { color: var(--tx); }
+.lp-links :deep(.lang-icon:active) { background: rgba(255,255,255,0.08); }
 
 /* ── Buttons ─────────────────────────────── */
 .lp-btn {
@@ -233,7 +245,7 @@ const roadmapSoon = ['iOS App', 'Android App', 'Push Notifications']
 .lp-hero-text { animation: fadeUp 0.5s ease both; }
 .lp-hero-text h1 {
   font-size: 60px; line-height: 1.02; font-weight: 700; letter-spacing: -2px;
-  margin: 0 0 20px; text-wrap: balance;
+  margin: 0 0 20px; white-space: pre-line;
 }
 .lp-hero-text p { font-size: 18px; color: var(--mut); line-height: 1.55; margin: 0 0 30px; max-width: 380px; }
 .lp-note { display: block; margin-top: 14px; font-size: 13px; color: var(--mut); }
@@ -269,7 +281,7 @@ const roadmapSoon = ['iOS App', 'Android App', 'Push Notifications']
 /* ── Why / Features ──────────────────────── */
 .lp-why { background: var(--bg2); border-top: 0.5px solid var(--line); border-bottom: 0.5px solid var(--line); padding: 80px 0; }
 .lp-eyebrow { color: var(--red); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; margin: 0 0 14px; }
-.lp-why h2 { font-size: 28px; font-weight: 600; letter-spacing: -0.4px; line-height: 1.28; margin: 0 0 44px; max-width: 560px; }
+.lp-why h2 { font-size: 28px; font-weight: 600; letter-spacing: -0.4px; line-height: 1.28; margin: 0 0 44px; max-width: 560px; white-space: pre-line; }
 
 .lp-feat-rows { }
 .lp-feat-row {
@@ -301,7 +313,7 @@ const roadmapSoon = ['iOS App', 'Android App', 'Push Notifications']
 
 .lp-screens {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 20px;
   align-items: end;
 }

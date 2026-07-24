@@ -5,14 +5,14 @@
         <img src="/stride_icon.svg" alt="Stride" class="logo">
         <span class="brand-name">Stride</span>
       </div>
-      <button class="icon-btn" @click="router.push('/notes')" :aria-label="t('notes.backAria')">
+      <button class="icon-btn" @click="router.push('/notes')" :aria-label="t('notes.backAria')" :title="t('notes.backAria')">
         <i class="ti ti-arrow-left"></i>
       </button>
     </header>
 
     <div class="title-row">
       <div class="title">{{ folderTitle }}</div>
-      <button class="icon-btn accent" @click="createNote" :aria-label="t('notes.newNoteAria')">
+      <button class="icon-btn accent" @click="createNote" :aria-label="t('notes.newNoteAria')" :title="t('notes.newNoteAria')">
         <i class="ti ti-pencil"></i>
       </button>
     </div>

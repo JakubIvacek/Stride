@@ -16,7 +16,7 @@
             <span>{{ t('auth.newPassword') }}</span>
             <div class="pw-wrap">
               <input v-model="password" :type="showPw ? 'text' : 'password'" autocomplete="new-password" required minlength="6" placeholder="••••••••">
-              <button type="button" class="pw-toggle" @click="showPw = !showPw" :aria-label="showPw ? t('auth.hidePassword') : t('auth.showPassword')"><i :class="showPw ? 'ti ti-eye-off' : 'ti ti-eye'"></i></button>
+              <button type="button" class="pw-toggle" @click="showPw = !showPw" :aria-label="showPw ? t('auth.hidePassword') : t('auth.showPassword')" :title="showPw ? t('auth.hidePassword') : t('auth.showPassword')"><i :class="showPw ? 'ti ti-eye-off' : 'ti ti-eye'"></i></button>
             </div>
           </label>
           <label class="field">
@@ -67,7 +67,7 @@
                 minlength="6"
                 placeholder="••••••••"
               >
-              <button type="button" class="pw-toggle" @click="showPw = !showPw" :aria-label="showPw ? t('auth.hidePassword') : t('auth.showPassword')">
+              <button type="button" class="pw-toggle" @click="showPw = !showPw" :aria-label="showPw ? t('auth.hidePassword') : t('auth.showPassword')" :title="showPw ? t('auth.hidePassword') : t('auth.showPassword')">
                 <i :class="showPw ? 'ti ti-eye-off' : 'ti ti-eye'"></i>
               </button>
             </div>

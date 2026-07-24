@@ -25,6 +25,7 @@
         :class="{ on: note.pinned }"
         @click.stop="emit('pin', note)"
         :aria-label="note.pinned ? t('notes.unpinAria') : t('notes.pinAria')"
+        :title="note.pinned ? t('notes.unpinAria') : t('notes.pinAria')"
       >
         <i class="ti" :class="note.pinned ? 'ti-pinned' : 'ti-pin'"></i>
       </button>

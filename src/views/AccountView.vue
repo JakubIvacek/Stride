@@ -6,7 +6,7 @@
         <img src="/stride_icon.svg" alt="Stride" class="ac-logo">
         <span class="ac-name">Stride</span>
       </div>
-      <button class="icon-btn" @click="goBack" :aria-label="t('account.backAria')">
+      <button class="icon-btn" @click="goBack" :aria-label="t('account.backAria')" :title="t('account.backAria')">
         <i class="ti ti-arrow-left"></i>
       </button>
     </header>
