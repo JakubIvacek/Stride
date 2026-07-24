@@ -8,7 +8,6 @@ Nápady a vylepšenia na premyslenie. Legenda námahy: **S** = malé, **M** = st
 - [ ] **Offline-first** — IndexedDB + sync (CLAUDE.md to vedome odkladá).
 
 ## Todo
-- [ ] **Landing page i18n** (M) — preložiť všetky texty landingu cez `vue-i18n` + pridať `LanguageSwitch` do nav-u landingu. Dôvod: používatelia čo nevedia po anglicky (napr. SK) nerozumejú landingu pred registráciou.
 - [ ] **Haptika** (S) — vibrácia pri akcii (Android cez Vibration API; iOS Safari nepodporuje).
 - [ ] **Jemné animácie** (S) — plynulý expand úlohy + prechod do Settings (fade/slide); 150–200 ms.
 - [ ] **Onboarding / help** (M) — 3 slidy pri prvom otvorení (čo je týždeň, ako pridať úlohu, čo sú kategórie). Zvážiť či to stojí za to — landing page už vysvetľuje app, UI je intuitívne; reálna hodnota by bola len pre nových používateľov bez kontextu z landingu.
@@ -16,6 +15,7 @@ Nápady a vylepšenia na premyslenie. Legenda námahy: **S** = malé, **M** = st
 ---
 
 ## Hotovo
+- [x] **Landing page i18n** — všetky texty landingu (`LandingView.vue`) prešli cez `vue-i18n` (nový `landing` namespace vo všetkých 7 jazykoch v `messages.ts`); pridaný `LanguageSwitch` (compact/glóbus) do nav-u landingu, štylizovaný pod tmavú `.lp` paletu cez `:deep()`. Viacriadkový hero/why nadpis rieši `white-space: pre-line` namiesto natvrdo written `<br>`, aby si každý jazyk mohol zvoliť vlastné zalomenie.
 - [x] **Hover tooltips na ikonových tlačidlách** — natívny `:title` (mirror existujúceho `:aria-label`) na všetkých ikonových tlačidlách bez viditeľného textu naprieč appkou (`DayList.vue`, `NoteRow.vue`, `NoteEditorView.vue`, `NotesHomeView.vue`, `NotesListView.vue`, `AppHeader.vue`, `LanguageSwitch.vue`, `OverdueSection.vue`, `CategoriesSheet.vue`, `HomeView.vue`, `AuthView.vue`, `AccountView.vue`, `CalendarView.vue`, `LegalPage.vue`); po ceste opravený aj natvrdo napísaný neprekladaný aria-label (`CalendarView.vue` "Zavrieť" → `t('cat.closeAria')`).
 - [x] **Poznámky na landing page** — 4. karta „Notes" vo feature-showcase sekcii v `LandingView.vue`, + screenshot `public/screens/Notes.png` (rovnaký phone-portrait rámček ako ostatné, kurátorované demo dáta).
 - [x] **Poznámky (Notes)** — nový tab v spodnej navigácii, Apple Notes štýl. Priečinky (CRUD, drag & drop poradie, „All Notes"), poznámky (názov + text, autosave, pripnutie, vyhľadávanie, presun medzi priečinkami), swipe/undo mazanie zhodné s existujúcim vzorom pre úlohy/kategórie. `notes` + `note_folders` tabuľky (RLS, `on delete set null` pre priečinok), demo dáta.
