@@ -12,6 +12,7 @@ Nápady a vylepšenia na premyslenie. Legenda námahy: **S** = malé, **M** = st
 - [ ] **Haptika** (S) — vibrácia pri akcii (Android cez Vibration API; iOS Safari nepodporuje).
 - [ ] **Jemné animácie** (S) — plynulý expand úlohy + prechod do Settings (fade/slide); 150–200 ms.
 - [ ] **Onboarding / help** (M) — 3 slidy pri prvom otvorení (čo je týždeň, ako pridať úlohu, čo sú kategórie). Zvážiť či to stojí za to — landing page už vysvetľuje app, UI je intuitívne; reálna hodnota by bola len pre nových používateľov bez kontextu z landingu.
+- [ ] **Poznámky na landing page** (S) — pridať 4. kartu „Notes" do feature-showcase sekcie v `LandingView.vue` (pole na riadku ~150-152, vedľa Home/Calendar/Statistics), + nový screenshot `public/screens/Notes.png` (rovnaký phone-portrait rámček ako ostatné, kurátorované demo dáta). Landing zatiaľ Poznámky vôbec nespomína, hoci je to plnohodnotný 4. tab appky.
 - [ ] **Hover tooltips na ikonových tlačidlách** (S) — natívny `title` atribút (alebo malý tooltip) na všetkých ikonových tlačidlách bez viditeľného textu (`.icon-btn`, `.act-btn`, pin/trash/reorder tlačidlá v `DayList.vue`, `NoteRow.vue`, `NotesHomeView.vue`, `NotesListView.vue`, `NoteEditorView.vue`, `AppHeader.vue`...), aby myš-používatelia na desktope videli pri hoveri čo tlačidlo robí. Väčšina tlačidiel má už `:aria-label` cez `t(...)` — stačí rovnaký i18n text napojiť aj na `:title`, netreba nové preklady.
 
 ---
