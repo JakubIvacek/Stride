@@ -1,30 +1,158 @@
-# Stride — Weekly Task Management PWA
-
-Apple-clean, mobile-first weekly task management app. Vue 3 + Supabase, installable as a PWA.
-
-**Live:** https://stride-by-keno.vercel.app
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/stride_by_keno-dark.svg">
+    <img src="assets/stride_by_keno.svg" alt="Stride by Keno" width="520">
+  </picture>
+</p>
 
 <p align="center">
-  <img src="docs/screenshot-home.png" width="260" alt="Home">
-  <img src="docs/screenshot-stats.png" width="260" alt="Stats">
-  <img src="docs/screenshot-calendar.png" width="260" alt="Calendar">
+  A weekly task manager as a PWA — plan Mon–Sun, drag tasks around, keep notes, track streaks and stats, on any device, synced through Supabase.
 </p>
+
+<p align="center">
+  <a href="https://stride-by-keno.vercel.app"><img alt="Live demo" src="https://img.shields.io/badge/live%20demo-stride--by--keno.vercel.app-000000?style=flat-square&logo=vercel&logoColor=white"></a>
+  <img alt="Version" src="https://img.shields.io/badge/version-1.1.4-2b2e33?style=flat-square">
+  <img alt="Vue 3" src="https://img.shields.io/badge/Vue-3-42b883?style=flat-square&logo=vuedotjs&logoColor=white">
+  <img alt="Vite" src="https://img.shields.io/badge/Vite-646cff?style=flat-square&logo=vite&logoColor=white">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178c6?style=flat-square&logo=typescript&logoColor=white">
+  <img alt="Supabase" src="https://img.shields.io/badge/Supabase-3ecf8e?style=flat-square&logo=supabase&logoColor=white">
+  <img alt="PWA" src="https://img.shields.io/badge/PWA-installable-5a0fc8?style=flat-square&logo=pwa&logoColor=white">
+  <a href="./LICENSE"><img alt="License: All rights reserved" src="https://img.shields.io/badge/license-all%20rights%20reserved-b3261e?style=flat-square"></a>
+</p>
+
+<p align="center">
+  <b>→ Try it live: <a href="https://stride-by-keno.vercel.app">stride-by-keno.vercel.app</a></b>
+</p>
+
+---
+
+## What is this
+
+Stride is a weekly task-management app built as an installable PWA. The design
+is deliberately Apple-clean and **mobile-first**: a week runs Monday to Sunday,
+tasks are tapped, dragged and checked off, notes live in Apple Notes-style
+folders, and everything you complete feeds a statistics screen with streaks and
+a GitHub-style activity heatmap.
+
+There is **no custom server**. Supabase is the entire backend — Postgres, Auth
+and the auto-generated REST API. Per-user isolation is enforced in the database
+by **Row Level Security** (`auth.uid() = user_id`), and `user_id` is never sent
+from the client: it defaults to `auth.uid()` on insert and `with check` blocks
+spoofing. The service worker caches the app shell, so the app installs to the
+home screen and still opens offline.
+
+## Screenshots
+
+<p align="center">
+  <img src="public/screens/Home.png" alt="Home — weekly overview" width="260">
+  <img src="public/screens/Calendar.png" alt="Calendar — month view" width="260">
+  <img src="public/screens/Stats_Month.png" alt="Statistics — month view" width="260">
+</p>
+
+<p align="center">
+  <em>Home — the Mon–Sun week, progress and a collapsing header</em> ·
+  <em>Calendar — month &amp; year, color-coded day status</em> ·
+  <em>Statistics — metrics, streaks, category breakdown and heatmap</em>
+</p>
+
+<table align="center">
+  <tr>
+    <td width="33%" align="center">
+      <img src="public/screens/Notes.png" alt="Notes" width="220"><br>
+      <em>Notes — folders, pin, search, autosave</em>
+    </td>
+    <td width="33%" align="center">
+      <img src="public/screens/Category.png" alt="Categories sheet" width="220"><br>
+      <em>Categories — CRUD, colors, drag &amp; drop order</em>
+    </td>
+    <td width="33%" align="center">
+      <img src="public/screens/Settings.png" alt="Account and settings" width="220"><br>
+      <em>Account — language, theme, password, deletion</em>
+    </td>
+  </tr>
+</table>
 
 ## Features
 
-- **Home** — weekly overview (Mon–Sun), add/check off tasks, progress bar, mini chart, collapsing header.
-- **Tasks** — edit (title, note, category), **drag & drop reorder**, **move to another day**, delete confirmation.
-- **Calendar** — month + year view (infinite scroll), color-coded day status, day detail sheet.
-- **Statistics** — Week/Month/Year, metrics + streaks, bar chart, category breakdown, **GitHub-style activity heatmap**.
-- **Categories** — CRUD + colors, filter, create directly when adding a task.
-- **Notes** — Apple Notes-style folders + notes, pin, search, autosave.
-- **Account** — email/password + Google, password reset, **7 languages** (EN/SK/DE/ES/FR/IT/PT, auto from browser), **system/light/dark** theme.
+- 🗓️ **Home** — the whole week (Mon–Sun) on one screen: add and check off
+  tasks, per-day progress bar, mini chart, and a header that collapses as you
+  scroll
+- ✅ **Tasks** — edit title/note/category, **drag & drop reorder** within a day,
+  **move a task to another day**, start time + duration (rendered as
+  `14:00–15:30`), a priority flag, and **repeat** (daily/weekly/monthly) with a
+  spawn-on-complete model — completing a repeating task creates the next
+  occurrence
+- 📆 **Calendar** — month and year views with infinite scroll, color-coded day
+  status, and a day detail sheet
+- 📊 **Statistics** — Week / Month / Year, metrics and streaks, a bar chart with
+  a **Count ↔ %** toggle, category breakdown, and a GitHub-style **activity
+  heatmap**
+- 🗒️ **Notes** — Apple Notes-style folders and notes with pinning, search,
+  autosave and auto-linkified URLs/emails
+- 🏷️ **Categories** — full CRUD with colors, filtering, reorderable, and
+  creatable inline while adding a task
+- 👤 **Account** — email/password + **Google OAuth**, password reset, and
+  account deletion via a service-role Edge Function
+- 🌍 **7 languages** — EN / SK / DE / ES / FR / IT / PT, picked automatically
+  from the browser language; dates and month/day names come from `Intl`
+- 🌗 **Theme** — system / light / dark
+- 📱 **PWA** — installable on iOS and Android, service worker caches the app
+  shell so it opens offline
 
-## Stack
+## Getting started
 
-Vue 3 · Vite · TypeScript · Pinia · Vue Router · Bootstrap (utilities) · vue-i18n · vuedraggable · Chart.js · `vite-plugin-pwa` · **Supabase** (Postgres + Auth + RLS, the entire backend).
+```bash
+npm install
+npm run dev      # http://localhost:5173
+npm run build    # vue-tsc + vite build
+```
 
-## Supabase Setup
+Create `.env.local` with your Supabase credentials (Project Settings → API):
+
+```
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
+```
+
+**Demo mode:** in dev the app shows generated data **without login**
+(`src/lib/demo.ts`). To hit real Supabase data in dev, set `VITE_DEMO=false` in
+`.env.local`. Production builds always use real data.
+
+For a fresh Supabase project, run the SQL from the **Supabase setup & DB
+schema** section below (plus the migrations if you are upgrading an existing
+database).
+
+## Tech stack
+
+- **Frontend:** Vue 3 + Vite + TypeScript, Pinia, Vue Router
+- **Styling:** **Bootstrap utilities** (not Tailwind) + custom CSS, design
+  tokens and light/dark palettes in `src/styles/app.css`
+- **UI extras:** `vue-i18n`, `vuedraggable` (SortableJS), Chart.js via
+  `vue-chartjs` (Stats screen only)
+- **Backend:** **Supabase** — Postgres + Auth + auto REST API, RLS-enforced. No
+  custom server
+- **PWA:** `vite-plugin-pwa` (installable, offline app shell)
+- **Hosting:** Vercel
+
+## Project structure
+
+- `src/views/` — `HomeView`, `CalendarView`, `StatsView`, `AccountView`,
+  `AuthView`, `LandingView`, `NotesHomeView`, `NotesListView`,
+  `NoteEditorView`, `LegalPage` / `TermsView` / `PrivacyView`
+- `src/components/` — `AppHeader`, `TabBar`, `DayList`, `OverdueSection`,
+  `CategoryPicker`, `CategoriesSheet`, `NoteRow`, `LanguageSwitch`
+- `src/stores/` — Pinia: `tasks`, `categories`, `notes`, `noteFolders`, `auth`
+  (the stores are the only layer that talks to the DB)
+- `src/lib/` — `supabase`, `dates`, `status`, `colors`, `theme`, `sortTasks`,
+  `goal`, `backup`, `demo`
+- `src/i18n/` — `messages` (EN/SK/DE/ES/FR/IT/PT), `dates` (localized formats)
+- `src/styles/app.css` — design tokens + light/dark
+- `supabase/functions/delete-account/` — account-deletion Edge Function
+
+---
+
+<details>
+<summary><b>Supabase setup &amp; DB schema</b></summary>
 
 1. Create a project at https://supabase.com
 2. Copy the URL and ANON_KEY from Project Settings → API
@@ -34,9 +162,7 @@ Vue 3 · Vite · TypeScript · Pinia · Vue Router · Bootstrap (utilities) · v
    VITE_SUPABASE_ANON_KEY=your-anon-key
    ```
 
-## DB Setup
-
-Run in Supabase SQL Editor:
+Then run in the Supabase SQL Editor:
 
 ```sql
 create table categories (
@@ -107,6 +233,11 @@ create policy "notes owner only" on notes
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 ```
 
+</details>
+
+<details>
+<summary><b>Migrations (existing databases)</b></summary>
+
 ### Migration — drag & drop order
 
 If your `tasks` table is missing the `position` column:
@@ -147,9 +278,14 @@ update categories c set position = o.rn from ordered o where o.id = c.id;
 
 If your database was created before the Notes feature, run the `note_folders`/`notes` `create table` + RLS blocks above (they're additive — safe to run once on an existing project; skip if the tables already exist).
 
-### Account deletion (Edge Function)
+</details>
 
-Deleting an auth user can't be done from the browser — it runs via the `supabase/functions/delete-account` Edge Function (service-role). Deleting the user **cascades** to their `tasks`, `categories`, `notes`, and `note_folders`.
+<details>
+<summary><b>Account deletion (Edge Function)</b></summary>
+
+Deleting an auth user can't be done from the browser — it runs via the
+`supabase/functions/delete-account` Edge Function (service-role). Deleting the
+user **cascades** to their `tasks`, `categories`, `notes`, and `note_folders`.
 
 Deploy (Supabase CLI, logged in and linked):
 
@@ -157,48 +293,31 @@ Deploy (Supabase CLI, logged in and linked):
 supabase functions deploy delete-account
 ```
 
-`SUPABASE_URL`, `SUPABASE_ANON_KEY` and `SUPABASE_SERVICE_ROLE_KEY` are injected automatically. The client calls it via `supabase.functions.invoke('delete-account')`.
+`SUPABASE_URL`, `SUPABASE_ANON_KEY` and `SUPABASE_SERVICE_ROLE_KEY` are injected
+automatically. The client calls it via
+`supabase.functions.invoke('delete-account')`.
 
-## Local Development
+</details>
 
-```bash
-npm install
-npm run dev
-```
+<details>
+<summary><b>Auth &amp; PWA notes</b></summary>
 
-Dev server runs at `http://localhost:5173`.
+**Auth.** Email/password + **Google OAuth** via Supabase Auth. Enable Google in
+Authentication → Providers → Google. After deploying, add the production domain
+to Authentication → URL Configuration (Site URL + Redirect URLs).
 
-### Demo mode
+**PWA.** Installable, service worker caches the app shell. Icon:
+`public/stride_icon.svg`; PWA PNG icons: `pwa-192.png` / `pwa-512.png`.
 
-In dev the app shows generated data **without login** (`src/lib/demo.ts`). To use real Supabase data in dev, set `VITE_DEMO=false` in `.env.local`. Production builds always use real data.
-
-## Build
-
-```bash
-npm run build   # vue-tsc + vite build
-```
-
-## Project Structure
-
-- `src/views/` — `HomeView`, `CalendarView`, `StatsView`, `AccountView`, `AuthView`
-- `src/components/` — `AppHeader`, `TabBar`, `DayList`, `CategoryPicker`, `CategoriesSheet`, `LanguageSwitch`
-- `src/stores/` — Pinia: `tasks`, `categories`, `auth`
-- `src/lib/` — `supabase`, `dates`, `status`, `colors`, `theme`, `demo`
-- `src/i18n/` — `messages` (EN/SK/DE/ES/FR/IT/PT), `dates` (localized formats)
-- `src/styles/app.css` — design tokens + light/dark
-
-## Auth
-
-Email/password + **Google OAuth** via Supabase Auth. Enable Google in Authentication → Providers → Google. After deploying, add the production domain to Authentication → URL Configuration (Site URL + Redirect URLs).
-
-## PWA
-
-Installable, service worker caches the app shell. Icon: `public/stride_icon.svg`; PWA PNG icons: `pwa-192.png` / `pwa-512.png`.
+</details>
 
 ---
 
-Backlog and ideas: see **`TODO.md`**.
+## Project docs
 
-## License
+Changelog: [CHANGELOG.md](./CHANGELOG.md) · Backlog and ideas:
+[TODO.md](./TODO.md) · License: [All rights reserved](./LICENSE)
 
-All rights reserved — see [LICENSE](LICENSE). The source is available for viewing/reference only; use, copying, or distribution requires prior written permission.
+The source is available for viewing and reference only — this is **not** open
+source. Use, copying, modification or distribution requires prior written
+permission.
