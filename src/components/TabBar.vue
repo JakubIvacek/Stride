@@ -12,6 +12,10 @@
       <i class="ti ti-calendar"></i>
       <span>{{ t('tab.calendar') }}</span>
     </RouterLink>
+    <RouterLink to="/notes" class="tab" :class="{ active: $route.path.startsWith('/notes') }">
+      <i class="ti ti-notes"></i>
+      <span>{{ t('tab.notes') }}</span>
+    </RouterLink>
   </nav>
 </template>
 

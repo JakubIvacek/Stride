@@ -7,8 +7,8 @@
         <span class="strip-range">{{ rangeLabel }}</span>
       </div>
       <div class="strip-nav">
-        <button class="icon-btn" @click="shiftWeek(-1)" :aria-label="t('home.prevWeekAria')"><i class="ti ti-chevron-left"></i></button>
-        <button class="icon-btn" @click="shiftWeek(1)" :aria-label="t('home.nextWeekAria')"><i class="ti ti-chevron-right"></i></button>
+        <button class="icon-btn" @click="shiftWeek(-1)" :aria-label="t('home.prevWeekAria')" :title="t('home.prevWeekAria')"><i class="ti ti-chevron-left"></i></button>
+        <button class="icon-btn" @click="shiftWeek(1)" :aria-label="t('home.nextWeekAria')" :title="t('home.nextWeekAria')"><i class="ti ti-chevron-right"></i></button>
       </div>
       <div class="strip-progress"><div :style="{ width: progressPercent + '%' }"></div></div>
     </div>
@@ -20,9 +20,9 @@
         <div class="range">{{ rangeLabel }}</div>
       </div>
       <div class="wk-nav">
-        <button class="icon-btn" @click="shiftWeek(-1)" :aria-label="t('home.prevWeekAria')"><i class="ti ti-chevron-left"></i></button>
-        <button class="icon-btn" @click="shiftWeek(1)" :aria-label="t('home.nextWeekAria')"><i class="ti ti-chevron-right"></i></button>
-        <button class="icon-btn accent" @click="quickAdd" :aria-label="t('home.addItemAria')"><i class="ti ti-plus"></i></button>
+        <button class="icon-btn" @click="shiftWeek(-1)" :aria-label="t('home.prevWeekAria')" :title="t('home.prevWeekAria')"><i class="ti ti-chevron-left"></i></button>
+        <button class="icon-btn" @click="shiftWeek(1)" :aria-label="t('home.nextWeekAria')" :title="t('home.nextWeekAria')"><i class="ti ti-chevron-right"></i></button>
+        <button class="icon-btn accent" @click="quickAdd" :aria-label="t('home.addItemAria')" :title="t('home.addItemAria')"><i class="ti ti-plus"></i></button>
       </div>
     </header>
 
@@ -65,7 +65,7 @@
           <span class="cat-dot" :style="{ background: c.color }"></span>{{ c.name }}
         </button>
       </div>
-      <button class="manage" @click="catSheet = true" :aria-label="t('cat.manage')"><i class="ti ti-adjustments-horizontal"></i></button>
+      <button class="manage" @click="catSheet = true" :aria-label="t('cat.manage')" :title="t('cat.manage')"><i class="ti ti-adjustments-horizontal"></i></button>
     </section>
 
     <!-- overdue (incomplete past tasks), only while viewing the current week -->

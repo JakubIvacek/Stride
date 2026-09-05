@@ -23,11 +23,11 @@
           @touchmove="onMove($event, task)"
           @touchend="onUp($event, task)"
         >
-          <button type="button" class="ov-check" @click="completeWithUndo(task)" :aria-label="t('day.markDone')"></button>
+          <button type="button" class="ov-check" @click="completeWithUndo(task)" :aria-label="t('day.markDone')" :title="t('day.markDone')"></button>
           <span class="ov-name">{{ task.title }}</span>
           <span class="ov-days">{{ daysAgo(task.task_date) }}</span>
           <button type="button" class="ov-today" @click="store.moveToToday(task)">{{ t('overdue.toToday') }}</button>
-          <button type="button" class="ov-del" @click="deleteWithUndo(task)" :aria-label="t('day.deleteItem')"><i class="ti ti-x"></i></button>
+          <button type="button" class="ov-del" @click="deleteWithUndo(task)" :aria-label="t('day.deleteItem')" :title="t('day.deleteItem')"><i class="ti ti-x"></i></button>
         </div>
       </div>
 

@@ -9,6 +9,24 @@ export interface Category {
   created_at?: string
 }
 
+export interface NoteFolder {
+  id: string
+  name: string
+  position: number
+  created_at: string
+}
+
+export interface Note {
+  id: string
+  title: string
+  body: string
+  pinned: boolean
+  folder_id: string | null
+  position: number
+  created_at: string
+  updated_at: string
+}
+
 export interface Task {
   id: string
   title: string

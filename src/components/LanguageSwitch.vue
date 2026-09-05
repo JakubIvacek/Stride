@@ -1,6 +1,6 @@
 <template>
   <!-- compact: globe icon with an invisible native select on top (opens the menu) -->
-  <label v-if="compact" class="lang-icon" :aria-label="t('account.language')">
+  <label v-if="compact" class="lang-icon" :aria-label="t('account.language')" :title="t('account.language')">
     <i class="ti ti-world"></i>
     <select :value="locale" @change="onChange" :aria-label="t('account.language')">
       <option v-for="l in LOCALES" :key="l.id" :value="l.id">{{ l.label }}</option>

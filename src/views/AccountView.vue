@@ -6,7 +6,7 @@
         <img src="/stride_icon.svg" alt="Stride" class="ac-logo">
         <span class="ac-name">Stride</span>
       </div>
-      <button class="icon-btn" @click="goBack" :aria-label="t('account.backAria')">
+      <button class="icon-btn" @click="goBack" :aria-label="t('account.backAria')" :title="t('account.backAria')">
         <i class="ti ti-arrow-left"></i>
       </button>
     </header>
@@ -325,7 +325,7 @@ const categoriesStore = useCategoriesStore()
 
 const view = ref<'main' | 'password' | 'privacy' | 'terms'>('main')
 const CONTACT_EMAIL = 'stridebykeno@gmail.com'
-const APP_VERSION = '1.1.3'
+const APP_VERSION = '1.1.4'
 const email = computed(() => auth.session?.user.email ?? 'demo@stride.app')
 const initial = computed(() => email.value.charAt(0).toUpperCase())
 

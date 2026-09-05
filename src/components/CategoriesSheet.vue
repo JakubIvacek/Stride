@@ -5,7 +5,7 @@
         <div class="sheet-grip"></div>
         <div class="sheet-head">
           <div class="sheet-title">{{ t('cat.title') }}</div>
-          <button class="icon-btn" @click="close" :aria-label="t('cat.closeAria')"><i class="ti ti-x"></i></button>
+          <button class="icon-btn" @click="close" :aria-label="t('cat.closeAria')" :title="t('cat.closeAria')"><i class="ti ti-x"></i></button>
         </div>
 
         <div class="seg">
@@ -46,19 +46,20 @@
                 @touchmove="onMove($event, c)"
                 @touchend="onUp($event, c)"
               >
-                <span class="cat-drag" @touchstart.stop :aria-label="t('day.reorder')"><i class="ti ti-grip-vertical"></i></span>
+                <span class="cat-drag" @touchstart.stop :aria-label="t('day.reorder')" :title="t('day.reorder')"><i class="ti ti-grip-vertical"></i></span>
                 <button
                   class="swatch"
                   :style="{ background: c.color }"
                   @click="editing = editing === c.id ? null : c.id"
                   :aria-label="t('cat.colorAria')"
+                  :title="t('cat.colorAria')"
                 ></button>
                 <input
                   class="cat-name"
                   :value="c.name"
                   @change="rename(c, ($event.target as HTMLInputElement).value)"
                 >
-                <button class="trash" @click="deleteCat(c)" :aria-label="t('cat.deleteAria')">
+                <button class="trash" @click="deleteCat(c)" :aria-label="t('cat.deleteAria')" :title="t('cat.deleteAria')">
                   <i class="ti ti-trash"></i>
                 </button>
               </div>
@@ -72,7 +73,7 @@
                 :style="{ background: col }"
                 @click="store.updateCategory(c.id, { color: col }); editing = null"
               ></button>
-              <label class="chip custom" :class="{ on: !PALETTE.includes(c.color) }" :aria-label="t('cat.customColorAria')">
+              <label class="chip custom" :class="{ on: !PALETTE.includes(c.color) }" :aria-label="t('cat.customColorAria')" :title="t('cat.customColorAria')">
                 <input
                   type="color"
                   :value="c.color"
@@ -117,7 +118,7 @@
               :style="{ background: col }"
               @click="newColor = col"
             ></button>
-            <label class="chip custom" :class="{ on: !PALETTE.includes(newColor) }" :aria-label="t('cat.customColorAria')">
+            <label class="chip custom" :class="{ on: !PALETTE.includes(newColor) }" :aria-label="t('cat.customColorAria')" :title="t('cat.customColorAria')">
               <input type="color" :value="newColor" @input="newColor = ($event.target as HTMLInputElement).value">
               <i class="ti ti-color-picker"></i>
             </label>

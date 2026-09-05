@@ -33,7 +33,7 @@
             ></textarea>
             <div class="cat-repeat-row">
               <CategoryPicker v-model="editCat" />
-              <label class="repeat-icon" :class="{ on: editRepeat !== 'none' }" :aria-label="t('day.repeat')">
+              <label class="repeat-icon" :class="{ on: editRepeat !== 'none' }" :aria-label="t('day.repeat')" :title="t('day.repeat')">
                 <i class="ti ti-repeat"></i>
                 <select v-model="editRepeat">
                   <option value="none">{{ t('day.repeatNone') }}</option>
@@ -47,8 +47,8 @@
               <template v-if="moveOpen">
                 <span class="eb-q">{{ t('day.moveTo') }}</span>
                 <input type="date" v-model="editDate" class="date-input">
-                <button class="add-confirm" @click="applyMove(task)"><i class="ti ti-check"></i></button>
-                <button class="add-cancel" @click="moveOpen = false"><i class="ti ti-x"></i></button>
+                <button class="add-confirm" @click="applyMove(task)" :aria-label="t('common.confirm')" :title="t('common.confirm')"><i class="ti ti-check"></i></button>
+                <button class="add-cancel" @click="moveOpen = false" :aria-label="t('common.cancel')" :title="t('common.cancel')"><i class="ti ti-x"></i></button>
               </template>
               <template v-else>
                 <div class="edit-actions">
@@ -115,6 +115,7 @@
                 :class="{ checked: task.status === 'done' }"
                 @click="tasksStore.toggleTask(task)"
                 :aria-label="task.status === 'done' ? t('day.markUndone') : t('day.markDone')"
+                :title="task.status === 'done' ? t('day.markUndone') : t('day.markDone')"
               >
                 <i v-if="task.status === 'done'" class="ti ti-check"></i>
               </button>
@@ -138,6 +139,7 @@
                 :class="{ on: task.priority }"
                 @click.stop="toggleFlag(task)"
                 :aria-label="t('day.priority')"
+                :title="t('day.priority')"
               ><i class="ti ti-flag"></i></button>
             </div>
           </div>
@@ -162,8 +164,8 @@
             @keyup.enter="submit"
             @keyup.esc="cancel"
           >
-          <button class="add-confirm" @click="submit"><i class="ti ti-check"></i></button>
-          <button class="add-cancel" @click="cancel"><i class="ti ti-x"></i></button>
+          <button class="add-confirm" @click="submit" :aria-label="t('common.confirm')" :title="t('common.confirm')"><i class="ti ti-check"></i></button>
+          <button class="add-cancel" @click="cancel" :aria-label="t('common.cancel')" :title="t('common.cancel')"><i class="ti ti-x"></i></button>
         </div>
         <textarea
           v-model="newNote"
@@ -199,7 +201,7 @@
         </div>
         <div class="cat-repeat-row">
           <CategoryPicker v-model="selectedCat" />
-          <label class="repeat-icon" :class="{ on: newRepeat !== 'none' }" :aria-label="t('day.repeat')">
+          <label class="repeat-icon" :class="{ on: newRepeat !== 'none' }" :aria-label="t('day.repeat')" :title="t('day.repeat')">
             <i class="ti ti-repeat"></i>
             <select v-model="newRepeat">
               <option value="none">{{ t('day.repeatNone') }}</option>

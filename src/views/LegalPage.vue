@@ -7,7 +7,7 @@
           <img src="/stride_icon.svg" alt="Stride" class="lg-logo">
           <span class="lg-name">Stride</span>
         </div>
-        <button class="lg-back" aria-label="Back" @click="$emit('back')">
+        <button class="lg-back" aria-label="Back" title="Back" @click="$emit('back')">
           <i class="ti ti-arrow-left"></i>
         </button>
       </div>
